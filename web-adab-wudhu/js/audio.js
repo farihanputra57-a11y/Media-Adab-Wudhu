@@ -1,0 +1,654 @@
+window.AudioEngine = (function () {
+  let ctx = null;
+  let masterGain = null;
+  let reverbNode = null;
+  let dryGain = null;
+  let wetGain = null;
+
+  let bgmPlaying = false;
+  let bgmVolume = 0.4;
+  let isDucked = false;
+  let bgmTimer = null;
+  let beatStep = 0;
+
+  let customBgmAudio = null;
+  let customBgmUrl = null;
+
+  // Serene Islamic Nahawand / D-Minor Ambient Progression (4 bars x 8 eighth-steps = 32 steps)
+  // Chords: Dm9 -> Cadd9 -> Bbmaj7 -> A7sus4
+  const CHORDS = [
+    { root: 146.83, pad: [146.83, 220.0, 261.63, 329.63], arp: [293.66, 349.23, 440.0, 523.25, 440.0, 349.23, 329.63, 293.66] },
+    { root: 130.81, pad: [130.81, 196.0, 261.63, 329.63], arp: [261.63, 329.63, 392.0, 523.25, 392.0, 329.63, 293.63, 261.63] },
+    { root: 116.54, pad: [116.54, 174.61, 233.08, 293.66], arp: [233.08, 293.66, 349.23, 440.0, 349.23, 293.66, 261.63, 233.08] },
+    { root: 110.0,  pad: [110.0,  164.81, 220.0,  293.66], arp: [220.0,  293.66, 329.63, 440.0, 329.63, 293.66, 277.18, 220.0] }
+  ];
+
+  // Gentle Ney Flute melody notes (null = rest) across 32 steps
+  const NEY_MELODY = [
+    587.33, null, null, 659.25, 587.33, null, 523.25, null,
+    523.25, null, null, 587.33, 523.25, null, 440.0,  null,
+    466.16, null, null, 523.25, 466.16, null, 440.0,  null,
+    440.0,  null, 392.0, null,  440.0,  null, null,   null
+  ];
+
+  // ==================== INDEXEDDB STORAGE ====================
+  const DB_NAME = "AdabWudhuAudioDB";
+  const STORE_NAME = "clips";
+  let dbPromise = null;
+
+  function openDB() {
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise((resolve, reject) => {
+      try {
+        const req = indexedDB.open(DB_NAME, 1);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME);
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      } catch (e) {
+        reject(e);
+      }
+    });
+    return dbPromise;
+  }
+
+  async function saveClip(key, blob) {
+    try {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        tx.objectStore(STORE_NAME).put(blob, key);
+        tx.oncomplete = () => resolve(true);
+        tx.onerror = () => reject(tx.error);
+      });
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async function loadClip(key) {
+    try {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, "readonly");
+        const req = tx.objectStore(STORE_NAME).get(key);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => reject(req.error);
+      });
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async function deleteClip(key) {
+    try {
+      const db = await openDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        tx.objectStore(STORE_NAME).delete(key);
+        tx.oncomplete = () => resolve(true);
+        tx.onerror = () => reject(tx.error);
+      });
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // ==================== WEB AUDIO STUDIO GRAPH ====================
+  function createReverbImpulse(audioCtx, duration = 2.6, decay = 2.8) {
+    const rate = audioCtx.sampleRate;
+    const length = Math.floor(rate * duration);
+    const impulse = audioCtx.createBuffer(2, length, rate);
+    for (let ch = 0; ch < 2; ch++) {
+      const data = impulse.getChannelData(ch);
+      for (let i = 0; i < length; i++) {
+        const env = Math.pow(1 - i / length, decay);
+        data[i] = (Math.random() * 2 - 1) * env * 0.45;
+      }
+    }
+    return impulse;
+  }
+
+  function ensureCtx() {
+    if (!ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      ctx = new AudioCtx();
+
+      masterGain = ctx.createGain();
+      masterGain.gain.value = getEffectiveBgmGain();
+
+      reverbNode = ctx.createConvolver();
+      reverbNode.buffer = createReverbImpulse(ctx, 2.5, 2.6);
+
+      dryGain = ctx.createGain();
+      dryGain.gain.value = 0.62;
+
+      wetGain = ctx.createGain();
+      wetGain.gain.value = 0.45;
+
+      dryGain.connect(masterGain);
+      reverbNode.connect(wetGain);
+      wetGain.connect(masterGain);
+      masterGain.connect(ctx.destination);
+    }
+    if (ctx.state === "suspended") {
+      ctx.resume();
+    }
+    return ctx;
+  }
+
+  function getEffectiveBgmGain() {
+    const duckFactor = isDucked ? 0.24 : 1.0;
+    return Math.max(0.0001, bgmVolume * duckFactor);
+  }
+
+  function updateMasterGainSmooth() {
+    const target = getEffectiveBgmGain();
+    if (ctx && masterGain) {
+      masterGain.gain.cancelScheduledValues(ctx.currentTime);
+      masterGain.gain.setTargetAtTime(target, ctx.currentTime, 0.22);
+    }
+    if (customBgmAudio) {
+      customBgmAudio.volume = Math.min(1, target);
+    }
+  }
+
+  function duckBgm(duck) {
+    isDucked = Boolean(duck);
+    updateMasterGainSmooth();
+  }
+
+  function playWarmPad(freqs, duration = 5.4) {
+    const c = ensureCtx();
+    const now = c.currentTime;
+    const filter = c.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(680, now);
+    filter.Q.value = 0.7;
+
+    const env = c.createGain();
+    env.gain.setValueAtTime(0.0001, now);
+    env.gain.linearRampToValueAtTime(0.065, now + 1.3);
+    env.gain.setValueAtTime(0.055, now + duration - 1.5);
+    env.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+    freqs.forEach((f, idx) => {
+      const osc = c.createOscillator();
+      osc.type = idx % 2 === 0 ? "triangle" : "sine";
+      osc.frequency.setValueAtTime(f, now);
+      osc.detune.setValueAtTime(idx % 2 === 0 ? -4 : 4, now);
+      osc.connect(filter);
+      osc.start(now);
+      osc.stop(now + duration + 0.1);
+    });
+
+    filter.connect(env);
+    env.connect(dryGain);
+    env.connect(reverbNode);
+  }
+
+  function playOudArp(freq, pan = 0) {
+    const c = ensureCtx();
+    const now = c.currentTime;
+    const dur = 1.9;
+
+    const osc1 = c.createOscillator();
+    const osc2 = c.createOscillator();
+    osc1.type = "triangle";
+    osc1.frequency.setValueAtTime(freq, now);
+    osc2.type = "sine";
+    osc2.frequency.setValueAtTime(freq * 2, now);
+
+    const filter = c.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(1900, now);
+    filter.frequency.exponentialRampToValueAtTime(420, now + dur);
+
+    const gain = c.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.linearRampToValueAtTime(0.11, now + 0.025);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+
+    const panner = c.createStereoPanner ? c.createStereoPanner() : null;
+    if (panner) panner.pan.setValueAtTime(pan, now);
+
+    osc1.connect(filter);
+    osc2.connect(filter);
+    filter.connect(gain);
+
+    if (panner) {
+      gain.connect(panner);
+      panner.connect(dryGain);
+      panner.connect(reverbNode);
+    } else {
+      gain.connect(dryGain);
+      gain.connect(reverbNode);
+    }
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + dur + 0.05);
+    osc2.stop(now + dur + 0.05);
+  }
+
+  function playNeyFlute(freq, duration = 1.65) {
+    const c = ensureCtx();
+    const now = c.currentTime;
+
+    const osc = c.createOscillator();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq * 0.992, now);
+    osc.frequency.exponentialRampToValueAtTime(freq, now + 0.14);
+
+    // Subtle breathy vibrato
+    const lfo = c.createOscillator();
+    const lfoGain = c.createGain();
+    lfo.frequency.setValueAtTime(4.8, now);
+    lfoGain.gain.setValueAtTime(2.6, now);
+    lfo.connect(lfoGain);
+    lfoGain.connect(osc.frequency);
+
+    const filter = c.createBiquadFilter();
+    filter.type = "bandpass";
+    filter.frequency.setValueAtTime(freq, now);
+    filter.Q.value = 1.4;
+
+    const gain = c.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.linearRampToValueAtTime(0.065, now + 0.25);
+    gain.gain.setValueAtTime(0.055, now + duration - 0.45);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(dryGain);
+    gain.connect(reverbNode);
+
+    osc.start(now);
+    lfo.start(now);
+    osc.stop(now + duration + 0.08);
+    lfo.stop(now + duration + 0.08);
+  }
+
+  function startBgm() {
+    if (bgmPlaying) return;
+    bgmPlaying = true;
+    if (customBgmAudio) {
+      customBgmAudio.volume = getEffectiveBgmGain();
+      customBgmAudio.loop = true;
+      customBgmAudio.play().catch(() => {});
+      return;
+    }
+    ensureCtx();
+    const stepMs = 660; // Serene ~90 BPM eighth-note flow
+    const tick = () => {
+      if (!bgmPlaying) return;
+      const stepInCycle = beatStep % 32;
+      const barIdx = Math.floor(stepInCycle / 8);
+      const stepInBar = stepInCycle % 8;
+      const chord = CHORDS[barIdx];
+
+      // Warm Pad at start of each bar
+      if (stepInBar === 0) {
+        playWarmPad(chord.pad, (stepMs * 8.2) / 1000);
+      }
+
+      // Plucked Oud / Harp arpeggio with gentle stereo sway
+      const arpFreq = chord.arp[stepInBar];
+      const pan = stepInBar % 2 === 0 ? -0.25 : 0.25;
+      playOudArp(arpFreq, pan);
+
+      // Soft Ney Flute enters gently
+      const neyNote = NEY_MELODY[stepInCycle];
+      if (neyNote && beatStep >= 4) {
+        playNeyFlute(neyNote, 1.55);
+      }
+
+      beatStep++;
+    };
+    tick();
+    bgmTimer = setInterval(tick, stepMs);
+  }
+
+  function stopBgm() {
+    bgmPlaying = false;
+    if (bgmTimer) {
+      clearInterval(bgmTimer);
+      bgmTimer = null;
+    }
+    if (customBgmAudio) {
+      customBgmAudio.pause();
+    }
+  }
+
+  function toggleBgm() {
+    if (bgmPlaying) stopBgm();
+    else startBgm();
+    return bgmPlaying;
+  }
+
+  function setVolume(val) {
+    bgmVolume = Math.max(0, Math.min(1, val));
+    updateMasterGainSmooth();
+  }
+
+  async function setCustomBgm(fileBlob) {
+    if (customBgmUrl) URL.revokeObjectURL(customBgmUrl);
+    customBgmUrl = URL.createObjectURL(fileBlob);
+    if (customBgmAudio) customBgmAudio.pause();
+    customBgmAudio = new Audio(customBgmUrl);
+    customBgmAudio.loop = true;
+    customBgmAudio.volume = getEffectiveBgmGain();
+    await saveClip("custom_bgm", fileBlob);
+    if (bgmPlaying) {
+      stopBgm();
+      startBgm();
+    }
+  }
+
+  async function resetCustomBgm() {
+    if (customBgmAudio) {
+      customBgmAudio.pause();
+      customBgmAudio = null;
+    }
+    if (customBgmUrl) {
+      URL.revokeObjectURL(customBgmUrl);
+      customBgmUrl = null;
+    }
+    await deleteClip("custom_bgm");
+    if (bgmPlaying) {
+      stopBgm();
+      startBgm();
+    }
+  }
+
+  function playChime(type = "ok") {
+    try {
+      const c = ensureCtx();
+      const now = c.currentTime;
+      const freqs =
+        type === "ok" ? [523.25, 659.25] :
+        type === "win" ? [523.25, 659.25, 783.99] :
+        type === "beat" ? [440] :
+        [311.13, 277.18];
+
+      freqs.forEach((f, idx) => {
+        const osc = c.createOscillator();
+        const g = c.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(f, now + idx * 0.11);
+        g.gain.setValueAtTime(0.0001, now + idx * 0.11);
+        g.gain.linearRampToValueAtTime(0.1, now + idx * 0.11 + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.11 + 0.32);
+        osc.connect(g);
+        g.connect(c.destination);
+        osc.start(now + idx * 0.11);
+        osc.stop(now + idx * 0.11 + 0.35);
+      });
+    } catch (e) {}
+  }
+
+  async function initSavedBgm() {
+    const saved = await loadClip("custom_bgm");
+    if (saved) {
+      customBgmUrl = URL.createObjectURL(saved);
+      customBgmAudio = new Audio(customBgmUrl);
+      customBgmAudio.loop = true;
+      customBgmAudio.volume = getEffectiveBgmGain();
+      return true;
+    }
+    return false;
+  }
+
+  // ==================== SKILLED AI VOICEOVER ENGINE ====================
+  const synth = window.speechSynthesis || null;
+  let availableVoices = [];
+  let selectedVoiceURI = null;
+  let speechRate = 1.0;
+  let isSpeaking = false;
+  let speakSessionId = 0;
+  let stateListeners = [];
+
+  function scoreVoice(v) {
+    const name = (v.name || "").toLowerCase();
+    const lang = (v.lang || "").toLowerCase();
+    if (!lang.startsWith("id") && !name.includes("indones")) return -1;
+    let score = 10;
+    if (name.includes("ardi") && name.includes("natural")) score += 100; // Best male Neural AI Ustadz voice (Edge)
+    if (name.includes("gadis") && name.includes("natural")) score += 92; // Best female Neural AI voice (Edge)
+    if (name.includes("online") || name.includes("natural") || name.includes("neural")) score += 60;
+    if (name.includes("google") && lang.startsWith("id")) score += 50;
+    if (name.includes("ardi")) score += 30;
+    if (lang === "id-id") score += 10;
+    return score;
+  }
+
+  function refreshVoices() {
+    if (!synth) return [];
+    const all = synth.getVoices() || [];
+    const idVoices = all
+      .filter((v) => scoreVoice(v) > 0)
+      .sort((a, b) => scoreVoice(b) - scoreVoice(a));
+
+    availableVoices = idVoices.length ? idVoices : all.slice(0, 6);
+    if (!selectedVoiceURI && availableVoices.length) {
+      selectedVoiceURI = availableVoices[0].voiceURI;
+    }
+    return availableVoices;
+  }
+
+  function getVoices() {
+    if (!availableVoices.length) refreshVoices();
+    return availableVoices;
+  }
+
+  function setVoiceURI(uri) {
+    selectedVoiceURI = uri;
+  }
+
+  function getSelectedVoiceURI() {
+    if (!selectedVoiceURI) refreshVoices();
+    return selectedVoiceURI;
+  }
+
+  function setSpeechRate(rate) {
+    speechRate = Math.max(0.75, Math.min(1.25, Number(rate) || 1.0));
+    if (masterVoiceAudio) {
+      masterVoiceAudio.playbackRate = speechRate;
+    }
+  }
+
+  function notifySpeaking(speaking) {
+    isSpeaking = speaking;
+    duckBgm(speaking);
+    stateListeners.forEach((fn) => fn(speaking));
+  }
+
+  function onSpeakingChange(fn) {
+    stateListeners.push(fn);
+  }
+
+  // ==================== STUDIO MP3 RANGE PLAYER ====================
+  let masterVoiceAudio = null;
+  let rangeEndSec = null;
+  let rangeStartSec = 0;
+  let rangeRaf = null;
+  let progressListeners = [];
+
+  function onProgressChange(fn) {
+    progressListeners.push(fn);
+  }
+
+  function notifyProgress(pct) {
+    progressListeners.forEach((fn) => fn(pct));
+  }
+
+  function stopMp3Range() {
+    if (rangeRaf) {
+      cancelAnimationFrame(rangeRaf);
+      rangeRaf = null;
+    }
+    if (masterVoiceAudio) {
+      masterVoiceAudio.pause();
+    }
+    rangeEndSec = null;
+    notifyProgress(0);
+  }
+
+  function playMp3Range(src, startSec, endSec) {
+    stopVoice();
+    const mySession = ++speakSessionId;
+
+    if (!masterVoiceAudio || masterVoiceAudio.dataset.src !== src) {
+      masterVoiceAudio = new Audio(src);
+      masterVoiceAudio.dataset.src = src;
+      masterVoiceAudio.preload = "auto";
+    }
+
+    rangeStartSec = Math.max(0, Number(startSec) || 0);
+    rangeEndSec = Number(endSec) || null;
+    masterVoiceAudio.playbackRate = speechRate;
+
+    const beginPlay = () => {
+      if (mySession !== speakSessionId) return;
+      try {
+        masterVoiceAudio.currentTime = rangeStartSec;
+      } catch (e) {}
+
+      const p = masterVoiceAudio.play();
+      notifySpeaking(true);
+
+      const monitor = () => {
+        if (mySession !== speakSessionId || !masterVoiceAudio || masterVoiceAudio.paused) return;
+        const cur = masterVoiceAudio.currentTime;
+        const effectiveEnd = rangeEndSec || masterVoiceAudio.duration || (rangeStartSec + 10);
+        const span = Math.max(0.5, effectiveEnd - rangeStartSec);
+        const pct = Math.max(0, Math.min(100, ((cur - rangeStartSec) / span) * 100));
+        notifyProgress(pct);
+
+        if ((rangeEndSec && cur >= rangeEndSec) || masterVoiceAudio.ended) {
+          masterVoiceAudio.pause();
+          notifyProgress(100);
+          setTimeout(() => {
+            if (mySession === speakSessionId) notifyProgress(0);
+          }, 350);
+          notifySpeaking(false);
+          return;
+        }
+        rangeRaf = requestAnimationFrame(monitor);
+      };
+      rangeRaf = requestAnimationFrame(monitor);
+
+      if (p && typeof p.catch === "function") {
+        p.catch(() => {
+          if (mySession === speakSessionId) {
+            notifySpeaking(false);
+            notifyProgress(0);
+          }
+        });
+      }
+    };
+
+    if (masterVoiceAudio.readyState >= 1) {
+      beginPlay();
+    } else {
+      masterVoiceAudio.onloadedmetadata = () => {
+        masterVoiceAudio.onloadedmetadata = null;
+        beginPlay();
+      };
+      masterVoiceAudio.load();
+    }
+    return true;
+  }
+
+  function stopVoice() {
+    speakSessionId++;
+    stopMp3Range();
+    if (synth) {
+      try { synth.cancel(); } catch (e) {}
+    }
+    notifySpeaking(false);
+  }
+
+  function speakText(text) {
+    if (!synth || !text) return false;
+    stopVoice();
+    const mySession = ++speakSessionId;
+
+    const voices = getVoices();
+    const chosen = voices.find((v) => v.voiceURI === selectedVoiceURI) || voices[0] || null;
+
+    // Split into natural phrases so the AI pauses cleanly and sounds expressive
+    const chunks = text
+      .split(/(?<=[.!?])\s+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    if (!chunks.length) return false;
+    notifySpeaking(true);
+
+    let idx = 0;
+    const speakNext = () => {
+      if (mySession !== speakSessionId) return;
+      if (idx >= chunks.length) {
+        notifySpeaking(false);
+        return;
+      }
+      const utter = new SpeechSynthesisUtterance(chunks[idx]);
+      utter.lang = "id-ID";
+      utter.rate = speechRate;
+      utter.pitch = 0.98;
+      if (chosen) utter.voice = chosen;
+
+      utter.onend = () => {
+        if (mySession !== speakSessionId) return;
+        idx++;
+        setTimeout(speakNext, 220);
+      };
+      utter.onerror = () => {
+        if (mySession !== speakSessionId) return;
+        notifySpeaking(false);
+      };
+      synth.speak(utter);
+    };
+
+    speakNext();
+    return true;
+  }
+
+  if (synth && typeof synth.onvoiceschanged !== "undefined") {
+    synth.onvoiceschanged = () => {
+      refreshVoices();
+    };
+  }
+
+  return {
+    toggleBgm,
+    stopBgm,
+    setVolume,
+    duckBgm,
+    setCustomBgm,
+    resetCustomBgm,
+    initSavedBgm,
+    playChime,
+    saveClip,
+    loadClip,
+    deleteClip,
+    // AI Voice API
+    getVoices,
+    refreshVoices,
+    setVoiceURI,
+    getSelectedVoiceURI,
+    setSpeechRate,
+    speakText,
+    playMp3Range,
+    stopVoice,
+    isSpeaking: () => isSpeaking,
+    onSpeakingChange,
+    onProgressChange
+  };
+})();
