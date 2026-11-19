@@ -550,6 +550,66 @@ window.WUDHU_DATA = {
       ],
       correct: 1,
       explain: "Tepat sekali! Thuma'ninah berarti melakukan setiap gerakan wudhu secara tenang, tertib, dan khusyuk sehingga semua batas wajib terbasuh sempurna."
+    },
+    {
+      id: "q6",
+      question: "6. Menurut Mazhab Syafi'i, kapankah niat wudhu wajib dihadirkan di dalam hati?",
+      options: [
+        "Setelah selesai membasuh kedua kaki",
+        "Tepat saat air pertama kali menyentuh kulit wajah",
+        "Ketika sedang berkumur saja",
+        "Setelah membaca doa penutup wudhu"
+      ],
+      correct: 1,
+      explain: "Benar! Dalam Mazhab Syafi'i, niat wudhu wajib dihadirkan di dalam hati tepat pada saat basuhan pertama mengenai bagian wajah."
+    },
+    {
+      id: "q7",
+      question: "7. Bagaimana cara mengusap sebagian kepala yang sah bagi perempuan berhijab menurut Mazhab Syafi'i?",
+      options: [
+        "Cukup mengusap bagian luar kain jilbab saja",
+        "Mengusap ujung rambut panjang yang menjuntai di bawah bahu",
+        "Memasukkan tangan basah di balik tepi jilbab/ciput hingga menyentuh sebagian rambut atau kulit di batas kepala",
+        "Tidak perlu mengusap kepala jika sedang memakai jilbab"
+      ],
+      correct: 2,
+      explain: "Tepat sekali! Air wajib menyentuh sebagian rambut atau kulit yang masih berada di dalam batas kepala (tidak sah jika hanya mengusap luar kain jilbab)."
+    },
+    {
+      id: "q8",
+      question: "8. Apa yang wajib dilakukan jika hendak membasuh kaki sementara masih memakai kaus kaki kain biasa?",
+      options: [
+        "Cukup mengusap bagian luar kaus kaki dengan tangan basah",
+        "Melepas kaus kaki terlebih dahulu agar kulit kaki terbasuh langsung hingga melewati mata kaki",
+        "Menyiram air di atas kaus kaki tanpa melepasnya",
+        "Cukup membasuh ujung jari kaki saja"
+      ],
+      correct: 1,
+      explain: "Benar! Dalam Mazhab Syafi'i, kaus kaki kain biasa wajib dilepas sehingga air langsung membasuh kulit kaki, sela jari, tumit, hingga melewati kedua mata kaki."
+    },
+    {
+      id: "q9",
+      question: "9. Manakah urutan rukun wudhu (Tertib) yang benar dan tidak boleh dibolak-balik?",
+      options: [
+        "Wajah (dengan niat) → Tangan hingga Siku → Usap Sebagian Kepala → Kaki hingga Mata Kaki",
+        "Tangan hingga Siku → Wajah → Kaki → Kepala",
+        "Usap Kepala → Wajah → Kaki → Tangan hingga Siku",
+        "Kaki → Tangan → Wajah → Kepala"
+      ],
+      correct: 0,
+      explain: "Bagus! Urutan rukun wudhu (Tertib) wajib berurutan: Niat + Wajah → Tangan hingga Siku → Usap Sebagian Kepala → Kaki hingga Mata Kaki."
+    },
+    {
+      id: "q10",
+      question: "10. Bagaimana adab yang benar setelah selesai membasuh kedua kaki pada akhir wudhu?",
+      options: [
+        "Langsung berlari meninggalkan keran yang masih menetes",
+        "Menutup keran hingga rapat, lalu berdiri menghadap kiblat di tempat bersih dan membaca doa setelah wudhu",
+        "Membaca doa di dalam kamar mandi dengan suara keras",
+        "Membiarkan lengan baju dan jilbab tetap berantakan"
+      ],
+      correct: 1,
+      explain: "Masya Allah, tepat! Menutup keran hingga rapat, merapikan pakaian, lalu berdoa menghadap kiblat di tempat bersih adalah penyempurna adab wudhu."
     }
   ]
 };
