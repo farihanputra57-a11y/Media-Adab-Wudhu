@@ -2,6 +2,11 @@ window.WUDHU_DATA = {
   uasYoutubeUrl: "https://www.youtube.com/results?search_query=Ustadz+Abdul+Somad+Official+BACA+BUKU+FIQH+WUDHU+TEORI+DAN+PRAKTEK",
   masterVoiceFile: "assets/audio/narasi_lengkap.mp3",
 
+  // Keamanan Rekap Uji Kemampuan
+  teacherPin: "2026",
+  // Tempelkan URL Web App dari Google Apps Script di bawah ini agar hasil siswa otomatis masuk ke Google Sheets Anda:
+  googleSheetWebhookUrl: "https://script.google.com/macros/s/AKfycbxU4LdTu0i0abqhiCVbkeqSB_ORqcd13a23AmiIPqtTnhrH7J7LzzCafxKdr-GvCudx/exec",
+
   // Exact timestamp slices [startSec, endSec] from assets/audio/narasi_lengkap.mp3
   segmentAudioRanges: {
     1: [0.0, 42.2],

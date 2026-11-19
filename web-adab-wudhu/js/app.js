@@ -5,10 +5,13 @@
 
   const STORAGE_KEY = "adab_wudhu_web_state_v1";
   const RECORDS_KEY = "adab_wudhu_quiz_records_v1";
+  const SHEETS_URL_KEY = "adab_wudhu_sheets_url_v1";
 
   const state = {
     view: "home",
     gender: "male",
+    teacherUnlocked: false,
+    quizSubmitted: false,
     segIdx: 0,
     subIdx: 0,
     animPaused: false,
@@ -542,11 +545,38 @@
     AUDIO.playChime("win");
   }
 
+  function getSheetsWebhookUrl() {
+    try {
+      return (DATA.googleSheetWebhookUrl || localStorage.getItem(SHEETS_URL_KEY) || "").trim();
+    } catch (e) {
+      return (DATA.googleSheetWebhookUrl || "").trim();
+    }
+  }
+
+  function syncTeacherLockUI() {
+    const card = document.getElementById("record-card");
+    const lockBtn = document.getElementById("btn-teacher-lock");
+    const badge = document.getElementById("sheets-status-badge");
+    const urlInp = document.getElementById("sheets-url-input");
+
+    if (card) card.classList.toggle("hidden", !state.teacherUnlocked);
+    if (lockBtn) {
+      lockBtn.textContent = state.teacherUnlocked ? "🔓 Mode Guru Aktif" : "🔒 Mode Guru";
+    }
+    const url = getSheetsWebhookUrl();
+    if (urlInp && !urlInp.value) urlInp.value = url;
+    if (badge) {
+      badge.textContent = url ? "✅ Google Sheets: Terhubung" : "Google Sheets: Belum dihubungkan";
+      badge.classList.toggle("ready", Boolean(url));
+    }
+  }
+
   function renderQuizRecords() {
+    syncTeacherLockUI();
     const body = document.getElementById("quiz-records-body");
     const records = loadQuizRecords();
     if (!records.length) {
-      body.innerHTML = `<tr><td colspan="6" class="empty-row">Belum ada data tersimpan.</td></tr>`;
+      body.innerHTML = `<tr><td colspan="7" class="empty-row">Belum ada data tersimpan.</td></tr>`;
       return;
     }
     body.innerHTML = records
@@ -557,6 +587,7 @@
             <td>${escapeHtml(r.name)}</td>
             <td><strong>${r.score} / ${r.total}</strong></td>
             <td>${r.pct}%</td>
+            <td>${r.synced ? "✅ Google Sheets" : "💾 Lokal"}</td>
             <td>${r.time}</td>
             <td>
               <button class="btn btn-xs btn-rose-soft" data-del-rec="${i}" type="button">🗑️ Hapus</button>
@@ -568,6 +599,7 @@
 
     body.querySelectorAll("[data-del-rec]").forEach((btn) => {
       btn.addEventListener("click", () => {
+        if (!state.teacherUnlocked) return;
         const idx = Number(btn.dataset.delRec);
         const list = loadQuizRecords();
         list.splice(idx, 1);
@@ -763,43 +795,117 @@
     document.getElementById("btn-start-tempo").addEventListener("click", startTempo);
     document.getElementById("btn-stop-tempo").addEventListener("click", stopTempo);
 
-    // Quiz actions
+    // Quiz actions (Anti-ubah siswa + PIN Guru + Google Sheets Sync)
     const resetQuiz = () => {
+      if (state.quizSubmitted && !state.teacherUnlocked) {
+        showToast("Hasil Anda sudah terkunci. Hanya guru (PIN) yang dapat mengulang kuis.");
+        return;
+      }
       state.quizAnswers = {};
+      state.quizSubmitted = false;
       document.getElementById("quiz-result-card").classList.add("hidden");
+      document.getElementById("submit-locked-note").classList.add("hidden");
+      const saveBtn = document.getElementById("btn-save-record");
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "📤 Kirim & Kunci Hasil";
+      }
       renderQuiz();
     };
     document.getElementById("btn-reset-quiz").addEventListener("click", resetQuiz);
-    document.getElementById("btn-retry-quiz").addEventListener("click", resetQuiz);
 
-    document.getElementById("btn-save-record").addEventListener("click", () => {
-      if (state.quizScore === null) return;
+    // PIN Guru Unlock / Lock
+    document.getElementById("btn-teacher-lock").addEventListener("click", () => {
+      if (state.teacherUnlocked) {
+        state.teacherUnlocked = false;
+        syncTeacherLockUI();
+        showToast("🔒 Mode Guru dikunci kembali.");
+        return;
+      }
+      const pin = window.prompt("Masukkan PIN Guru untuk membuka rekap & pengelolaan hasil:");
+      if (pin === null) return;
+      if (pin.trim() === String(DATA.teacherPin || "2026")) {
+        state.teacherUnlocked = true;
+        renderQuizRecords();
+        showToast("🔓 Mode Guru terbuka! Rekap & tombol kelola kini aktif.");
+      } else {
+        showToast("❌ PIN Guru salah.");
+      }
+    });
+
+    document.getElementById("btn-teacher-relock").addEventListener("click", () => {
+      state.teacherUnlocked = false;
+      syncTeacherLockUI();
+      showToast("🔒 Rekap dikunci kembali ke Mode Siswa.");
+    });
+
+    document.getElementById("btn-save-sheets-url").addEventListener("click", () => {
+      if (!state.teacherUnlocked) return;
+      const inp = document.getElementById("sheets-url-input");
+      const val = (inp.value || "").trim();
+      try {
+        localStorage.setItem(SHEETS_URL_KEY, val);
+      } catch (e) {}
+      syncTeacherLockUI();
+      showToast(val ? "✅ URL Google Sheets tersimpan!" : "URL Google Sheets dikosongkan.");
+    });
+
+    document.getElementById("btn-save-record").addEventListener("click", async () => {
+      if (state.quizScore === null || state.quizSubmitted) return;
       const nameInp = document.getElementById("student-name-input");
-      const name = nameInp.value.trim() || "Siswa Madrasah";
-      const records = loadQuizRecords();
+      const name = nameInp.value.trim();
+      if (!name) {
+        showToast("Mohon isi Nama Lengkap & Kelas terlebih dahulu sebelum mengirim!");
+        nameInp.focus();
+        return;
+      }
+
+      const saveBtn = document.getElementById("btn-save-record");
+      saveBtn.disabled = true;
+      saveBtn.textContent = "⏳ Mengirim hasil...";
+
       const total = DATA.quiz.length;
-      records.push({
-        name,
-        score: state.quizScore,
-        total,
-        pct: Math.round((state.quizScore / total) * 100),
-        time: new Date().toLocaleString("id-ID")
-      });
+      const pct = Math.round((state.quizScore / total) * 100);
+      const time = new Date().toLocaleString("id-ID");
+      const webhookUrl = getSheetsWebhookUrl();
+      let synced = false;
+
+      if (webhookUrl) {
+        try {
+          await fetch(webhookUrl, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ name, score: state.quizScore, total, pct: `${pct}%`, time })
+          });
+          synced = true;
+        } catch (err) {
+          synced = false;
+        }
+      }
+
+      const records = loadQuizRecords();
+      records.push({ name, score: state.quizScore, total, pct, synced, time });
       saveQuizRecords(records);
+
+      state.quizSubmitted = true;
       nameInp.value = "";
+      saveBtn.textContent = "✅ Terkirim & Terkunci";
+      document.getElementById("submit-locked-note").classList.remove("hidden");
       renderQuizRecords();
-      showToast("Hasil cek pemahaman berhasil disimpan ke rekap kelas!");
+      showToast(synced ? "✅ Hasil terkirim ke Google Sheets Guru & terkunci!" : "✅ Hasil tercatat & terkunci!");
     });
 
     document.getElementById("btn-export-csv").addEventListener("click", () => {
+      if (!state.teacherUnlocked) return;
       const records = loadQuizRecords();
       if (!records.length) {
         showToast("Belum ada data rekap untuk diunduh.");
         return;
       }
-      const header = "No,Nama_Kelas,Skor,Total,Persentase,Waktu\n";
+      const header = "No,Nama_Kelas,Skor,Total,Persentase,Status,Waktu\n";
       const rows = records
-        .map((r, i) => `${i + 1},"${r.name.replace(/"/g, '""')}",${r.score},${r.total},${r.pct}%,"${r.time}"`)
+        .map((r, i) => `${i + 1},"${r.name.replace(/"/g, '""')}",${r.score},${r.total},${r.pct}%,"${r.synced ? "Google Sheets" : "Lokal"}","${r.time}"`)
         .join("\n");
       const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
@@ -811,6 +917,7 @@
     });
 
     document.getElementById("btn-clear-records").addEventListener("click", () => {
+      if (!state.teacherUnlocked) return;
       const records = loadQuizRecords();
       if (!records.length) {
         showToast("Rekap uji kemampuan sudah kosong.");
