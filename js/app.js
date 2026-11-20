@@ -276,6 +276,82 @@
         switchView("learn");
       });
     });
+
+    renderHomeAcademicSection();
+  }
+
+  function renderHomeAcademicSection() {
+    const homeView = document.getElementById("view-home");
+    if (!homeView) return;
+    let sec = document.getElementById("home-academic-section");
+    if (!sec) {
+      sec = document.createElement("div");
+      sec.id = "home-academic-section";
+      sec.className = "home-academic-grid";
+      homeView.appendChild(sec);
+    }
+
+    const isSmp = state.level === "smp";
+    const tpItems = isSmp
+      ? [
+          "Menganalisis dalil Al-Qur'an (QS. Al-Ma'idah: 6) serta ketentuan fikih rukun, syarat sah, dan sunnah wudhu menurut <strong>Mazhab Syafi'i</strong>.",
+          "Membedakan hukum air <em>mutlaq</em> dan air <em>musta'mal</em> serta menerapkan kaidah <strong>2 Qullah</strong> saat berwudhu menggunakan gayung/bak air.",
+          "Mengidentifikasi ketentuan fikih wudhu bagi remaja putra &amp; putri (berhijab, penghalang air di kulit/kuku, serta adab menjaga aurat).",
+          "Menerapkan adab <em>thuma'ninah</em> (3× basuhan tenang), sikap <em>anti-israf</em> (hemat air), serta mengevaluasi studi kasus fikih wudhu."
+        ]
+      : [
+          "Memahami pengertian, niat, serta urutan rukun dan sunnah berwudhu secara tertib sesuai tuntunan <strong>Mazhab Syafi'i</strong>.",
+          "Mengenali batas wajib anggota wudhu (wajah, kedua tangan hingga siku, sebagian kepala, dan kedua kaki hingga mata kaki) dengan tepat.",
+          "Mempraktikkan tata cara berwudhu menggunakan keran maupun gayung/bak air secara tenang (<em>thuma'ninah</em>) dan tidak boros air.",
+          "Membiasakan adab kesopanan, kebersihan, serta doa sebelum dan sesudah berwudhu dalam kehidupan sehari-hari."
+        ];
+
+    sec.innerHTML = `
+      <div class="academic-card">
+        <div class="academic-card-head">
+          <span class="academic-ico">🎯</span>
+          <div>
+            <h3>Capaian &amp; Tujuan Pembelajaran (${isSmp ? "SMP / MTs" : "SD / MI"})</h3>
+            <small>Indikator Kompetensi Fikih &amp; Adab Wudhu — Kurikulum Merdeka PAI</small>
+          </div>
+        </div>
+        <ol class="academic-tp-list">
+          ${tpItems.map((t) => `<li>${t}</li>`).join("")}
+        </ol>
+      </div>
+
+      <div class="academic-card academic-profile-card">
+        <div class="academic-card-head">
+          <span class="academic-ico">🎓</span>
+          <div>
+            <h3>Profil Pengembang &amp; Identitas Penelitian</h3>
+            <small>Produk Penelitian &amp; Pengembangan (R&amp;D) Tesis Magister PAI</small>
+          </div>
+        </div>
+        <dl class="dev-meta-list">
+          <div class="dev-meta-row">
+            <dt>Pengembang / Peneliti</dt>
+            <dd><strong>Farihan Muhammad Putra</strong></dd>
+          </div>
+          <div class="dev-meta-row">
+            <dt>Program Studi</dt>
+            <dd>Magister Pendidikan Agama Islam (MPAI)</dd>
+          </div>
+          <div class="dev-meta-row">
+            <dt>Institusi</dt>
+            <dd>Pascasarjana Universitas Islam Riau (UIR)</dd>
+          </div>
+          <div class="dev-meta-row">
+            <dt>Pendekatan Media</dt>
+            <dd><em>Multi-Sensory Digital</em> (Visual, Auditori, Kinestetik)</dd>
+          </div>
+          <div class="dev-meta-row">
+            <dt>Kitab Rujukan Utama</dt>
+            <dd><em>Fath al-Qarib al-Mujib</em> (Syekh Ibn Qasim al-Ghazzi) &amp; <em>Ihya' 'Ulum al-Din</em> (Imam al-Ghazali) — Mazhab Syafi'i</dd>
+          </div>
+        </dl>
+      </div>
+    `;
   }
 
   // ==================== VIEW 2: ANIMASI 8 SEGMEN ====================
