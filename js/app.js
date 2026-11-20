@@ -99,10 +99,72 @@
   }
 
   // ==================== VIEW 1: BERANDA ====================
+  let isExitingToGateway = false;
+
   function getMasteredKinCount() {
     return Object.keys(DATA.kinestheticAreas).filter((k) => {
       return state.foundHotspots[k].size >= DATA.kinestheticAreas[k].points.length;
     }).length;
+  }
+
+  function getOverallProgress() {
+    const segDone = state.completedSegments.size;
+    const kinDone = getMasteredKinCount();
+    const quizDone = state.quizScore !== null ? 1 : 0;
+    const totalTasks = 8 + 4 + 1;
+    const pct = Math.round(((segDone + kinDone + quizDone) / totalTasks) * 100);
+    const is100 = segDone >= 8 && kinDone >= 4 && quizDone >= 1;
+    return { segDone, kinDone, quizDone, pct, is100 };
+  }
+
+  function jumpToIncompleteMaterial() {
+    const prog = getOverallProgress();
+    if (prog.segDone < 8) {
+      const nextSegIdx = DATA.segments.findIndex((s) => !state.completedSegments.has(s.id));
+      state.segIdx = nextSegIdx >= 0 ? nextSegIdx : 0;
+      state.subIdx = 0;
+      state.zoomOpen = false;
+      switchView("learn");
+      showToast(`📚 Silakan tuntaskan Segmen ${state.segIdx + 1} (${prog.segDone}/8 selesai) hingga 100%!`);
+      return;
+    }
+    if (prog.kinDone < 4) {
+      const nextArea = Object.keys(DATA.kinestheticAreas).find(
+        (k) => state.foundHotspots[k].size < DATA.kinestheticAreas[k].points.length
+      );
+      if (nextArea) state.kinArea = nextArea;
+      switchView("kinesthetic");
+      showToast(`✋ Silakan tuntaskan Zona Kinestetik (${prog.kinDone}/4 bintang) hingga 100%!`);
+      return;
+    }
+    switchView("quiz");
+  }
+
+  function performFinalExit() {
+    if (isExitingToGateway) return;
+    isExitingToGateway = true;
+    try {
+      sessionStorage.removeItem(PROFILE_KEY);
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) {}
+    try {
+      AUDIO.stopVoice();
+      AUDIO.stopBgm();
+    } catch (e) {}
+    const targetHome = getGatewayUrl() + "?selesai=1";
+    setTimeout(() => {
+      window.location.href = targetHome;
+    }, 950);
+  }
+
+  function checkExitWhen100AndSubmitted() {
+    const prog = getOverallProgress();
+    if (state.quizSubmitted && prog.is100) {
+      showToast("🎉 Pemahaman Materi sudah 100% & Cek Pemahaman terkirim! Otomatis keluar ke Halaman Awal...");
+      performFinalExit();
+      return true;
+    }
+    return false;
   }
 
   function renderHome() {
@@ -455,6 +517,7 @@
         fbNow.innerHTML = `✅ <strong>${pt.title}:</strong> ${pt.desc}${nextHint}`;
         if (isAllDone) {
           showToast(`★ Bintang ${state.kinArea.toUpperCase()} terbuka!`);
+          checkExitWhen100AndSubmitted();
         }
       };
       dot.addEventListener("click", handlePick);
@@ -631,15 +694,16 @@
         state.quizAnswers[qid] = optIdx;
         // Bunyi netral agar siswa di sebelahnya tidak tahu benar/salahnya
         AUDIO.playChime("beat");
-        checkQuizComplete();
+        checkQuizComplete(true);
         renderQuiz();
       });
     });
 
+    checkQuizComplete(false);
     renderQuizRecords();
   }
 
-  function checkQuizComplete() {
+  function checkQuizComplete(playSound = false) {
     const activeQuiz = getActiveQuiz();
     const total = activeQuiz.length;
     const answeredCount = activeQuiz.filter((q) => typeof state.quizAnswers[q.id] === "number").length;
@@ -657,12 +721,44 @@
     saveState();
 
     // Tampilkan konfirmasi netral tanpa membocorkan jumlah benar/salah ke siswa
-    document.getElementById("result-score-badge").textContent = `${total} / ${total} Soal Terjawab`;
+    const prog = getOverallProgress();
+    document.getElementById("result-score-badge").textContent = `${total} / ${total} Soal Terjawab • Pemahaman Materi ${prog.pct}%`;
     document.getElementById("result-title").textContent = "Seluruh Pertanyaan Sudah Dijawab!";
-    document.getElementById("result-desc").textContent =
-      "Pastikan Nama Lengkap & Kelas sudah diisi, lalu klik tombol di bawah untuk mengirim jawaban Anda kepada guru.";
+    const descEl = document.getElementById("result-desc");
+    const lockedNote = document.getElementById("submit-locked-note");
+
+    let contBtn = document.getElementById("btn-continue-to-100");
+    if (!contBtn) {
+      contBtn = document.createElement("button");
+      contBtn.id = "btn-continue-to-100";
+      contBtn.type = "button";
+      contBtn.className = "btn btn-emerald";
+      contBtn.style.marginLeft = "8px";
+      contBtn.addEventListener("click", () => jumpToIncompleteMaterial());
+      const actionsWrap = resCard.querySelector(".result-actions");
+      if (actionsWrap) actionsWrap.appendChild(contBtn);
+    }
+
+    if (state.quizSubmitted && !prog.is100) {
+      descEl.innerHTML = `⚠️ <strong>Belum Dapat Keluar dari Web!</strong> Pemahaman Materi Anda baru <strong>${prog.pct}%</strong> (Segmen Materi: <strong>${prog.segDone}/8</strong> • Bintang Kinestetik: <strong>${prog.kinDone}/4</strong>). Selesaikan seluruh materi hingga <strong>100%</strong> untuk keluar otomatis.`;
+      if (lockedNote) {
+        lockedNote.classList.remove("hidden");
+        lockedNote.innerHTML = `🔒 Jawaban Anda sudah tersimpan, tetapi halaman <strong>terkunci tidak dapat keluar</strong> sebelum <strong>Pemahaman Materi mencapai 100%</strong> (saat ini ${prog.pct}%).`;
+      }
+      contBtn.textContent = `▶ Lanjutkan Materi hingga 100% (${prog.pct}%)`;
+      contBtn.classList.remove("hidden");
+    } else if (!prog.is100) {
+      descEl.innerHTML = `⚠️ Pemahaman Materi saat ini baru <strong>${prog.pct}%</strong> (Segmen Materi: <strong>${prog.segDone}/8</strong> • Bintang Kinestetik: <strong>${prog.kinDone}/4</strong>). Anda dapat mengirim jawaban sekarang, namun <strong>tidak dapat keluar dari web sebelum Pemahaman Materi mencapai 100%</strong>.`;
+      contBtn.textContent = `▶ Lengkapi Materi 100% (${prog.pct}%)`;
+      contBtn.classList.remove("hidden");
+    } else {
+      descEl.textContent =
+        "Alhamdulillah, Pemahaman Materi sudah 100%! Klik tombol di bawah untuk mengirim hasil kepada guru dan keluar otomatis.";
+      contBtn.classList.add("hidden");
+    }
+
     resCard.classList.remove("hidden");
-    AUDIO.playChime("ok");
+    if (playSound) AUDIO.playChime("ok");
   }
 
   function getSheetsWebhookUrl() {
@@ -912,6 +1008,7 @@
       } else if (state.segIdx < DATA.segments.length - 1) {
         state.completedSegments.add(seg.id);
         saveState();
+        if (checkExitWhen100AndSubmitted()) return;
         state.segIdx++;
         state.subIdx = 0;
         state.zoomOpen = false;
@@ -921,6 +1018,7 @@
         state.completedSegments.add(seg.id);
         saveState();
         AUDIO.playChime("win");
+        if (checkExitWhen100AndSubmitted()) return;
         showToast("Semua 8 segmen selesai! Mari lanjut ke Zona Kinestetik.");
         switchView("kinesthetic");
       }
@@ -931,8 +1029,9 @@
       state.completedSegments.add(seg.id);
       saveState();
       AUDIO.playChime("ok");
-      showToast(`Segmen ${seg.id} ditandai selesai!`);
       renderLearn(false);
+      if (checkExitWhen100AndSubmitted()) return;
+      showToast(`Segmen ${seg.id} ditandai selesai! (${state.completedSegments.size}/8)`);
     });
 
     document.getElementById("btn-try-kinesthetic-seg").addEventListener("click", () => {
@@ -1152,26 +1251,32 @@
       saveQuizRecords(records);
 
       state.quizSubmitted = true;
-      saveBtn.textContent = "✅ Terkirim! Kembali ke Halaman Awal...";
+      const progAfter = getOverallProgress();
+
+      if (!progAfter.is100) {
+        saveBtn.textContent = `🔒 Jawaban Tersimpan (Pemahaman Materi ${progAfter.pct}% — Wajib 100% untuk Keluar)`;
+        checkQuizComplete();
+        renderQuiz();
+        showToast(
+          `⚠️ Jawaban tersimpan, tetapi Anda belum dapat keluar sebelum Pemahaman Materi 100% (saat ini ${progAfter.pct}%: Segmen ${progAfter.segDone}/8, Kinestetik ${progAfter.kinDone}/4)!`
+        );
+        return;
+      }
+
+      saveBtn.textContent = "✅ Terkirim (Pemahaman Materi 100%)! Kembali ke Halaman Awal...";
       document.getElementById("submit-locked-note").classList.remove("hidden");
       renderQuiz();
-      showToast("✅ Jawaban terkirim! Otomatis kembali ke Halaman Awal...");
+      showToast("✅ Pemahaman Materi 100% & Jawaban Terkirim! Otomatis kembali ke Halaman Awal...");
+      performFinalExit();
+    });
 
-      // Hapus sesi identitas siswa & kembali langsung ke Halaman Awal (tanpa window.close agar WebView Google tidak macet)
-      try {
-        sessionStorage.removeItem(PROFILE_KEY);
-        localStorage.removeItem(STORAGE_KEY);
-      } catch (e) {}
-
-      try {
-        AUDIO.stopVoice();
-        AUDIO.stopBgm();
-      } catch (e) {}
-
-      const targetHome = getGatewayUrl() + "?selesai=1";
-      setTimeout(() => {
-        window.location.href = targetHome;
-      }, 900);
+    // Cegah siswa menutup/meninggalkan halaman secara paksa sebelum Pemahaman Materi mencapai 100%
+    window.addEventListener("beforeunload", (e) => {
+      if (!isExitingToGateway && !getOverallProgress().is100) {
+        e.preventDefault();
+        e.returnValue = "Pemahaman Materi Anda belum mencapai 100%. Selesaikan seluruh materi terlebih dahulu sebelum keluar.";
+        return e.returnValue;
+      }
     });
 
     document.getElementById("btn-export-csv").addEventListener("click", () => {
