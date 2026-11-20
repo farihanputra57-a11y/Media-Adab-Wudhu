@@ -1451,7 +1451,7 @@
     // Jika masuk dalam Mode Guru: sembunyikan tab & halaman Cek Pemahaman sepenuhnya, dan tampilkan menu "🚪 Keluar"
     const quizTabBtn = document.querySelector('.nav-tab[data-view="quiz"]');
     const quizViewSec = document.getElementById("view-quiz");
-    const mainNav = document.querySelector(".main-nav");
+    const mainNav = (quizTabBtn && quizTabBtn.parentElement) || document.querySelector(".nav-tabs, .main-nav, nav");
     let teacherExitBtn = document.getElementById("btn-teacher-exit-menu");
 
     if (prof.isTeacher) {
