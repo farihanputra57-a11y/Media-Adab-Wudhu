@@ -1120,9 +1120,10 @@
 
       if (webhookUrl) {
         try {
-          await fetch(webhookUrl, {
+          const postPromise = fetch(webhookUrl, {
             method: "POST",
             mode: "no-cors",
+            keepalive: true,
             headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({
               level,
@@ -1136,6 +1137,10 @@
               time
             })
           });
+          await Promise.race([
+            postPromise,
+            new Promise((resolve) => setTimeout(resolve, 1400))
+          ]);
           synced = true;
         } catch (err) {
           synced = false;
@@ -1147,12 +1152,12 @@
       saveQuizRecords(records);
 
       state.quizSubmitted = true;
-      saveBtn.textContent = "✅ Terkirim! Keluar otomatis...";
+      saveBtn.textContent = "✅ Terkirim! Kembali ke Halaman Awal...";
       document.getElementById("submit-locked-note").classList.remove("hidden");
       renderQuiz();
-      showToast(synced ? "✅ Hasil terkirim ke Google Sheets Guru! Keluar otomatis..." : "✅ Hasil tercatat! Keluar otomatis...");
+      showToast("✅ Jawaban terkirim! Otomatis kembali ke Halaman Awal...");
 
-      // Hapus sesi identitas siswa & otomatis keluar dari halaman web setelah 1.6 detik
+      // Hapus sesi identitas siswa & kembali langsung ke Halaman Awal (tanpa window.close agar WebView Google tidak macet)
       try {
         sessionStorage.removeItem(PROFILE_KEY);
         localStorage.removeItem(STORAGE_KEY);
@@ -1163,12 +1168,10 @@
         AUDIO.stopBgm();
       } catch (e) {}
 
+      const targetHome = getGatewayUrl() + "?selesai=1";
       setTimeout(() => {
-        try {
-          window.close();
-        } catch (e) {}
-        window.location.replace("../");
-      }, 1600);
+        window.location.href = targetHome;
+      }, 900);
     });
 
     document.getElementById("btn-export-csv").addEventListener("click", () => {
@@ -1209,6 +1212,11 @@
   }
 
   // ==================== IDENTITAS SISWA TERKUNCI DARI GERBANG AWAL ====================
+  function getGatewayUrl() {
+    const clean = window.location.href.split("?")[0].split("#")[0];
+    return clean.replace(/\/(sd|smp)(\/index\.html|\/)?$/i, "/");
+  }
+
   function loadStudentProfile() {
     const params = new URLSearchParams(window.location.search);
     const qNama = (params.get("nama") || "").trim();
@@ -1225,11 +1233,6 @@
       };
       try {
         sessionStorage.setItem(PROFILE_KEY, JSON.stringify(state.studentProfile));
-      } catch (e) {}
-      try {
-        if (window.history && window.history.replaceState) {
-          window.history.replaceState({}, document.title, window.location.pathname);
-        }
       } catch (e) {}
       return true;
     }
@@ -1248,10 +1251,10 @@
       }
     } catch (e) {}
 
-    // Jika siswa membuka /sd/ atau /smp/ langsung tanpa lewat halaman awal, arahkan ke gerbang utama (1 link)
+    // Jika siswa membuka /sd/ atau /smp/ langsung tanpa lewat halaman awal, arahkan ke URL absolut gerbang utama
     const p = window.location.pathname || "";
-    if (/\/(sd|smp)\/(index\.html)?$/i.test(p)) {
-      window.location.replace("../");
+    if (/\/(sd|smp)(\/index\.html|\/)?$/i.test(p)) {
+      window.location.href = getGatewayUrl();
       return false;
     }
     return true;
