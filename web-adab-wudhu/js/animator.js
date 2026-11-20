@@ -1274,21 +1274,22 @@ window.WudhuAnimator = (function () {
         </g>
       `;
     } else if (pose === "gayung_arms") {
-      // Right bare forearm extended outside bak (elbow highlighted!) while left hand pours gayung sweeping along forearm!
+      // Bare right forearm extended naturally downward-forward (elbow highlighted!), left arm holds gayung comfortably in front of chest pouring down onto forearm!
       charArmsAndGayung = `
         <!-- Extended bare forearm (rolled sleeve) -->
-        <path d="M286 220 L270 236" stroke="#ffffff" stroke-width="23" stroke-linecap="round" fill="none"/>
-        <path d="M270 236 L194 294" stroke="#fbd6b9" stroke-width="20" stroke-linecap="round" fill="none"/>
-        <circle cx="268" cy="238" r="14" fill="rgba(16,185,129,0.28)" stroke="#059669" stroke-width="2.5" stroke-dasharray="4 3"/>
-        <text x="268" y="216" text-anchor="middle" font-size="10.5" font-weight="800" fill="#065f46">Siku ✓</text>
+        <path d="M286 224 L268 256" stroke="#ffffff" stroke-width="23" stroke-linecap="round" fill="none"/>
+        <path d="M268 256 L192 312" stroke="#fbd6b9" stroke-width="20" stroke-linecap="round" fill="none"/>
+        <circle cx="266" cy="258" r="14" fill="rgba(16,185,129,0.28)" stroke="#059669" stroke-width="2.5" stroke-dasharray="4 3"/>
+        <text x="278" y="286" text-anchor="start" font-size="10.5" font-weight="800" fill="#065f46">Siku ✓</text>
 
-        <!-- Other hand pouring gayung directly over forearm -->
+        <!-- Other arm naturally curving forward in front of chest holding gayung -->
         <g class="anim-rub-h">
-          <path d="M376 220 Q314 196 254 202" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
-          <g transform="translate(206, 182)">
-            <rect x="0" y="6" width="42" height="28" rx="7" fill="#0f6b56" transform="rotate(-24 21 20)"/>
-            <rect x="34" y="14" width="26" height="7" rx="3.5" fill="#0a4f3f" transform="rotate(-24 21 20)"/>
-            <line x1="8" y1="34" x2="14" y2="92" stroke="#38bdf8" stroke-width="5.5" stroke-linecap="round" class="anim-water"/>
+          <path d="M376 224 Q340 264 260 238" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
+          <circle cx="256" cy="238" r="11" fill="#fbd6b9" stroke="#d9a07b" stroke-width="1.8"/>
+          <g transform="translate(198, 220)">
+            <rect x="0" y="6" width="42" height="28" rx="7" fill="#0f6b56" transform="rotate(-22 21 20)"/>
+            <rect x="34" y="14" width="26" height="7" rx="3.5" fill="#0a4f3f" transform="rotate(-22 21 20)"/>
+            <line x1="8" y1="34" x2="12" y2="86" stroke="#38bdf8" stroke-width="5.5" stroke-linecap="round" class="anim-water"/>
           </g>
         </g>
       `;
