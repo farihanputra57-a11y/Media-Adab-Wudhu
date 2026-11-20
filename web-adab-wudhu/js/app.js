@@ -1190,10 +1190,78 @@
     });
   }
 
+  // ==================== SPLASH / LOADING SCREEN ====================
+  function initSplashScreen() {
+    if (document.getElementById("splash-screen")) return;
+    const isSmp = state.level === "smp";
+    const levelLabel = isSmp ? "🎓 Tingkat SMP / MTs • Fikih & Dalil" : "🎒 Tingkat SD / MI • Materi Dasar";
+
+    const splash = document.createElement("div");
+    splash.id = "splash-screen";
+    splash.className = "splash-screen";
+    splash.innerHTML = `
+      <div class="splash-logo-wrap" aria-hidden="true">
+        <span class="splash-ripple"></span>
+        <span class="splash-ripple delay"></span>
+        <div class="splash-emblem">
+          <svg viewBox="0 0 64 64" width="54" height="54" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="splashDrop" x1="16" y1="8" x2="48" y2="56" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#e0f2fe"/>
+                <stop offset="48%" stop-color="#38bdf8"/>
+                <stop offset="100%" stop-color="#0284c7"/>
+              </linearGradient>
+            </defs>
+            <path d="M32 6 C32 6 14 26 14 39 C14 49 22 57 32 57 C42 57 50 49 50 39 C50 26 32 6 32 6 Z" fill="url(#splashDrop)" stroke="#ffffff" stroke-width="2.4"/>
+            <path d="M23 37 C22.5 42.5 25.5 47 30 48.6" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+            <circle cx="24.5" cy="29.5" r="2.6" fill="#ffffff" opacity="0.88"/>
+          </svg>
+        </div>
+      </div>
+      <span class="splash-badge">${levelLabel}</span>
+      <h1 class="splash-title">Adab Wudhu Multi-Sensory</h1>
+      <p class="splash-sub">Media Pembelajaran Interaktif Tata Cara &amp; Adab Berwudhu Sesuai Mazhab Syafi'i</p>
+      <div class="splash-bar-wrap">
+        <div class="splash-bar-fill" id="splash-bar-fill"></div>
+      </div>
+      <div class="splash-status" id="splash-status">Menyiapkan animasi peragaan wudhu...</div>
+      <button class="splash-enter-btn" id="btn-splash-enter" type="button">▶ Masuk ke Beranda</button>
+    `;
+    document.body.appendChild(splash);
+
+    const bar = document.getElementById("splash-bar-fill");
+    const status = document.getElementById("splash-status");
+    const enterBtn = document.getElementById("btn-splash-enter");
+
+    const steps = [
+      { pct: 28, msg: "Menyiapkan animasi peragaan Putra & Putri...", delay: 220 },
+      { pct: 64, msg: "Menyiapkan audio narasi & musik latar Islami...", delay: 620 },
+      { pct: 100, msg: "Siap digunakan! Klik tombol di bawah untuk memulai.", delay: 1120 }
+    ];
+
+    steps.forEach((st) => {
+      setTimeout(() => {
+        if (bar) bar.style.width = `${st.pct}%`;
+        if (status) status.textContent = st.msg;
+        if (st.pct >= 100 && enterBtn) {
+          enterBtn.classList.add("ready");
+        }
+      }, st.delay);
+    });
+
+    enterBtn.addEventListener("click", () => {
+      AUDIO.startBgm(state.view);
+      AUDIO.playChime("ok");
+      splash.classList.add("fade-out");
+      setTimeout(() => splash.remove(), 600);
+    });
+  }
+
   // ==================== BOOT ====================
   loadState();
   syncLevelUI();
   syncGenderUI();
+  initSplashScreen();
   bindEvents();
   initSavedAudioClips().then(() => {
     renderHome();
