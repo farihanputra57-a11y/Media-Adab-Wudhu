@@ -2154,6 +2154,101 @@ button, input, select {
   filter: brightness(1.06);
 }
 
+/* ==================== ACADEMIC CP/TP & DEVELOPER PROFILE ==================== */
+.home-academic-grid {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 18px;
+}
+
+.academic-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-sm);
+}
+
+.academic-profile-card {
+  background: linear-gradient(180deg, #ffffff 0%, #f0fdf9 100%);
+  border-color: #a7f3d0;
+}
+
+.academic-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.academic-ico {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--emerald-soft);
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.academic-card-head h3 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--emerald-dark);
+}
+
+.academic-card-head small {
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+
+.academic-tp-list {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  font-size: 13.5px;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+.dev-meta-list {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.dev-meta-row {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  padding-bottom: 7px;
+  border-bottom: 1px dashed #d1fae5;
+}
+
+.dev-meta-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.dev-meta-row dt {
+  font-weight: 700;
+  color: var(--emerald-dark);
+}
+
+.dev-meta-row dd {
+  margin: 0;
+  color: var(--text);
+}
+
 /* ==================== TOAST ==================== */
 .toast {
   position: fixed;
@@ -2172,7 +2267,7 @@ button, input, select {
 
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 1024px) {
-  .hero-card {
+  .hero-card, .home-academic-grid {
     grid-template-columns: 1fr;
   }
   .learn-layout, .kin-grid, .inspector-column {
