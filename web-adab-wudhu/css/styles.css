@@ -1575,8 +1575,23 @@ button, input, select {
 }
 
 .student-field-name {
-  flex: 1;
-  min-width: 220px;
+  flex: 1.5;
+  min-width: 200px;
+}
+
+.student-field-class {
+  width: 165px;
+  flex-shrink: 0;
+}
+
+.req-star {
+  color: var(--rose);
+  font-weight: 800;
+}
+
+.input-error {
+  border-color: var(--rose) !important;
+  box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.16);
 }
 
 .quiz-list {
