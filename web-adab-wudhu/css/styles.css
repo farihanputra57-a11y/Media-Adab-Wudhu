@@ -402,7 +402,20 @@ button, input, select {
   font-weight: 700;
   padding: 5px 12px;
   border-radius: 999px;
-  margin-bottom: 12px;
+}
+
+.hero-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.hero-water-emblem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 6px 14px rgba(2, 132, 199, 0.35));
 }
 
 .hero-copy h1 {
