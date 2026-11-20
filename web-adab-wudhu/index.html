@@ -43,6 +43,9 @@
           <button class="nav-tab" data-view="learn" type="button">
             <span class="nav-ico">🎬</span><span>Animasi 8 Segmen</span>
           </button>
+          <button class="nav-tab" data-view="gayung" type="button">
+            <span class="nav-ico">🪣</span><span>Wudhu Gayung</span>
+          </button>
           <button class="nav-tab" data-view="kinesthetic" type="button">
             <span class="nav-ico">✋</span><span>Zona Kinestetik</span>
           </button>
@@ -52,13 +55,6 @@
         </nav>
 
         <div class="topbar-actions">
-          <div class="bgm-pill" title="Musik Latar Islami Lembut">
-            <button id="btn-bgm-toggle" class="icon-btn" type="button" aria-pressed="false">
-              <span id="bgm-icon">🔇</span>
-              <span class="bgm-label">Musik</span>
-            </button>
-            <input id="bgm-volume" type="range" min="0" max="100" value="35" aria-label="Volume Musik Latar" />
-          </div>
           <button id="btn-fullscreen" class="icon-btn" type="button" title="Mode Layar Penuh / Proyektor">
             <span>⛶</span>
             <span class="hide-sm">Proyektor</span>
@@ -328,6 +324,69 @@
               </button>
             </div>
           </aside>
+        </div>
+      </section>
+
+      <!-- VIEW 2B: WUDHU MENGGUNAKAN GAYUNG & BAK AIR -->
+      <section class="view" id="view-gayung" aria-labelledby="gayung-title">
+        <div class="section-header">
+          <div>
+            <h2 id="gayung-title">Panduan Berwudhu Menggunakan Gayung &amp; Bak Air</h2>
+            <p>Solusi praktis sesuai <strong>Mazhab Syafi'i</strong> saat berwudhu menggunakan ember atau bak air (agar air tetap suci &amp; tidak <em>musta'mal</em>).</p>
+          </div>
+        </div>
+
+        <div class="learn-topbar">
+          <div class="seg-stepper" id="gayung-stepper" role="tablist" aria-label="Pilih Langkah Wudhu Gayung"></div>
+        </div>
+
+        <div class="stage-card">
+          <div class="stage-header">
+            <div>
+              <div class="stage-badges">
+                <span class="badge-num" id="gayung-step-num">Langkah 1 / 6</span>
+                <span class="badge-law rukun" id="gayung-step-badge">KAIDAH EMAS MAZHAB SYAFI'I</span>
+              </div>
+              <h2 id="gayung-step-title">Judul Langkah Gayung</h2>
+            </div>
+            <div class="substep-nav">
+              <button class="btn btn-outline btn-sm" id="btn-gayung-prev" type="button">← Sebelumnya</button>
+              <button class="btn btn-primary btn-sm" id="btn-gayung-next" type="button">Selanjutnya →</button>
+            </div>
+          </div>
+
+          <div class="gayung-stage-wrap">
+            <div class="cartoon-stage" id="gayung-stage"></div>
+          </div>
+
+          <div class="gayung-detail-grid">
+            <div class="panel-card">
+              <div class="panel-head">
+                <span class="panel-ico">🪣</span>
+                <div>
+                  <h3>Langkah Praktis Menggunakan Gayung</h3>
+                  <small id="gayung-step-summary"></small>
+                </div>
+              </div>
+              <ul class="adab-list" id="gayung-step-points"></ul>
+            </div>
+
+            <div class="panel-card">
+              <div class="panel-head">
+                <span class="panel-ico">⚖️</span>
+                <div>
+                  <h3>Kaidah Fikih &amp; Adab Air (Mazhab Syafi'i)</h3>
+                  <small>Agar wudhu sah dan air bak tidak menjadi <em>musta'mal</em></small>
+                </div>
+              </div>
+              <div class="water-tip" id="gayung-step-tip"></div>
+              <ul class="adab-list" style="margin-top: 12px;">
+                <li><strong>Bak Kecil (&lt; 2 Qullah / &lt; 216 liter):</strong> Jangan celupkan tangan langsung saat sudah niat wudhu; selalu sendok pakai gayung dan tuangkan di luar bak.</li>
+                <li><strong>Bak Besar (≥ 2 Qullah / ±60×60×60 cm ke atas):</strong> Tidak mudah menjadi <em>musta'mal</em>, namun tetap lebih beradab dan bersih jika menggunakan gayung.</li>
+                <li><strong>Hemat Air:</strong> Cukup 1–2 gayung dituang perlahan sudah mencukupi seluruh rukun wudhu.</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
 
