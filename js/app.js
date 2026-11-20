@@ -153,7 +153,7 @@
     } catch (e) {}
     const targetHome = getGatewayUrl() + "?selesai=1";
     setTimeout(() => {
-      window.location.href = targetHome;
+      window.location.replace(targetHome);
     }, 950);
   }
 
@@ -1322,6 +1322,38 @@
     return clean.replace(/\/(sd|smp)(\/index\.html|\/)?$/i, "/");
   }
 
+  function installBackButtonLock() {
+    const cleanUrl = window.location.href.split("?")[0].split("#")[0];
+    try {
+      window.history.replaceState({ adabWudhuGuard: true }, document.title, cleanUrl);
+      window.history.pushState({ adabWudhuGuard: true }, document.title, cleanUrl);
+    } catch (e) {}
+
+    window.addEventListener("popstate", () => {
+      if (isExitingToGateway) return;
+      const prog = getOverallProgress();
+      if (!prog.is100 || !state.quizSubmitted) {
+        try {
+          window.history.pushState({ adabWudhuGuard: true }, document.title, cleanUrl);
+        } catch (e) {}
+        showToast(
+          `🔒 Tidak dapat keluar/kembali sebelum Pemahaman Materi 100% & Kuis Terkirim (saat ini ${prog.pct}%)!`
+        );
+      }
+    });
+
+    window.addEventListener("pageshow", (ev) => {
+      if (ev.persisted || !isExitingToGateway) {
+        try {
+          const saved = JSON.parse(sessionStorage.getItem(PROFILE_KEY) || "null");
+          if (!saved || !saved.name) {
+            window.location.replace(getGatewayUrl());
+          }
+        } catch (e) {}
+      }
+    });
+  }
+
   function loadStudentProfile() {
     const params = new URLSearchParams(window.location.search);
     const qNama = (params.get("nama") || "").trim();
@@ -1339,6 +1371,7 @@
       try {
         sessionStorage.setItem(PROFILE_KEY, JSON.stringify(state.studentProfile));
       } catch (e) {}
+      installBackButtonLock();
       return true;
     }
 
@@ -1352,6 +1385,7 @@
           level: state.level,
           levelLabel: state.level === "smp" ? "SMP/MTs" : "SD/MI"
         };
+        installBackButtonLock();
         return true;
       }
     } catch (e) {}
@@ -1359,7 +1393,7 @@
     // Jika siswa membuka /sd/ atau /smp/ langsung tanpa lewat halaman awal, arahkan ke URL absolut gerbang utama
     const p = window.location.pathname || "";
     if (/\/(sd|smp)(\/index\.html|\/)?$/i.test(p)) {
-      window.location.href = getGatewayUrl();
+      window.location.replace(getGatewayUrl());
       return false;
     }
     return true;
