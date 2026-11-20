@@ -117,7 +117,7 @@
     document.getElementById("stat-segments").textContent = `${segDone} / 8`;
     document.getElementById("stat-kinesthetic").textContent = `${kinDone} / 4`;
     document.getElementById("stat-quiz").textContent =
-      state.quizScore !== null ? `${state.quizScore} / ${DATA.quiz.length}` : "Belum";
+      state.quizSubmitted ? "Terkirim ✓" : state.quizScore !== null ? "Selesai" : "Belum";
 
     const grid = document.getElementById("home-segment-grid");
     grid.innerHTML = DATA.segments
@@ -617,14 +617,13 @@
     state.quizScore = score;
     saveState();
 
-    document.getElementById("result-score-badge").textContent = `${score} / ${total}`;
-    const pct = Math.round((score / total) * 100);
-    document.getElementById("result-title").textContent =
-      pct >= 80 ? "Masya Allah, Pemahaman Sangat Baik!" : "Bagus! Mari Tinjau Kembali Batas Wajibnya";
+    // Tampilkan konfirmasi netral tanpa membocorkan jumlah benar/salah ke siswa
+    document.getElementById("result-score-badge").textContent = `${total} / ${total} Soal Terjawab`;
+    document.getElementById("result-title").textContent = "Seluruh Pertanyaan Sudah Dijawab!";
     document.getElementById("result-desc").textContent =
-      `Skor pemahaman pasca-paparan: ${pct}%. Simpan ke rekap kelas sebagai bukti manipulation check penelitian.`;
+      "Pastikan Nama Lengkap & Kelas sudah diisi, lalu klik tombol di bawah untuk mengirim jawaban Anda kepada guru.";
     resCard.classList.remove("hidden");
-    AUDIO.playChime("win");
+    AUDIO.playChime("ok");
   }
 
   function getSheetsWebhookUrl() {
