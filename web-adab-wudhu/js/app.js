@@ -9,6 +9,7 @@
 
   const state = {
     view: "home",
+    level: window.LOCKED_LEVEL === "smp" ? "smp" : "sd",
     gender: "male",
     teacherUnlocked: false,
     quizSubmitted: false,
@@ -120,9 +121,11 @@
       state.quizSubmitted ? "Terkirim ✓" : state.quizScore !== null ? "Selesai" : "Belum";
 
     const grid = document.getElementById("home-segment-grid");
+    const lvlExtras = (DATA.levelSegmentExtras && DATA.levelSegmentExtras[state.level]) || {};
     grid.innerHTML = DATA.segments
       .map((seg, idx) => {
         const done = state.completedSegments.has(seg.id);
+        const segSummary = (lvlExtras[seg.id] && lvlExtras[seg.id].summary) || seg.summary;
         return `
           <button class="seg-card ${done ? "done" : ""}" data-open-seg="${idx}" type="button">
             <div class="seg-card-top">
@@ -131,7 +134,7 @@
             </div>
             <div class="seg-card-emoji">${seg.emoji}</div>
             <h3>${seg.title}</h3>
-            <p>${seg.summary}</p>
+            <p>${segSummary}</p>
             <div class="seg-card-foot">
               <span>${seg.substeps.length} Animasi Gerakan</span>
               <span>${done ? "✓ Selesai" : "Buka →"}</span>
@@ -152,12 +155,16 @@
   }
 
   // ==================== VIEW 2: ANIMASI 8 SEGMEN ====================
+  function resolveAsset(path) {
+    return (window.ASSET_BASE || "") + path;
+  }
+
   function speakCurrentSubstep() {
     const seg = DATA.segments[state.segIdx];
     const sub = seg.substeps[state.subIdx] || seg.substeps[0];
     const range = DATA.substepAudioRanges && DATA.substepAudioRanges[sub.code];
     if (DATA.masterVoiceFile && range) {
-      AUDIO.playMp3Range(DATA.masterVoiceFile, range[0], range[1]);
+      AUDIO.playMp3Range(resolveAsset(DATA.masterVoiceFile), range[0], range[1]);
     } else {
       const text = sub.narration || `${sub.title}. ${sub.desc}`;
       AUDIO.speakText(text);
@@ -168,7 +175,7 @@
     const seg = DATA.segments[state.segIdx];
     const range = DATA.segmentAudioRanges && DATA.segmentAudioRanges[seg.id];
     if (DATA.masterVoiceFile && range) {
-      AUDIO.playMp3Range(DATA.masterVoiceFile, range[0], range[1]);
+      AUDIO.playMp3Range(resolveAsset(DATA.masterVoiceFile), range[0], range[1]);
     } else {
       speakCurrentSubstep();
     }
@@ -299,8 +306,21 @@
       femaleCard.classList.add("hidden");
     }
 
-    // Adab & Water Tip
-    document.getElementById("adab-list").innerHTML = seg.adab.map((item) => `<li>${item}</li>`).join("");
+    // Adab & Water Tip (menyesuaikan jenjang SD/MI vs SMP/MTs)
+    const lvlData = DATA.levelSegmentExtras && DATA.levelSegmentExtras[state.level] && DATA.levelSegmentExtras[state.level][seg.id];
+    const adabItems = (lvlData && lvlData.adab) ? lvlData.adab : seg.adab;
+    const adabTitle = document.getElementById("adab-card-title");
+    const adabSub = document.getElementById("adab-card-sub");
+    if (adabTitle) {
+      adabTitle.textContent = state.level === "smp" ? "Fikih & Dalil Mazhab Syafi'i" : "Adab & Batas Wajib Wudhu";
+    }
+    if (adabSub) {
+      adabSub.textContent =
+        state.level === "smp"
+          ? "🎓 Materi Tingkat SMP / MTs (Pendalaman Fikih & Kitab Rujukan)"
+          : "🎒 Materi Tingkat SD / MI (Ringkas, Praktis & Ramah Anak)";
+    }
+    document.getElementById("adab-list").innerHTML = adabItems.map((item) => `<li>${item}</li>`).join("");
     document.getElementById("water-tip").textContent = seg.waterTip;
 
     // Optional custom MP3 if uploaded in Studio Guru
@@ -559,10 +579,25 @@
     syncTempoPreview();
   }
 
-  // ==================== VIEW 4: CEK PEMAHAMAN (ANTI-BOCOR JAWABAN) ====================
+  // ==================== VIEW 4: CEK PEMAHAMAN (TERDIFERENSIASI SD/MI vs SMP/MTs) ====================
+  function getActiveQuiz() {
+    if (DATA.quizByLevel && DATA.quizByLevel[state.level]) {
+      return DATA.quizByLevel[state.level];
+    }
+    return DATA.quiz;
+  }
+
   function renderQuiz() {
+    const activeQuiz = getActiveQuiz();
+    const titleEl = document.getElementById("quiz-title");
+    if (titleEl) {
+      titleEl.textContent =
+        state.level === "smp"
+          ? `Cek Pemahaman Tingkat SMP / MTs (${activeQuiz.length} Soal Kasus Fikih)`
+          : `Cek Pemahaman Tingkat SD / MI (${activeQuiz.length} Soal Dasar)`;
+    }
     const container = document.getElementById("quiz-container");
-    container.innerHTML = DATA.quiz
+    container.innerHTML = activeQuiz
       .map((q) => {
         const picked = state.quizAnswers[q.id];
         const answered = typeof picked === "number";
@@ -602,8 +637,9 @@
   }
 
   function checkQuizComplete() {
-    const total = DATA.quiz.length;
-    const answeredCount = Object.keys(state.quizAnswers).length;
+    const activeQuiz = getActiveQuiz();
+    const total = activeQuiz.length;
+    const answeredCount = activeQuiz.filter((q) => typeof state.quizAnswers[q.id] === "number").length;
     const resCard = document.getElementById("quiz-result-card");
     if (answeredCount < total) {
       resCard.classList.add("hidden");
@@ -611,7 +647,7 @@
     }
 
     let score = 0;
-    DATA.quiz.forEach((q) => {
+    activeQuiz.forEach((q) => {
       if (state.quizAnswers[q.id] === q.correct) score++;
     });
     state.quizScore = score;
@@ -709,6 +745,54 @@
     }
   }
 
+  function syncLevelUI() {
+    document.querySelectorAll(".level-btn").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.level === state.level);
+    });
+    const badge = document.getElementById("home-level-badge");
+    const desc = document.getElementById("home-level-desc");
+    if (badge) {
+      badge.textContent =
+        state.level === "smp"
+          ? "🎓 Tingkat SMP / MTs • Pendalaman Fikih & Dalil Mazhab Syafi'i"
+          : "🎒 Tingkat SD / MI • Materi Dasar, Praktis & Ramah Anak";
+    }
+    if (desc) {
+      desc.innerHTML =
+        state.level === "smp"
+          ? "Media pembelajaran <strong>Multi-Sensory Digital</strong> tingkat <strong>SMP/MTs</strong> dengan pendalaman fikih Mazhab Syafi'i (<em>Fath al-Qarib</em> &amp; <em>Ihya' 'Ulum al-Din</em>), dalil anti-<em>israf</em>, kaidah air 2 qullah, serta soal studi kasus fikih remaja."
+          : "Media pembelajaran interaktif <strong>Multi-Sensory Digital</strong> tingkat <strong>SD/MI</strong> yang memadukan animasi peragaan putra dan putri, panduan batas wajib yang mudah dipahami, latihan kinestetik 3× tenang, serta soal dasar ramah anak.";
+    }
+    const sel = document.getElementById("student-level-select");
+    if (sel) {
+      sel.value = state.level === "smp" ? "SMP/MTs" : "SD/MI";
+    }
+  }
+
+  function setLevel(lvl, announce = true) {
+    const next = lvl === "smp" ? "smp" : "sd";
+    if (next === state.level && announce) return;
+    state.level = next;
+    // Reset jawaban kuis yang belum terkirim saat berganti jenjang agar soal sinkron
+    if (!state.quizSubmitted) {
+      state.quizAnswers = {};
+      state.quizScore = null;
+      const resCard = document.getElementById("quiz-result-card");
+      if (resCard) resCard.classList.add("hidden");
+    }
+    syncLevelUI();
+    if (announce) {
+      showToast(
+        state.level === "smp"
+          ? "🎓 Beralih ke Materi & Soal Tingkat SMP / MTs (Fikih & Dalil)"
+          : "🎒 Beralih ke Materi & Soal Tingkat SD / MI (Dasar & Ramah Anak)"
+      );
+    }
+    if (state.view === "home") renderHome();
+    if (state.view === "learn") renderLearn(false);
+    if (state.view === "quiz") renderQuiz();
+  }
+
   function syncGenderUI() {}
 
   function setGender(g, announce = true) {
@@ -726,6 +810,12 @@
     document.getElementById("btn-brand").addEventListener("click", () => switchView("home"));
     document.querySelectorAll(".nav-tab").forEach((tab) => {
       tab.addEventListener("click", () => switchView(tab.dataset.view));
+    });
+    document.querySelectorAll(".level-btn").forEach((btn) => {
+      btn.addEventListener("click", () => setLevel(btn.dataset.level, true));
+    });
+    document.getElementById("student-level-select").addEventListener("change", (e) => {
+      setLevel(e.target.value === "SMP/MTs" ? "smp" : "sd", true);
     });
     document.querySelectorAll(".gender-btn").forEach((btn) => {
       btn.addEventListener("click", () => setGender(btn.dataset.gender, true));
@@ -774,7 +864,7 @@
       const seg = DATA.segments[state.segIdx];
       const range = DATA.femaleAudioRanges && DATA.femaleAudioRanges[seg.id];
       if (DATA.femaleVoiceFile && range) {
-        AUDIO.playMp3Range(DATA.femaleVoiceFile, range[0], range[1]);
+        AUDIO.playMp3Range(resolveAsset(DATA.femaleVoiceFile), range[0], range[1]);
         showToast(`🔊 Memutar Penjelasan Khusus Putri — Segmen ${seg.id}`);
         return;
       }
@@ -996,19 +1086,22 @@
 
     document.getElementById("btn-save-record").addEventListener("click", async () => {
       if (state.quizScore === null || state.quizSubmitted) return;
+      const levelSel = document.getElementById("student-level-select");
+      const level = levelSel ? levelSel.value : "SD/MI";
       const nameInp = document.getElementById("student-name-input");
-      const name = nameInp.value.trim();
-      if (!name) {
+      const rawName = nameInp.value.trim();
+      if (!rawName) {
         showToast("Mohon isi Nama Lengkap & Kelas terlebih dahulu sebelum mengirim!");
         nameInp.focus();
         return;
       }
+      const name = `[${level}] ${rawName}`;
 
       const saveBtn = document.getElementById("btn-save-record");
       saveBtn.disabled = true;
       saveBtn.textContent = "⏳ Mengirim hasil...";
 
-      const total = DATA.quiz.length;
+      const total = getActiveQuiz().length;
       const pct = Math.round((state.quizScore / total) * 100);
       const time = new Date().toLocaleString("id-ID");
       const webhookUrl = getSheetsWebhookUrl();
@@ -1079,6 +1172,7 @@
 
   // ==================== BOOT ====================
   loadState();
+  syncLevelUI();
   syncGenderUI();
   bindEvents();
   initSavedAudioClips().then(() => {

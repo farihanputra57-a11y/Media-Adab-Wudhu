@@ -691,6 +691,369 @@ window.WUDHU_DATA = {
     }
   ],
 
+  // Materi Terdiferensiasi: Ringkas & Ramah Anak (SD/MI) vs Pendalaman Fikih & Dalil (SMP/MTs)
+  levelSegmentExtras: {
+    sd: {
+      1: {
+        summary: "Yuk mulai wudhu dengan hati senang, membaca Bismillah, lalu cuci kedua telapak tangan dan sela jari sampai bersih!",
+        adab: [
+          "Ucapkan Bismillahirrahmanirrahim dulu sebelum membuka keran.",
+          "Buka keran kecil saja, jangan bermain air atau mencipratkan air ke teman.",
+          "Cuci telapak, punggung tangan, dan sela-sela jari 3 kali dengan pelan."
+        ]
+      },
+      2: {
+        summary: "Ambil air pakai tangan kanan untuk berkumur dan membersihkan hidung dengan pelan sebanyak 3 kali.",
+        adab: [
+          "Berkumur 3 kali lalu buang airnya dengan sopan ke saluran air.",
+          "Bersihkan hidung pelan-pelan 3 kali (jangan terlalu keras).",
+          "Jangan menempelkan mulut langsung ke ujung keran."
+        ]
+      },
+      3: {
+        summary: "Rukun pertama: basuh seluruh wajah dari dahi sampai bawah dagu, dan dari telinga kanan sampai telinga kiri sambil berniat di hati.",
+        adab: [
+          "Ingat niat wudhu di dalam hati saat air pertama menyentuh wajah.",
+          "Usap air lembut ke wajah, jangan ditepuk keras.",
+          "Pastikan dahi, dagu, pipi sampai pangkal telinga semua basah (3 kali)."
+        ]
+      },
+      4: {
+        summary: "Basuh tangan kanan dulu dari ujung jari sampai melewati siku (3 kali), lalu tangan kiri juga 3 kali.",
+        adab: [
+          "Gulung lengan baju di atas siku sebelum berwudhu.",
+          "Dahulukan tangan kanan 3 kali, lalu tangan kiri 3 kali.",
+          "Periksa bagian belakang siku supaya tidak ada yang kering."
+        ]
+      },
+      5: {
+        summary: "Tutup atau kecilkan keran dulu ya! Lalu usap sebagian kepala dengan tangan basah, dan usap kedua telinga.",
+        adab: [
+          "Matikan/kecilkan keran dulu agar tidak boros air.",
+          "Usap sebagian kepala dengan tangan basah (untuk putri: di balik tepi jilbab).",
+          "Usap telinga bagian dalam pakai jari telunjuk dan belakang pakai ibu jari."
+        ]
+      },
+      6: {
+        summary: "Basuh kaki kanan dulu sampai melewati mata kaki (3 kali), lalu kaki kiri (3 kali). Jangan lupa tumit & sela jari kaki!",
+        adab: [
+          "Lepas kaus kaki terlebih dahulu sebelum membasuh kaki.",
+          "Bersihkan sela-sela jari kaki memakai jari kelingking.",
+          "Pastikan bagian belakang tumit dan kedua mata kaki basah semua."
+        ]
+      },
+      7: {
+        summary: "Lakukan urutan wudhu dengan tertib (tidak dibolak-balik), tutup keran rapat, dan tetap tenang saat menuju tempat salat.",
+        adab: [
+          "Urutan wajib: Wajah → Tangan ke Siku → Usap Kepala → Kaki ke Mata Kaki.",
+          "Putar keran sampai benar-benar tertutup rapat agar air tidak menetes.",
+          "Berjalan tenang menuju saf salat, tidak berlari atau bercanda."
+        ]
+      },
+      8: {
+        summary: "Berdiri rapi menghadap kiblat di tempat yang kering, angkat kedua tangan, lalu baca doa setelah wudhu.",
+        adab: [
+          "Pastikan pakaian dan jilbab sudah rapi kembali.",
+          "Berdoa di tempat kering dan bersih (bukan di dalam kamar mandi).",
+          "Baca doa setelah wudhu dengan tenang dan khusyuk."
+        ]
+      }
+    },
+    smp: {
+      1: {
+        summary: "Tahap persiapan lahir-batin: menghadirkan kesadaran niat ikhlas (al-Ghazali, Ihya' 'Ulum al-Din), tasmiyah, serta memastikan kulit bebas penghalang air (mani').",
+        adab: [
+          "Tasmiyah (membaca Basmalah) hukumnya sunnah mu'akkadah; niat wajib dihadirkan saat fardu pertama (wajah).",
+          "Pastikan kulit & kuku bebas mani' (penghalang sampainya air seperti kuteks kedap air, cat, atau lem).",
+          "Membasuh telapak, punggung, dan takhlil (menyela) jari 3× sambil menjaga aliran air tetap hemat."
+        ]
+      },
+      2: {
+        summary: "Sunnah mu'akkadah membersihkan rongga mulut (madhmadhah) dan rongga hidung (istinsyaq–istintsar) secara tertib dan higienis.",
+        adab: [
+          "Madhmadhah & istinsyaq masing-masing 3× (sunnah dilakukan dengan mubalaghah/sungguh-sungguh kecuali saat berpuasa).",
+          "Gunakan tangan kanan untuk memasukkan air (istinsyaq) dan tangan kiri untuk mengeluarkan (istintsar).",
+          "Siswi muslimah perlu memastikan bibir bebas lipstik/pelembap tebal bersifat waterproof sebelum basuhan wajah."
+        ]
+      },
+      3: {
+        summary: "Rukun ke-1 & ke-2 Mazhab Syafi'i (Fath al-Qarib): Niat di dalam hati berbarengan (muqaranah) dengan basuhan pertama seluruh batas wajib wajah.",
+        adab: [
+          "Batas wajib vertikal: manabit sya'r al-ra's (garis tumbuh rambut dahi) hingga ujung rahang/dagu bawah.",
+          "Batas wajib horizontal: dari pangkal telinga kanan hingga pangkal telinga kiri (termasuk kulit di bawah bulu wajah tipis).",
+          "Wajib membersihkan tabir surya/kosmetik waterproof dan melonggarkan tepi ciput/jilbab agar air menyentuh kulit asli."
+        ]
+      },
+      4: {
+        summary: "Rukun ke-3 Mazhab Syafi'i: membasuh kedua tangan dari ujung jari hingga menyertakan (melewati 2–3 cm) tulang siku (mirfaqain) secara merata.",
+        adab: [
+          "Sunnah tayamun: mendahulukan anggota kanan (3×) sebelum kiri (3×), serta memanjangkan basuhan sedikit di atas siku (ghurrah & tahjil).",
+          "Lepas jam tangan, gelang, atau ikat rambut ketat agar air mencapai seluruh pori kulit.",
+          "Periksa lipatan belakang siku (area rawan kering yang dapat membatalkan sahnya wudhu jika terlewat)."
+        ]
+      },
+      5: {
+        summary: "Rukun ke-4 Mazhab Syafi'i: mengusap sebagian kulit/rambut di dalam batas kepala (mashu ba'dh al-ra's) disertai adab anti-israf (HR. Ibn Majah No. 425).",
+        adab: [
+          "Tutup/kecilkan keran dahulu! Rasulullah SAW melarang israf (boros air) meski berada di tepi sungai mengalir (HR. Ibn Majah 425; Ahmad 7065).",
+          "Khusus berhijab: TIDAK SAH hanya mengusap kain luar jilbab atau ujung rambut panjang di luar batas kepala — masukkan tangan basah di balik tepi jilbab.",
+          "Sunnah mengusap seluruh kepala (depan–belakang–depan) lalu mengusap lekuk dalam & belakang daun telinga dengan air baru/basah."
+        ]
+      },
+      6: {
+        summary: "Rukun ke-5 Mazhab Syafi'i: membasuh kedua kaki hingga melewati kedua mata kaki (ka'bain) beserta sela jari dan bagian belakang tumit.",
+        adab: [
+          "Dalam Mazhab Syafi'i, kaus kaki kain biasa tidak memenuhi syarat khuff (sepatu kulit kedap air), sehingga WAJIB dilepas saat berwudhu.",
+          "Sunnah menyela jari kaki (takhlil al-ashabi') menggunakan jari kelingking tangan kiri mulai dari kelingking kaki kanan.",
+          "Tumit belakang adalah titik kritis yang diperingatkan dalam hadis sahih agar tidak terlewat kering."
+        ]
+      },
+      7: {
+        summary: "Rukun ke-6 (Tertib) sekaligus internalisasi adab batin: thuma'ninah (ketenangan) dan muwalah (kesinambungan gerakan tanpa jeda lama).",
+        adab: [
+          "Tertib adalah rukun: jika urutan rukun dibolak-balik (misal kaki dulu sebelum wajah), wudhu tidak sah menurut Mazhab Syafi'i.",
+          "Thuma'ninah menjaga kesempurnaan basuhan sekaligus melatih kekhusyukan hati sebelum menghadap Allah dalam salat (Ihya' 'Ulum al-Din).",
+          "Pastikan keran tertutup rapat tanpa menetes sebagai wujud tanggung jawab ekologis (anti-israf)."
+        ]
+      },
+      8: {
+        summary: "Adab penutup wudhu: menghadap kiblat di area suci dan kering sambil membaca doa syahadat & permohonan penyucian lahir-batin (HR. Muslim & Tirmidzi).",
+        adab: [
+          "Sunnah menghadap kiblat, mengangkat kedua tangan, dan tidak berbicara sia-sia di tengah wudhu.",
+          "Doa penutup wudhu memiliki keutamaan dibukakannya delapan pintu surga (HR. Muslim No. 234).",
+          "Menjaga kesucian wudhu dan segera menuju saf salat dengan sikap tenang dan berwibawa."
+        ]
+      }
+    }
+  },
+
+  quizByLevel: {
+    sd: [
+      {
+        id: "sd1",
+        question: "1. Sebelum membuka keran air untuk berwudhu, bacaan apa yang sebaiknya kita ucapkan terlebih dahulu?",
+        options: [
+          "Alhamdulillah",
+          "Bismillahirrahmanirrahim",
+          "Subhanallah",
+          "Allahu Akbar"
+        ],
+        correct: 1
+      },
+      {
+        id: "sd2",
+        question: "2. Saat membasuh wajah, bagian mana saja yang harus terkena air?",
+        options: [
+          "Hanya hidung dan mata saja",
+          "Hanya kedua pipi saja",
+          "Seluruh wajah dari dahi sampai bawah dagu, dan dari telinga kanan ke telinga kiri",
+          "Cukup dipercikkan sedikit di dahi"
+        ],
+        correct: 2
+      },
+      {
+        id: "sd3",
+        question: "3. Ketika membasuh kedua tangan, sampai di manakah batas yang wajib dibasuh?",
+        options: [
+          "Cukup sampai telapak tangan",
+          "Sampai pergelangan tangan",
+          "Dari ujung jari sampai melewati siku",
+          "Hanya jari-jarinya saja"
+        ],
+        correct: 2
+      },
+      {
+        id: "sd4",
+        question: "4. Saat mulai membasuh tangan dan kaki, bagian mana yang lebih baik didahulukan?",
+        options: [
+          "Bagian kanan dulu, baru bagian kiri",
+          "Bagian kiri dulu, baru bagian kanan",
+          "Boleh kaki kiri dulu sebelum wajah",
+          "Tidak perlu dibasuh keduanya"
+        ],
+        correct: 0
+      },
+      {
+        id: "sd5",
+        question: "5. Supaya tidak boros air, apa yang harus kita lakukan saat hendak mengusap kepala dan telinga?",
+        options: [
+          "Membuka keran sebesar-besarnya",
+          "Mengecilkan atau menutup keran terlebih dahulu",
+          "Bermain air bersama teman",
+          "Menyiram kepala berkali-kali di bawah keran deras"
+        ],
+        correct: 1
+      },
+      {
+        id: "sd6",
+        question: "6. Bagi siswi perempuan yang memakai jilbab, bagaimana cara mengusap kepala yang benar?",
+        options: [
+          "Cukup mengusap kain jilbab bagian luarnya saja",
+          "Memasukkan tangan basah sedikit di balik tepi jilbab hingga menyentuh rambut/kulit kepala",
+          "Tidak perlu mengusap kepala",
+          "Mengusap ujung kerudung yang dekat bahu"
+        ],
+        correct: 1
+      },
+      {
+        id: "sd7",
+        question: "7. Apa yang harus dilakukan jika kaki kita masih memakai kaus kaki saat hendak berwudhu?",
+        options: [
+          "Tetap memakai kaus kaki lalu diusap luarnya",
+          "Melepas kaus kaki dulu lalu membasuh kaki sampai melewati mata kaki",
+          "Menyiram kaus kaki sampai basah",
+          "Cukup membasuh ujung jari kaki saja"
+        ],
+        correct: 1
+      },
+      {
+        id: "sd8",
+        question: "8. Bagian kaki manakah yang sering lupa dibasuh jika kita berwudhu terlalu cepat?",
+        options: [
+          "Tumit bagian belakang, sela-sela jari kaki, dan mata kaki",
+          "Lutut bagian atas",
+          "Paha bagian bawah",
+          "Tidak ada yang perlu dibasuh"
+        ],
+        correct: 0
+      },
+      {
+        id: "sd9",
+        question: "9. Bagaimana sikap yang baik saat kita sedang berwudhu?",
+        options: [
+          "Buru-buru sambil bercanda dan mencipratkan air",
+          "Tenang, rapi, berurutan, dan tidak membuang-buang air",
+          "Berlari-lari di sekitar tempat wudhu",
+          "Membiarkan keran tetap menyala setelah selesai"
+        ],
+        correct: 1
+      },
+      {
+        id: "sd10",
+        question: "10. Setelah selesai membasuh kedua kaki dan menutup keran rapat, apa yang kita lakukan?",
+        options: [
+          "Langsung bermain di halaman",
+          "Berdiri rapi menghadap kiblat di tempat bersih lalu membaca doa setelah wudhu",
+          "Membaca doa di dalam kamar mandi",
+          "Menyiram lantai dengan air keran"
+        ],
+        correct: 1
+      }
+    ],
+    smp: [
+      {
+        id: "smp1",
+        question: "1. Menurut Mazhab Syafi'i (Fath al-Qarib), kapankah niat wudhu wajib dihadirkan (muqaranah) di dalam hati?",
+        options: [
+          "Ketika pertama kali membuka keran sebelum membasuh telapak tangan",
+          "Tepat bersamaan dengan basuhan pertama air mengenai bagian wajah",
+          "Setelah selesai mengusap sebagian kepala",
+          "Ketika membaca doa syahadat setelah wudhu"
+        ],
+        correct: 1
+      },
+      {
+        id: "smp2",
+        question: "2. Seorang siswi memakai sunscreen waterproof tebal dan kuteks kedap air di kuku saat berwudhu. Bagaimana hukum wudhunya menurut Mazhab Syafi'i?",
+        options: [
+          "Tetap sah asalkan sudah membaca Basmalah",
+          "Tidak sah karena terdapat penghalang (mani') yang mencegah air sampai ke kulit dan kuku",
+          "Sah asalkan diulang sebanyak 5 kali",
+          "Makruh tetapi tetap sah untuk salat fardu"
+        ],
+        correct: 1
+      },
+      {
+        id: "smp3",
+        question: "3. Batas wajib membasuh wajah secara vertikal dan horizontal dalam Mazhab Syafi'i adalah...",
+        options: [
+          "Dari alis sampai bibir, serta dari pipi kanan ke pipi kiri",
+          "Dari garis tumbuh rambut di dahi sampai bawah dagu, serta dari pangkal telinga kanan ke pangkal telinga kiri",
+          "Dari ubun-ubun sampai leher, serta seluruh daun telinga",
+          "Hanya bagian kulit wajah yang terlihat dari depan saja"
+        ],
+        correct: 1
+      },
+      {
+        id: "smp4",
+        question: "4. Saat membasuh kedua tangan hingga siku, area manakah yang paling sering menyebabkan wudhu tidak sah jika siswa tergesa-gesa?",
+        options: [
+          "Bagian lengan atas di atas bahu",
+          "Lipatan belakang tulang siku dan kulit di bawah jam tangan/gelang ketat yang masih kering",
+          "Ujung lengan baju yang belum digulung",
+          "Punggung telapak tangan kanan saja"
+        ],
+        correct: 1
+      },
+      {
+        id: "smp5",
+        question: "5. Aisyah berwudhu di tempat umum dengan jilbab terpasang. Ia hanya mengusap kain luar jilbab dan ujung rambut panjangnya yang menjuntai di bahu. Menurut Mazhab Syafi'i, hukumnya adalah...",
+        options: [
+          "Sah karena jilbab sudah basah",
+          "Sah karena ujung rambut sudah terkena air",
+          "Tidak sah, karena wajib mengusap kulit atau bagian rambut yang masih berada di dalam batas kepala (di balik tepi jilbab)",
+          "Sah jika disertai mengusap kedua telinga"
+        ],
+        correct: 2
+      },
+      {
+        id: "smp6",
+        question: "6. Dalam hadis riwayat Ibn Majah No. 425, Rasulullah SAW menegur Sa'ad tentang perilaku israf dalam berwudhu. Apa bentuk penerapan anti-israf saat berwudhu?",
+        options: [
+          "Membuka keran penuh agar cepat selesai",
+          "Mengecilkan/menutup keran saat mengusap kepala dan telinga serta tidak memboroskan air meski air melimpah",
+          "Cukup membasuh setiap anggota wudhu setengah bagian saja",
+          "Meninggalkan sunnah berkumur dan istinsyaq"
+        ],
+        correct: 1
+      },
+      {
+        id: "smp7",
+        question: "7. Bagaimana ketentuan Mazhab Syafi'i terhadap kaus kaki kain biasa saat membasuh kaki dalam berwudhu?",
+        options: [
+          "Cukup diusap bagian atas kaus kaki seperti khuff",
+          "Kaus kaki kain biasa wajib dilepas agar air langsung membasuh kulit kaki hingga melewati kedua mata kaki",
+          "Boleh disiram air di atas kaus kaki tanpa dilepas",
+          "Hanya wajib dilepas jika kaus kakinya kotor"
+        ],
+        correct: 1
+      },
+      {
+        id: "smp8",
+        question: "8. Ahmad berwudhu menggunakan ember/bak air kecil (kurang dari 2 qullah / < 216 liter). Apa kesalahan yang dapat membuat air di bak menjadi musta'mal?",
+        options: [
+          "Menyendok air menggunakan gayung lalu menuangkannya di luar bak",
+          "Mencelupkan tangan langsung ke dalam bak kecil saat sudah berniat membasuh rukun wudhu",
+          "Meletakkan gayung bersih di tepi bak saat mengusap kepala",
+          "Menuang air gayung perlahan ke kaki di atas saluran pembuangan"
+        ],
+        correct: 1
+      },
+      {
+        id: "smp9",
+        question: "9. Jika seseorang membasuh kedua kaki terlebih dahulu sebelum membasuh wajah dan kedua tangan, maka wudhunya tidak sah menurut Mazhab Syafi'i karena melanggar rukun...",
+        options: [
+          "Tayamun (mendahulukan kanan)",
+          "Takhlil (menyela jari)",
+          "Tertib (berurutan sesuai urutan rukun wudhu)",
+          "Istinsyaq (menghirup air ke hidung)"
+        ],
+        correct: 2
+      },
+      {
+        id: "smp10",
+        question: "10. Dalam perspektif adab batin wudhu (Al-Ghazali, Ihya' 'Ulum al-Din), sikap thuma'ninah saat berwudhu bermakna...",
+        options: [
+          "Menyelesaikan wudhu secepat mungkin agar tidak terlambat iqamah",
+          "Melaksanakan setiap rukun dan adab dengan tenang, tertib, tidak tergesa-gesa, serta penuh kesadaran hati menghadap Allah",
+          "Mengulang setiap basuhan lebih dari 5 kali agar lebih yakin",
+          "Menggunakan air sebanyak mungkin hingga pakaian ikut basah"
+        ],
+        correct: 1
+      }
+    ]
+  },
+
   quiz: [
     {
       id: "q1",
