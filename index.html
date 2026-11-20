@@ -359,6 +359,57 @@
     }
     .done-banner.show { display: block; }
 
+    /* Mode Switcher: Siswa vs Guru */
+    .mode-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: #f1f5f9;
+      padding: 5px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+      border: 1px solid #e2e8f0;
+    }
+    .mode-tab {
+      border: none;
+      background: transparent;
+      color: var(--slate-700);
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      padding: 9px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .mode-tab.active {
+      background: #ffffff;
+      color: #064e3b;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    }
+    .mode-tab.teacher-tab.active {
+      background: #fef3c7;
+      color: #92400e;
+      box-shadow: 0 2px 8px rgba(146, 64, 14, 0.12);
+    }
+    .teacher-box {
+      background: #fffbeb;
+      border: 1.5px solid #fde68a;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .teacher-box.hidden,
+    .student-box.hidden {
+      display: none;
+    }
+    .teacher-note {
+      font-size: 0.79rem;
+      color: #92400e;
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+
     .btn-enter {
       width: 100%;
       padding: 14px 20px;
@@ -430,14 +481,24 @@
       </div>
       <div class="portal-header">
         <span class="portal-mini-badge">💧 Media Adab Wudhu • Mazhab Syafi'i</span>
-        <h1 id="portal-heading">Identitas Siswa &amp; Pilihan Tingkatan</h1>
-        <p>Silakan lengkapi data diri dan pilih jenjang Anda sebelum masuk ke beranda pembelajaran.</p>
+        <h1 id="portal-heading">Identitas &amp; Pilihan Tingkatan</h1>
+        <p id="portal-subheading">Pilih mode masuk (Siswa atau Guru), lengkapi data, lalu pilih jenjang materi.</p>
+      </div>
+
+      <div class="mode-tabs" role="tablist" aria-label="Pilih Mode Pengguna">
+        <button type="button" class="mode-tab active" id="tab-mode-student" role="tab" aria-selected="true">
+          👨‍🎓 Mode Siswa
+        </button>
+        <button type="button" class="mode-tab teacher-tab" id="tab-mode-teacher" role="tab" aria-selected="false">
+          👨‍🏫 Mode Guru (Mengajar)
+        </button>
       </div>
 
       <form id="portal-form" autocomplete="off" novalidate>
-        <div class="form-grid">
+        <!-- KOTAK INPUT KHUSUS SISWA -->
+        <div class="form-grid student-box" id="student-fields-box">
           <div class="field-group">
-            <label for="portal-name">Nama Lengkap <span class="req">*</span></label>
+            <label for="portal-name">Nama Lengkap Siswa <span class="req">*</span></label>
             <input type="text" id="portal-name" class="field-input" placeholder="Contoh: Ahmad Fauzan / Siti Aisyah" autocomplete="off" required />
           </div>
 
@@ -449,6 +510,29 @@
             <div class="field-group">
               <label for="portal-class">Kelas <span class="req">*</span></label>
               <input type="text" id="portal-class" class="field-input" placeholder="Contoh: 5-A / VII-A" autocomplete="off" required />
+            </div>
+          </div>
+        </div>
+
+        <!-- KOTAK INPUT KHUSUS GURU (MODE MENGAJAR) -->
+        <div class="teacher-box hidden" id="teacher-fields-box">
+          <p class="teacher-note">
+            👨‍🏫 <strong>Mode Mengajar Guru:</strong> Menampilkan <strong>seluruh materi pembelajaran (Beranda, Animasi 8 Segmen, Wudhu Gayung, dan Zona Kinestetik)</strong> menggunakan identitas Guru <strong>tanpa tab Cek Pemahaman</strong>.
+          </p>
+          <div class="form-grid" style="margin-bottom:0">
+            <div class="field-group">
+              <label for="portal-teacher-name">Nama Lengkap Guru <span class="req">*</span></label>
+              <input type="text" id="portal-teacher-name" class="field-input" placeholder="Contoh: Ust. Farihan, S.Pd.I" autocomplete="off" />
+            </div>
+            <div class="form-row-2">
+              <div class="field-group">
+                <label for="portal-teacher-school">Nama Sekolah / Madrasah <span class="req">*</span></label>
+                <input type="text" id="portal-teacher-school" class="field-input" placeholder="Contoh: SDN 01 / SMPN 1" autocomplete="off" />
+              </div>
+              <div class="field-group">
+                <label for="portal-teacher-class">Kelas yang Diajar <span class="req">*</span></label>
+                <input type="text" id="portal-teacher-class" class="field-input" placeholder="Contoh: Kelas V / VII" autocomplete="off" />
+              </div>
             </div>
           </div>
         </div>
@@ -495,14 +579,40 @@
       const nameInp = document.getElementById("portal-name");
       const schoolInp = document.getElementById("portal-school");
       const classInp = document.getElementById("portal-class");
+      const teacherNameInp = document.getElementById("portal-teacher-name");
+      const teacherSchoolInp = document.getElementById("portal-teacher-school");
+      const teacherClassInp = document.getElementById("portal-teacher-class");
+      const tabStudent = document.getElementById("tab-mode-student");
+      const tabTeacher = document.getElementById("tab-mode-teacher");
+      const studentBox = document.getElementById("student-fields-box");
+      const teacherBox = document.getElementById("teacher-fields-box");
+      const enterBtn = document.getElementById("btn-portal-enter");
       const pickSd = document.getElementById("pick-sd");
       const pickSmp = document.getElementById("pick-smp");
       const errorBox = document.getElementById("portal-error");
 
       let selectedLevel = "";
+      let isTeacherMode = false;
       const doneBanner = document.getElementById("done-banner");
       const urlParams = new URLSearchParams(window.location.search);
       const isFinishedExit = urlParams.get("selesai") === "1";
+
+      function setMode(teacher) {
+        isTeacherMode = Boolean(teacher);
+        tabStudent.classList.toggle("active", !isTeacherMode);
+        tabTeacher.classList.toggle("active", isTeacherMode);
+        tabStudent.setAttribute("aria-selected", !isTeacherMode ? "true" : "false");
+        tabTeacher.setAttribute("aria-selected", isTeacherMode ? "true" : "false");
+        studentBox.classList.toggle("hidden", isTeacherMode);
+        teacherBox.classList.toggle("hidden", !isTeacherMode);
+        enterBtn.textContent = isTeacherMode
+          ? "👨‍🏫 Masuk Mode Mengajar Guru (Khusus Materi)"
+          : "▶ Masuk ke Beranda Pembelajaran";
+        errorBox.classList.remove("show");
+      }
+
+      tabStudent.addEventListener("click", () => setMode(false));
+      tabTeacher.addEventListener("click", () => setMode(true));
 
       function resetPortalForm() {
         try {
@@ -511,7 +621,11 @@
         nameInp.value = "";
         schoolInp.value = "";
         classInp.value = "";
+        if (teacherNameInp) teacherNameInp.value = "";
+        if (teacherSchoolInp) teacherSchoolInp.value = "";
+        if (teacherClassInp) teacherClassInp.value = "";
         selectedLevel = "";
+        setMode(false);
         pickSd.classList.remove("selected-sd");
         pickSmp.classList.remove("selected-smp");
         pickSd.setAttribute("aria-pressed", "false");
@@ -586,7 +700,8 @@
         }
       }
 
-      [nameInp, schoolInp, classInp].forEach((el) => {
+      [nameInp, schoolInp, classInp, teacherNameInp, teacherSchoolInp, teacherClassInp].forEach((el) => {
+        if (!el) return;
         el.addEventListener("input", () => {
           el.classList.remove("error");
           errorBox.classList.remove("show");
@@ -595,17 +710,55 @@
 
       form.addEventListener("submit", (e) => {
         e.preventDefault();
+
+        if (isTeacherMode) {
+          const tName = (teacherNameInp.value || "").trim();
+          const tSchool = (teacherSchoolInp.value || "").trim();
+          const tClass = (teacherClassInp.value || "").trim();
+          if (!tName) return showError("Mohon isi Nama Lengkap Guru terlebih dahulu.", teacherNameInp);
+          if (!tSchool) return showError("Mohon isi Nama Sekolah / Madrasah terlebih dahulu.", teacherSchoolInp);
+          if (!tClass) return showError("Mohon isi Kelas yang Diajar terlebih dahulu.", teacherClassInp);
+          if (!selectedLevel) return showError("Mohon pilih Tingkatan Materi (SD / MI atau SMP / MTs) yang ingin diajarkan.");
+
+          const levelLabel = selectedLevel === "smp" ? "SMP/MTs" : "SD/MI";
+          const profile = {
+            name: tName,
+            school: tSchool,
+            kelas: tClass,
+            level: selectedLevel,
+            levelLabel,
+            isTeacher: true
+          };
+
+          try {
+            sessionStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+          } catch (err) {}
+
+          const params = new URLSearchParams({
+            nama: tName,
+            sekolah: tSchool,
+            kelas: tClass,
+            guru: "1"
+          });
+
+          const targetFolder = selectedLevel === "smp" ? "./smp/" : "./sd/";
+          const targetUrl = targetFolder + "?" + params.toString();
+          resetPortalForm();
+          window.location.replace(targetUrl);
+          return;
+        }
+
         const name = nameInp.value.trim();
         const school = schoolInp.value.trim();
         const kelas = classInp.value.trim();
 
-        if (!name) return showError("Mohon isi Nama Lengkap terlebih dahulu.", nameInp);
+        if (!name) return showError("Mohon isi Nama Lengkap Siswa terlebih dahulu.", nameInp);
         if (!school) return showError("Mohon isi Asal Sekolah / Madrasah terlebih dahulu.", schoolInp);
         if (!kelas) return showError("Mohon isi Kelas terlebih dahulu.", classInp);
         if (!selectedLevel) return showError("Mohon pilih Tingkatan (SD / MI atau SMP / MTs) terlebih dahulu.");
 
         const levelLabel = selectedLevel === "smp" ? "SMP/MTs" : "SD/MI";
-        const profile = { name, school, kelas, level: selectedLevel, levelLabel };
+        const profile = { name, school, kelas, level: selectedLevel, levelLabel, isTeacher: false };
 
         try {
           sessionStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
