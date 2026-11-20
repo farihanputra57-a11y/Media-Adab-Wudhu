@@ -341,6 +341,123 @@ window.AudioEngine = (function () {
     lfo.stop(now + duration + 0.08);
   }
 
+  function playBellNote(freq, pan = 0) {
+    const c = ensureCtx();
+    const now = c.currentTime;
+    const dur = 2.2;
+    const osc = c.createOscillator();
+    const overtone = c.createOscillator();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, now);
+    overtone.type = "sine";
+    overtone.frequency.setValueAtTime(freq * 2.756, now); // crisp kalimba/bell harmonic
+
+    const g1 = c.createGain();
+    g1.gain.setValueAtTime(0.0001, now);
+    g1.gain.linearRampToValueAtTime(0.095, now + 0.015);
+    g1.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+
+    const g2 = c.createGain();
+    g2.gain.setValueAtTime(0.0001, now);
+    g2.gain.linearRampToValueAtTime(0.028, now + 0.01);
+    g2.gain.exponentialRampToValueAtTime(0.0001, now + 0.65);
+
+    const panner = c.createStereoPanner ? c.createStereoPanner() : null;
+    if (panner) panner.pan.setValueAtTime(pan, now);
+
+    osc.connect(g1);
+    overtone.connect(g2);
+    if (panner) {
+      g1.connect(panner);
+      g2.connect(panner);
+      panner.connect(dryGain);
+      panner.connect(reverbNode);
+    } else {
+      g1.connect(dryGain);
+      g2.connect(reverbNode);
+    }
+    osc.start(now);
+    overtone.start(now);
+    osc.stop(now + dur + 0.05);
+    overtone.stop(now + 0.7);
+  }
+
+  function playWaterDrop(freq, pan = 0) {
+    const c = ensureCtx();
+    const now = c.currentTime;
+    const osc = c.createOscillator();
+    osc.type = "sine";
+    // Classic gentle water-droplet upward pitch blip
+    osc.frequency.setValueAtTime(freq * 0.78, now);
+    osc.frequency.exponentialRampToValueAtTime(freq * 1.18, now + 0.14);
+
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.linearRampToValueAtTime(0.09, now + 0.018);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.42);
+
+    const panner = c.createStereoPanner ? c.createStereoPanner() : null;
+    if (panner) panner.pan.setValueAtTime(pan, now);
+
+    osc.connect(g);
+    if (panner) {
+      g.connect(panner);
+      panner.connect(dryGain);
+      panner.connect(reverbNode);
+    } else {
+      g.connect(reverbNode);
+    }
+    osc.start(now);
+    osc.stop(now + 0.46);
+  }
+
+  function playSoftDaf(isDum = true) {
+    const c = ensureCtx();
+    const now = c.currentTime;
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    osc.type = isDum ? "sine" : "triangle";
+    if (isDum) {
+      osc.frequency.setValueAtTime(118, now);
+      osc.frequency.exponentialRampToValueAtTime(58, now + 0.16);
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.linearRampToValueAtTime(0.16, now + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+    } else {
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(180, now + 0.07);
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.linearRampToValueAtTime(0.075, now + 0.008);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+    }
+    osc.connect(g);
+    g.connect(dryGain);
+    g.connect(reverbNode);
+    osc.start(now);
+    osc.stop(now + 0.32);
+  }
+
+  function playSoftPiano(freqs) {
+    const c = ensureCtx();
+    const now = c.currentTime;
+    const dur = 3.2;
+    freqs.forEach((f, idx) => {
+      const osc = c.createOscillator();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(f * 2, now); // warm Rhodes octave
+      const g = c.createGain();
+      const offset = idx * 0.045;
+      g.gain.setValueAtTime(0.0001, now + offset);
+      g.gain.linearRampToValueAtTime(0.045, now + offset + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + offset + dur);
+      osc.connect(g);
+      g.connect(dryGain);
+      g.connect(reverbNode);
+      osc.start(now + offset);
+      osc.stop(now + offset + dur + 0.05);
+    });
+  }
+
   function startBgm(themeName) {
     if (themeName && BGM_THEMES[themeName]) {
       currentTheme = themeName;
@@ -360,23 +477,38 @@ window.AudioEngine = (function () {
       const barIdx = Math.floor(stepInCycle / 8);
       const stepInBar = stepInCycle % 8;
       const chord = activeTheme.chords[barIdx];
-
-      // Warm Pad at start of each bar
-      if (stepInBar === 0) {
-        playWarmPad(chord.pad, (activeTheme.stepMs * 8.2) / 1000);
-      }
-
-      // Plucked Oud / Harp arpeggio with gentle stereo sway
       const arpFreq = chord.arp[stepInBar];
-      if (arpFreq) {
-        const pan = stepInBar % 2 === 0 ? -0.25 : 0.25;
-        playOudArp(arpFreq, pan);
-      }
+      const pan = stepInBar % 2 === 0 ? -0.32 : 0.32;
 
-      // Soft Ney Flute enters gently
-      const neyNote = activeTheme.melody[stepInCycle];
-      if (neyNote && beatStep >= 2) {
-        playNeyFlute(neyNote, 1.55);
+      if (currentTheme === "home") {
+        // 🏠 Beranda: Warm Pad + Plucked Oud + Breathy Ney Flute
+        if (stepInBar === 0) playWarmPad(chord.pad, (activeTheme.stepMs * 8.2) / 1000);
+        if (arpFreq) playOudArp(arpFreq, pan);
+        const ney = activeTheme.melody[stepInCycle];
+        if (ney && beatStep >= 2) playNeyFlute(ney, 1.55);
+      } else if (currentTheme === "learn") {
+        // 🎬 Animasi 8 Segmen: Shimmering Kalimba/Music-Box Bells + Airy Pad
+        if (stepInBar === 0) playWarmPad(chord.pad, (activeTheme.stepMs * 8.2) / 1000);
+        if (arpFreq && stepInBar % 2 === 0) playBellNote(arpFreq * 1.5, pan);
+        const mel = activeTheme.melody[stepInCycle];
+        if (mel) playBellNote(mel, -pan);
+      } else if (currentTheme === "gayung") {
+        // 🪣 Wudhu Gayung: Refreshing Water-Droplet Plucks + Flowing Harp
+        if (stepInBar === 0) playWarmPad(chord.pad, (activeTheme.stepMs * 8.2) / 1000);
+        if (arpFreq) playWaterDrop(arpFreq * 1.5, pan);
+        const mel = activeTheme.melody[stepInCycle];
+        if (mel) playOudArp(mel, -pan);
+      } else if (currentTheme === "kinesthetic") {
+        // ✋ Zona Kinestetik: Upbeat Soft Rebana/Daf Percussion Groove + Rhythmic Oud
+        if (stepInBar === 0 || stepInBar === 4) playSoftDaf(true);
+        if (stepInBar === 2 || stepInBar === 6 || stepInBar === 7) playSoftDaf(false);
+        if (arpFreq) playOudArp(arpFreq, pan);
+        const mel = activeTheme.melody[stepInCycle];
+        if (mel) playBellNote(mel, 0);
+      } else {
+        // ✅ Cek Pemahaman: Calm Study Rhodes Piano Chords (Fokus Khusyuk)
+        if (stepInBar === 0) playSoftPiano(chord.pad);
+        if (arpFreq && stepInBar === 4) playBellNote(arpFreq, pan * 0.5);
       }
 
       beatStep++;
@@ -390,9 +522,7 @@ window.AudioEngine = (function () {
     if (next === currentTheme && bgmPlaying) return;
     currentTheme = next;
     beatStep = 0;
-    if (bgmPlaying) {
-      startBgm(currentTheme);
-    }
+    startBgm(currentTheme);
   }
 
   function stopBgm() {
