@@ -1087,15 +1087,34 @@
     document.getElementById("btn-save-record").addEventListener("click", async () => {
       if (state.quizScore === null || state.quizSubmitted) return;
       const levelSel = document.getElementById("student-level-select");
-      const level = levelSel ? levelSel.value : "SD/MI";
+      const level = levelSel ? levelSel.value : (state.level === "smp" ? "SMP/MTs" : "SD/MI");
       const nameInp = document.getElementById("student-name-input");
-      const rawName = nameInp.value.trim();
+      const classInp = document.getElementById("student-class-input");
+      const rawName = nameInp ? nameInp.value.trim() : "";
+      const rawClass = classInp ? classInp.value.trim() : "";
+
+      if (nameInp) nameInp.classList.remove("input-error");
+      if (classInp) classInp.classList.remove("input-error");
+
       if (!rawName) {
-        showToast("Mohon isi Nama Lengkap & Kelas terlebih dahulu sebelum mengirim!");
-        nameInp.focus();
+        if (nameInp) {
+          nameInp.classList.add("input-error");
+          nameInp.focus();
+          nameInp.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        showToast("⚠️ Mohon isi Nama Lengkap terlebih dahulu sebelum mengumpulkan!");
         return;
       }
-      const name = `[${level}] ${rawName}`;
+
+      if (classInp && !rawClass) {
+        classInp.classList.add("input-error");
+        classInp.focus();
+        classInp.scrollIntoView({ behavior: "smooth", block: "center" });
+        showToast("⚠️ Mohon isi Kelas terlebih dahulu sebelum mengumpulkan!");
+        return;
+      }
+
+      const name = rawClass ? `[${level}] ${rawName} — Kelas ${rawClass}` : `[${level}] ${rawName}`;
 
       const saveBtn = document.getElementById("btn-save-record");
       saveBtn.disabled = true;
@@ -1127,6 +1146,7 @@
 
       state.quizSubmitted = true;
       nameInp.value = "";
+      if (classInp) classInp.value = "";
       saveBtn.textContent = "✅ Terkirim & Terkunci";
       document.getElementById("submit-locked-note").classList.remove("hidden");
       renderQuiz();
