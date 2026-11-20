@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../web-adab-wudhu/css/styles.css" />
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <div class="app-shell">
@@ -493,20 +493,29 @@
         </div>
 
         <div class="quiz-wrapper">
-          <div class="quiz-student-bar">
-            <div class="student-field-level">
-              <label for="student-level-select">Jenjang:</label>
-              <select id="student-level-select" class="select-input" disabled>
-                <option value="SMP/MTs" selected>SMP / MTs</option>
-              </select>
+          <div class="quiz-student-bar quiz-student-locked">
+            <div class="student-locked-header">
+              <span>🔒 <strong>Identitas Siswa Terkunci</strong> — Diambil otomatis dari halaman awal (tidak dapat diubah di kuis).</span>
             </div>
-            <div class="student-field-name">
-              <label for="student-name-input">Nama Lengkap Siswa <span class="req-star">*</span></label>
-              <input type="text" id="student-name-input" class="text-input" placeholder="Contoh: Siti Aisyah" required />
-            </div>
-            <div class="student-field-class">
-              <label for="student-class-input">Kelas <span class="req-star">*</span></label>
-              <input type="text" id="student-class-input" class="text-input" placeholder="Contoh: VII-A" required />
+            <div class="student-fields-row">
+              <div class="student-field-level">
+                <label for="student-level-select">Jenjang</label>
+                <select id="student-level-select" class="select-input locked-input" disabled>
+                  <option value="SMP/MTs" selected>SMP / MTs</option>
+                </select>
+              </div>
+              <div class="student-field-name">
+                <label for="student-name-input">Nama Lengkap</label>
+                <input type="text" id="student-name-input" class="text-input locked-input" readonly disabled />
+              </div>
+              <div class="student-field-school">
+                <label for="student-school-input">Asal Sekolah</label>
+                <input type="text" id="student-school-input" class="text-input locked-input" readonly disabled />
+              </div>
+              <div class="student-field-class">
+                <label for="student-class-input">Kelas</label>
+                <input type="text" id="student-class-input" class="text-input locked-input" readonly disabled />
+              </div>
             </div>
           </div>
 
@@ -574,10 +583,9 @@
     <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
   </div>
 
-  <script>window.LOCKED_LEVEL="smp";window.ASSET_BASE="../web-adab-wudhu/";</script>
-  <script src="../web-adab-wudhu/js/data.js"></script>
-  <script src="../web-adab-wudhu/js/audio.js"></script>
-  <script src="../web-adab-wudhu/js/animator.js"></script>
-  <script src="../web-adab-wudhu/js/app.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/animator.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
