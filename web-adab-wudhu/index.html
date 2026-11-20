@@ -311,25 +311,34 @@
         <div class="kin-grid">
           <!-- Tantangan 1: Sentuh Titik Batas Wajib -->
           <div class="panel-card kin-card">
-            <div class="panel-head">
-              <span class="panel-ico">🎯</span>
-              <div>
-                <h3>Tantangan 1: Sentuh Titik Batas Wajib</h3>
-                <small>Klik/sentuh semua titik bercahaya pada gambar untuk membuka bintang!</small>
+            <div class="panel-head record-head-row">
+              <div class="record-head-left">
+                <span class="panel-ico">🎯</span>
+                <div>
+                  <h3>Tantangan 1: Temukan Urutan Batas Wajib</h3>
+                  <small>Cari &amp; sentuh titik bertanda <strong>?</strong> secara berurutan dari awal hingga akhir!</small>
+                </div>
               </div>
+              <button class="btn btn-xs btn-outline" id="btn-reset-kin-area" type="button">↻ Ulangi</button>
             </div>
 
             <div class="kin-tabs" id="kin-area-tabs">
-              <button class="kin-tab active" data-area="wajah" type="button">1. Wajah</button>
-              <button class="kin-tab" data-area="tangan" type="button">2. Tangan &amp; Siku</button>
-              <button class="kin-tab" data-area="kepala" type="button">3. Kepala</button>
-              <button class="kin-tab" data-area="kaki" type="button">4. Kaki &amp; Mata Kaki</button>
+              <button class="kin-tab active" data-area="wajah" type="button">Wajah</button>
+              <button class="kin-tab" data-area="tangan" type="button">Tangan &amp; Siku</button>
+              <button class="kin-tab" data-area="kepala" type="button">Kepala</button>
+              <button class="kin-tab" data-area="kaki" type="button">Kaki &amp; Mata Kaki</button>
             </div>
 
             <div class="hotspot-board" id="hotspot-board"></div>
 
             <div class="hotspot-feedback" id="hotspot-feedback">
-              Sentuh titik bernomor pada gambar di atas untuk melihat batas wajib menurut Mazhab Syafi'i.
+              Cari dan sentuh titik awal batas wajib pada gambar di atas!
+            </div>
+
+            <div class="kin-nav-row">
+              <button class="btn btn-outline btn-sm" id="btn-kin1-prev" type="button">← Sebelumnya</button>
+              <span class="kin-nav-counter" id="kin1-counter">Area 1 / 4</span>
+              <button class="btn btn-primary btn-sm" id="btn-kin1-next" type="button">Selanjutnya →</button>
             </div>
           </div>
 
@@ -339,7 +348,7 @@
               <span class="panel-ico">🫧</span>
               <div>
                 <h3>Tantangan 2: Gerak 3× Tenang (<em>Thuma'ninah</em>)</h3>
-                <small>Ikuti irama lingkaran napas &amp; gerakan bersama teman sekelas tanpa terburu-buru.</small>
+                <small>Pilih gerakan, perhatikan status keran, lalu ikuti panduan 3 hitungan secara tenang.</small>
               </div>
             </div>
 
@@ -347,6 +356,8 @@
               <label for="tempo-segment-select">Pilih Gerakan untuk Dipraktikkan:</label>
               <select id="tempo-segment-select" class="select-input"></select>
             </div>
+
+            <div class="tempo-water-badge" id="tempo-water-badge">💧 Keran: Aliran Kecil (Hemat Air)</div>
 
             <div class="tempo-arena">
               <div class="tempo-circle" id="tempo-circle">
@@ -361,12 +372,18 @@
                 <span class="t-dot" data-step="3">3</span>
               </div>
               <p class="tempo-instruction" id="tempo-instruction">
-                Berdiri rapi, posisikan tangan seperti di depan keran kecil, lalu ikuti hitungan 1–2–3 secara tenang.
+                Berdiri tenang, baca Basmalah, lalu gosok telapak, punggung tangan, dan tautkan sela jari mengikuti 3 hitungan.
               </p>
               <div class="tempo-btns">
                 <button class="btn btn-primary" id="btn-start-tempo" type="button">▶ Mulai Panduan 3×</button>
                 <button class="btn btn-outline" id="btn-stop-tempo" type="button">⏹ Berhenti</button>
               </div>
+            </div>
+
+            <div class="kin-nav-row">
+              <button class="btn btn-outline btn-sm" id="btn-kin2-prev" type="button">← Sebelumnya</button>
+              <span class="kin-nav-counter" id="kin2-counter">Gerakan 1 / 8</span>
+              <button class="btn btn-primary btn-sm" id="btn-kin2-next" type="button">Selanjutnya →</button>
             </div>
           </div>
         </div>
