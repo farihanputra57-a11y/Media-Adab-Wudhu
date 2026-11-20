@@ -508,8 +508,8 @@
               <input type="text" id="portal-school" class="field-input" placeholder="Contoh: SDN 01 / SMPN 1" autocomplete="off" required />
             </div>
             <div class="field-group">
-              <label for="portal-class">Kelas <span class="req">*</span></label>
-              <input type="text" id="portal-class" class="field-input" placeholder="Contoh: 5-A / VII-A" autocomplete="off" required />
+              <label for="portal-class">Kelas (Khusus 4–7) <span class="req">*</span></label>
+              <input type="text" id="portal-class" class="field-input" placeholder="Kelas 4–7 (misal: 5-A / VII-A)" autocomplete="off" required />
             </div>
           </div>
         </div>
@@ -536,8 +536,8 @@
                 <input type="text" id="portal-teacher-school" class="field-input" placeholder="Contoh: SDN 01 / SMPN 1" autocomplete="off" />
               </div>
               <div class="field-group">
-                <label for="portal-teacher-class">Kelas yang Diajar <span class="req">*</span></label>
-                <input type="text" id="portal-teacher-class" class="field-input" placeholder="Contoh: Kelas V / VII" autocomplete="off" />
+                <label for="portal-teacher-class">Kelas Diajar (Khusus 4–7) <span class="req">*</span></label>
+                <input type="text" id="portal-teacher-class" class="field-input" placeholder="Kelas 4–7 (misal: 5-A / VII-A)" autocomplete="off" />
               </div>
             </div>
           </div>
@@ -716,6 +716,13 @@
         });
       });
 
+      function isAllowedGrade4to7(rawClass) {
+        const cleaned = String(rawClass || "").trim().replace(/^kelas\s+/i, "").replace(/^kls\.?\s*/i, "").trim();
+        // Terima angka 4, 5, 6, 7 atau romawi IV, V, VI, VII (boleh diikuti huruf/paralel kelas seperti 4-A, 5B, VII-A)
+        const pattern = /^(?:(4|5|6|7)(?:\s*[-./]\s*[a-z0-9]{1,3}|\s*[a-z]{1,2})?|(IV|V|VI|VII)(?:\s*[-./]\s*[a-z0-9]{1,3}|\s+[a-z]{1,2})?)$/i;
+        return pattern.test(cleaned);
+      }
+
       form.addEventListener("submit", (e) => {
         e.preventDefault();
 
@@ -731,6 +738,9 @@
           }
           if (!tSchool) return showError("Mohon isi Nama Sekolah / Madrasah terlebih dahulu.", teacherSchoolInp);
           if (!tClass) return showError("Mohon isi Kelas yang Diajar terlebih dahulu.", teacherClassInp);
+          if (!isAllowedGrade4to7(tClass)) {
+            return showError("Kelas dibatasi hanya untuk Kelas 4 sampai Kelas 7 (contoh: 4-A, 5-A, 6-A, atau VII-A). Data di luar kelas 4–7 tidak dapat diinput.", teacherClassInp);
+          }
           if (!selectedLevel) return showError("Mohon pilih Tingkatan Materi (SD / MI atau SMP / MTs) yang ingin diajarkan.");
 
           const levelLabel = selectedLevel === "smp" ? "SMP/MTs" : "SD/MI";
@@ -768,6 +778,9 @@
         if (!name) return showError("Mohon isi Nama Lengkap Siswa terlebih dahulu.", nameInp);
         if (!school) return showError("Mohon isi Asal Sekolah / Madrasah terlebih dahulu.", schoolInp);
         if (!kelas) return showError("Mohon isi Kelas terlebih dahulu.", classInp);
+        if (!isAllowedGrade4to7(kelas)) {
+          return showError("Kelas dibatasi hanya untuk Kelas 4 sampai Kelas 7 (contoh: 4-A, 5-A, 6-A, atau VII-A). Data di luar kelas 4–7 tidak dapat diinput.", classInp);
+        }
         if (!selectedLevel) return showError("Mohon pilih Tingkatan (SD / MI atau SMP / MTs) terlebih dahulu.");
 
         const levelLabel = selectedLevel === "smp" ? "SMP/MTs" : "SD/MI";
