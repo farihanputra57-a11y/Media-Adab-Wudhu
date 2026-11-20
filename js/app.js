@@ -164,20 +164,21 @@
   function speakCurrentSubstep() {
     const seg = DATA.segments[state.segIdx];
     const sub = seg.substeps[state.subIdx] || seg.substeps[0];
+    const fallbackText = sub.narration || `${sub.title}. ${sub.desc}`;
     const range = DATA.substepAudioRanges && DATA.substepAudioRanges[sub.code];
     if (DATA.masterVoiceFile && range) {
-      AUDIO.playMp3Range(resolveAsset(DATA.masterVoiceFile), range[0], range[1]);
+      AUDIO.playMp3Range(resolveAsset(DATA.masterVoiceFile), range[0], range[1], fallbackText);
     } else {
-      const text = sub.narration || `${sub.title}. ${sub.desc}`;
-      AUDIO.speakText(text);
+      AUDIO.speakText(fallbackText);
     }
   }
 
   function speakCurrentSegment() {
     const seg = DATA.segments[state.segIdx];
+    const allText = seg.substeps.map((s) => s.narration || `${s.title}. ${s.desc}`).join(" ");
     const range = DATA.segmentAudioRanges && DATA.segmentAudioRanges[seg.id];
     if (DATA.masterVoiceFile && range) {
-      AUDIO.playMp3Range(resolveAsset(DATA.masterVoiceFile), range[0], range[1]);
+      AUDIO.playMp3Range(resolveAsset(DATA.masterVoiceFile), range[0], range[1], allText);
     } else {
       speakCurrentSubstep();
     }
@@ -864,15 +865,16 @@
 
     document.getElementById("btn-speak-female-note").addEventListener("click", () => {
       const seg = DATA.segments[state.segIdx];
+      const guide = DATA.femaleSegmentGuides && DATA.femaleSegmentGuides[seg.id];
+      const fallbackText = (guide && guide.audioTip) ? guide.audioTip : (guide && guide.points ? guide.points.join(". ") : "");
       const range = DATA.femaleAudioRanges && DATA.femaleAudioRanges[seg.id];
       if (DATA.femaleVoiceFile && range) {
-        AUDIO.playMp3Range(resolveAsset(DATA.femaleVoiceFile), range[0], range[1]);
+        AUDIO.playMp3Range(resolveAsset(DATA.femaleVoiceFile), range[0], range[1], fallbackText);
         showToast(`🔊 Memutar Penjelasan Khusus Putri — Segmen ${seg.id}`);
         return;
       }
-      const guide = DATA.femaleSegmentGuides && DATA.femaleSegmentGuides[seg.id];
-      if (guide && guide.audioTip) {
-        AUDIO.speakText(guide.audioTip);
+      if (fallbackText) {
+        AUDIO.speakText(fallbackText);
       }
     });
 
@@ -1145,10 +1147,28 @@
       saveQuizRecords(records);
 
       state.quizSubmitted = true;
-      saveBtn.textContent = "✅ Terkirim & Terkunci";
+      saveBtn.textContent = "✅ Terkirim! Keluar otomatis...";
       document.getElementById("submit-locked-note").classList.remove("hidden");
       renderQuiz();
-      showToast(synced ? "✅ Hasil terkirim ke Google Sheets Guru & terkunci!" : "✅ Hasil tercatat & terkunci!");
+      showToast(synced ? "✅ Hasil terkirim ke Google Sheets Guru! Keluar otomatis..." : "✅ Hasil tercatat! Keluar otomatis...");
+
+      // Hapus sesi identitas siswa & otomatis keluar dari halaman web setelah 1.6 detik
+      try {
+        sessionStorage.removeItem(PROFILE_KEY);
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (e) {}
+
+      try {
+        AUDIO.stopVoice();
+        AUDIO.stopBgm();
+      } catch (e) {}
+
+      setTimeout(() => {
+        try {
+          window.close();
+        } catch (e) {}
+        window.location.replace("../");
+      }, 1600);
     });
 
     document.getElementById("btn-export-csv").addEventListener("click", () => {
