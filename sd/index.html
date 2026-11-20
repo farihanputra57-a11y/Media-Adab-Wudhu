@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adab Wudhu Multi-Sensory â€” Tingkat SD / MI</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%2338bdf8'/%3E%3Cstop offset='100%25' stop-color='%230f6b56'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M32 6 C32 6 12 28 12 42 C12 53 21 60 32 60 C43 60 52 53 52 42 C52 28 32 6 32 6 Z' fill='url(%23g)'/%3E%3Cpath d='M23 39 C22 45 25 50 30 52' stroke='white' stroke-width='3.5' stroke-linecap='round' fill='none' opacity='0.75'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../web-adab-wudhu/css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Navigation Bar -->
+    <header class="topbar">
+      <div class="topbar-inner">
+        <button class="brand" id="btn-brand" type="button" aria-label="Kembali ke Beranda">
+          <span class="brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="26" height="26" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="dropGradNav" x1="10" y1="6" x2="38" y2="44" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#e0f2fe"/>
+                  <stop offset="45%" stop-color="#38bdf8"/>
+                  <stop offset="100%" stop-color="#0284c7"/>
+                </linearGradient>
+              </defs>
+              <path d="M24 5 C24 5 10 21 10 31.5 C10 39.2 16.3 45 24 45 C31.7 45 38 39.2 38 31.5 C38 21 24 5 24 5 Z" fill="url(#dropGradNav)" stroke="#ffffff" stroke-width="2"/>
+              <path d="M17.5 30 C17 34.2 19.5 37.8 23 39" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" opacity="0.88"/>
+              <circle cx="19" cy="24" r="2" fill="#ffffff" opacity="0.85"/>
+            </svg>
+          </span>
+          <span class="brand-text">
+            <strong>Adab Wudhu</strong>
+            <small>Khusus Tingkat SD / MI</small>
+          </span>
+        </button>
+
+        <nav class="nav-tabs" aria-label="Navigasi Utama">
+          <button class="nav-tab active" data-view="home" type="button">
+            <span class="nav-ico">ðŸ  </span><span>Beranda</span>
+          </button>
+          <button class="nav-tab" data-view="learn" type="button">
+            <span class="nav-ico">ðŸŽ¬</span><span>Animasi 8 Segmen</span>
+          </button>
+          <button class="nav-tab" data-view="gayung" type="button">
+            <span class="nav-ico">ðŸª£</span><span>Wudhu Gayung</span>
+          </button>
+          <button class="nav-tab" data-view="kinesthetic" type="button">
+            <span class="nav-ico">âœ‹</span><span>Zona Kinestetik</span>
+          </button>
+          <button class="nav-tab" data-view="quiz" type="button">
+            <span class="nav-ico">âœ…</span><span>Cek Pemahaman</span>
+          </button>
+        </nav>
+
+        <div class="topbar-actions">
+          <button id="btn-fullscreen" class="icon-btn" type="button" title="Mode Layar Penuh / Proyektor">
+            <span>â›¶</span>
+            <span class="hide-sm">Proyektor</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Views -->
+    <main class="main-content" id="main-content">
+      <!-- VIEW 1: BERANDA -->
+      <section class="view active" id="view-home" aria-labelledby="home-title">
+        <div class="hero-card">
+          <div class="hero-copy">
+            <div class="hero-brand-row">
+              <span class="hero-water-emblem" aria-hidden="true">
+                <svg viewBox="0 0 64 64" width="38" height="38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="heroDrop" x1="16" y1="8" x2="48" y2="56" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#e0f2fe"/>
+                      <stop offset="50%" stop-color="#38bdf8"/>
+                      <stop offset="100%" stop-color="#0369a1"/>
+                    </linearGradient>
+                  </defs>
+                  <circle cx="32" cy="32" r="30" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.32)" stroke-width="1.5"/>
+                  <path d="M32 10 C32 10 17 27 17 38 C17 46.3 23.7 53 32 53 C40.3 53 47 46.3 47 38 C47 27 32 10 32 10 Z" fill="url(#heroDrop)" stroke="#ffffff" stroke-width="2"/>
+                  <path d="M24 36.5 C23.5 41.2 26.2 45.2 30.2 46.6" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round" opacity="0.9"/>
+                  <circle cx="25.5" cy="30" r="2.2" fill="#ffffff" opacity="0.88"/>
+                </svg>
+              </span>
+              <span class="pill-badge" id="home-level-badge">ðŸŽ’ Tingkat SD / MI â€¢ Materi Dasar &amp; Ramah Anak</span>
+            </div>
+            <h1 id="home-title">Belajar Tata Cara &amp; Adab Wudhu dengan Tenang dan Benar</h1>
+            <p class="hero-desc" id="home-level-desc">
+              Media pembelajaran interaktif <strong>Multi-Sensory Digital</strong> khusus <strong>Tingkat SD / MI</strong> yang memadukan animasi peragaan putra dan putri,
+              panduan batas wajib Mazhab Syafi'i, narasi suara yang menenangkan, serta latihan kinestetik untuk membentuk adab berwudhu
+              yang tertib, hemat air, dan penuh kekhusyukan.
+            </p>
+            <div class="hero-cta">
+              <button class="btn btn-primary btn-lg" id="btn-start-learning" type="button">
+                â–¶ Mulai Belajar Segmen 1
+              </button>
+              <button class="btn btn-outline btn-lg" id="btn-go-kinesthetic" type="button">
+                âœ‹ Latihan Kinestetik
+              </button>
+            </div>
+            <div class="pillar-strip">
+              <div class="pillar-item"><span>ðŸŽ§</span> Audio &amp; BGM Islami</div>
+              <div class="pillar-item"><span>ðŸ‘ ï¸ </span> 21 Animasi + Zoom Batas</div>
+              <div class="pillar-item"><span>âœ‹</span> Interaksi Kinestetik 3Ã—</div>
+              <div class="pillar-item"><span>ðŸŒ¿</span> Adab Hemat Air &amp; Thuma'ninah</div>
+            </div>
+          </div>
+
+          <div class="hero-progress-box">
+            <div class="progress-ring-wrap">
+              <svg class="progress-ring" viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="ring-bg" cx="60" cy="60" r="50"></circle>
+                <circle class="ring-fg" id="home-ring-fg" cx="60" cy="60" r="50"></circle>
+              </svg>
+              <div class="ring-center">
+                <strong id="home-progress-pct">0%</strong>
+                <span>Selesai</span>
+              </div>
+            </div>
+            <div class="hero-stats">
+              <div class="stat-chip">
+                <strong id="stat-segments">0 / 8</strong>
+                <span>Segmen Dipelajari</span>
+              </div>
+              <div class="stat-chip">
+                <strong id="stat-kinesthetic">0 / 4</strong>
+                <span>Batas Wajib Dikuasai</span>
+              </div>
+              <div class="stat-chip">
+                <strong id="stat-quiz">Belum</strong>
+                <span>Cek Pemahaman</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div>
+            <h2>Peta 8 Segmen Pembelajaran Wudhu</h2>
+            <p>Klik salah satu segmen untuk langsung membuka animasi gerakan, batas wajib, dan audio materinya.</p>
+          </div>
+          <span class="legend-inline">
+            <span class="dot dot-rukun"></span> Rukun Wajib
+            <span class="dot dot-sunnah"></span> Sunnah &amp; Adab
+          </span>
+        </div>
+
+        <div class="segment-grid" id="home-segment-grid"></div>
+      </section>
+
+      <!-- VIEW 2: ANIMASI 8 SEGMEN -->
+      <section class="view" id="view-learn" aria-labelledby="learn-title">
+        <div class="learn-topbar">
+          <div class="seg-stepper" id="learn-seg-stepper" role="tablist" aria-label="Pilih Segmen Wudhu"></div>
+        </div>
+
+        <div class="learn-layout">
+          <!-- Left: Stage & Sub-movements -->
+          <div class="stage-column">
+            <div class="stage-card">
+              <div class="stage-header">
+                <div>
+                  <div class="stage-badges">
+                    <span class="badge-num" id="stage-seg-num">Segmen 1</span>
+                    <span class="badge-law" id="stage-seg-law">Sunnah &amp; Adab</span>
+                  </div>
+                  <h2 id="learn-title">Judul Segmen</h2>
+                </div>
+                <div class="stage-controls-top">
+                  <button class="btn btn-sm btn-soft" id="btn-toggle-zoom" type="button">
+                    ðŸ”  Zoom Batas Wajib
+                  </button>
+                  <button class="btn btn-sm btn-soft" id="btn-anim-play" type="button">
+                    â ¸ Jeda Animasi
+                  </button>
+                </div>
+              </div>
+
+              <!-- Sub-movement tabs -->
+              <div class="substep-bar" id="substep-bar"></div>
+
+              <!-- Main Visual Stage: Side-by-Side Putra & Putri -->
+              <div class="stage-viewport-wrap" id="stage-viewport">
+                <div class="dual-stage-grid">
+                  <div class="stage-pane">
+                    <div class="stage-pane-label male">ðŸ‘¦ Peragaan Putra</div>
+                    <div class="cartoon-stage" id="cartoon-stage-male"></div>
+                  </div>
+                  <div class="stage-pane">
+                    <div class="stage-pane-label female">ðŸ‘§ Peragaan Putri (Berhijab)</div>
+                    <div class="cartoon-stage" id="cartoon-stage-female"></div>
+                  </div>
+                </div>
+                <div class="zoom-overlay hidden" id="zoom-overlay">
+                  <div class="zoom-header">
+                    <strong id="zoom-title">Zoom Batas Wajib Mazhab Syafi'i</strong>
+                    <button class="btn btn-xs btn-outline" id="btn-close-zoom" type="button">âœ• Tutup Zoom</button>
+                  </div>
+                  <div class="zoom-canvas" id="zoom-canvas"></div>
+                  <p class="zoom-caption" id="zoom-caption"></p>
+                </div>
+              </div>
+
+              <!-- Sub-movement description bar -->
+              <div class="substep-detail">
+                <div class="substep-info">
+                  <span class="substep-tag" id="substep-counter">Gerakan 1 dari 3</span>
+                  <h3 id="substep-title">Judul Gerakan</h3>
+                  <p id="substep-desc">Deskripsi gerakan spesifik.</p>
+                </div>
+                <div class="substep-nav">
+                  <button class="btn btn-outline" id="btn-prev-sub" type="button">â†  Sebelumnya</button>
+                  <button class="btn btn-primary" id="btn-next-sub" type="button">Gerakan Berikutnya â†’</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Arabic / Doa Box (shown when segment has doa/niat) -->
+            <div class="doa-card hidden" id="doa-card">
+              <div class="doa-label" id="doa-label">Bacaan Niat / Doa</div>
+              <div class="doa-arabic" id="doa-arabic" dir="rtl"></div>
+              <div class="doa-latin" id="doa-latin"></div>
+              <div class="doa-meaning" id="doa-meaning"></div>
+            </div>
+          </div>
+
+          <!-- Right: Inspector (Vocal UAS, Adab, Quick Kinesthetic) -->
+          <aside class="inspector-column">
+            <!-- Narator AI Studio (Terbagi Otomatis 8 Segmen & 21 Gerakan) -->
+            <div class="panel-card vocal-card">
+              <div class="panel-head">
+                <span class="panel-ico">ðŸŽ™ï¸ </span>
+                <div>
+                  <h3>Suara Narator AI (Studio)</h3>
+                  <small id="ai-voice-subtitle">Terbagi otomatis per segmen &amp; gerakan (Offline)</small>
+                </div>
+              </div>
+
+              <div class="ai-narrator-box">
+                <div class="ai-play-row">
+                  <button class="btn btn-primary btn-block" id="btn-ai-speak" type="button">
+                    ðŸ”Š Putar Suara Gerakan Ini
+                  </button>
+                  <button class="btn btn-outline btn-sm hidden" id="btn-ai-stop" type="button">
+                    â ¹ Stop
+                  </button>
+                </div>
+
+                <button class="btn btn-soft btn-sm btn-block" id="btn-ai-speak-seg" type="button">
+                  â–¶ Putar Narasi Penuh Segmen Ini
+                </button>
+
+                <div class="ai-progress-track" aria-hidden="true">
+                  <div class="ai-progress-fill" id="ai-progress-fill"></div>
+                </div>
+
+                <label class="auto-speak-toggle">
+                  <input type="checkbox" id="chk-auto-narrate" checked />
+                  <span>Otomatis putar suara saat pindah gerakan</span>
+                </label>
+
+                <div class="ai-rate-row">
+                  <label for="ai-rate-select" class="mini-label">Kecepatan Suara:</label>
+                  <select id="ai-rate-select" class="select-input select-sm">
+                    <option value="0.9">Tenang (0.9Ã—)</option>
+                    <option value="1.0" selected>Asli / Natural (1.0Ã—)</option>
+                    <option value="1.1">Sedikit Cepat (1.1Ã—)</option>
+                  </select>
+                </div>
+
+                <p class="ai-tip-note" id="ai-tip-note">
+                  âœ… <strong>Audio AI Studio terpasang (Offline)!</strong> Musik latar otomatis mengecil lembut saat narator berbicara.
+                </p>
+              </div>
+
+              <div class="vocal-status hidden" id="vocal-status-box">
+                <p id="vocal-status-text">MP3 Tambahan Segmen:</p>
+                <div class="vocal-player-wrap" id="vocal-player-wrap">
+                  <audio id="segment-audio-player" controls></audio>
+                </div>
+              </div>
+            </div>
+
+            <!-- Catatan Khusus Wudhu Perempuan (Selalu Tampil di Setiap Segmen) -->
+            <div class="panel-card female-card" id="female-fiqh-card">
+              <div class="panel-head">
+                <span class="panel-ico female-ico">ðŸ§•</span>
+                <div>
+                  <h3 id="female-fiqh-title">Panduan Khusus Wudhu Perempuan</h3>
+                  <small>Ketentuan Mazhab Syafi'i untuk Siswi Berhijab</small>
+                </div>
+              </div>
+              <ul class="adab-list" id="female-fiqh-list"></ul>
+              <div class="female-card-actions">
+                <button class="btn btn-rose-soft btn-sm btn-block" id="btn-speak-female-note" type="button">
+                  ðŸ”Š Bacakan Penjelasan Khusus Putri (AI)
+                </button>
+              </div>
+            </div>
+
+            <!-- Adab & Hikmah -->
+            <div class="panel-card adab-card">
+              <div class="panel-head">
+                <span class="panel-ico">ðŸŒ¿</span>
+                <div>
+                  <h3 id="adab-card-title">Adab &amp; Batas Mazhab Syafi'i</h3>
+                  <small id="adab-card-sub">Materi Tingkat SD / MI (Ringkas &amp; Praktis)</small>
+                </div>
+              </div>
+              <ul class="adab-list" id="adab-list"></ul>
+              <div class="water-tip" id="water-tip"></div>
+            </div>
+
+            <!-- Segment completion & jump to kinesthetic -->
+            <div class="panel-card action-card">
+              <button class="btn btn-emerald btn-block" id="btn-mark-seg-done" type="button">
+                âœ“ Tandai Segmen Ini Sudah Dipahami
+              </button>
+              <button class="btn btn-outline btn-block" id="btn-try-kinesthetic-seg" type="button">
+                âœ‹ Praktik Kinestetik 3Ã— Tenang
+              </button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- VIEW 2B: WUDHU MENGGUNAKAN GAYUNG & BAK AIR -->
+      <section class="view" id="view-gayung" aria-labelledby="gayung-title">
+        <div class="section-header">
+          <div>
+            <h2 id="gayung-title">Panduan Berwudhu Menggunakan Gayung &amp; Bak Air</h2>
+            <p>Solusi praktis sesuai <strong>Mazhab Syafi'i</strong> saat berwudhu menggunakan ember atau bak air (agar air tetap suci &amp; tidak <em>musta'mal</em>).</p>
+          </div>
+        </div>
+
+        <div class="learn-topbar">
+          <div class="seg-stepper" id="gayung-stepper" role="tablist" aria-label="Pilih Langkah Wudhu Gayung"></div>
+        </div>
+
+        <div class="stage-card">
+          <div class="stage-header">
+            <div>
+              <div class="stage-badges">
+                <span class="badge-num" id="gayung-step-num">Langkah 1 / 6</span>
+                <span class="badge-law rukun" id="gayung-step-badge">KAIDAH EMAS MAZHAB SYAFI'I</span>
+              </div>
+              <h2 id="gayung-step-title">Judul Langkah Gayung</h2>
+            </div>
+            <div class="substep-nav">
+              <button class="btn btn-outline btn-sm" id="btn-gayung-prev" type="button">â†  Sebelumnya</button>
+              <button class="btn btn-primary btn-sm" id="btn-gayung-next" type="button">Selanjutnya â†’</button>
+            </div>
+          </div>
+
+          <div class="gayung-stage-wrap">
+            <div class="cartoon-stage" id="gayung-stage"></div>
+          </div>
+
+          <div class="gayung-detail-grid">
+            <div class="panel-card">
+              <div class="panel-head">
+                <span class="panel-ico">ðŸª£</span>
+                <div>
+                  <h3>Langkah Praktis Menggunakan Gayung</h3>
+                  <small id="gayung-step-summary"></small>
+                </div>
+              </div>
+              <ul class="adab-list" id="gayung-step-points"></ul>
+            </div>
+
+            <div class="panel-card">
+              <div class="panel-head">
+                <span class="panel-ico">âš–ï¸ </span>
+                <div>
+                  <h3>Kaidah Fikih &amp; Adab Air (Mazhab Syafi'i)</h3>
+                  <small>Agar wudhu sah dan air bak tidak menjadi <em>musta'mal</em></small>
+                </div>
+              </div>
+              <div class="water-tip" id="gayung-step-tip"></div>
+              <ul class="adab-list" style="margin-top: 12px;">
+                <li><strong>Bak Kecil (&lt; 2 Qullah / &lt; 216 liter):</strong> Jangan celupkan tangan langsung saat sudah niat wudhu; selalu sendok pakai gayung dan tuangkan di luar bak.</li>
+                <li><strong>Bak Besar (â‰¥ 2 Qullah / Â±60Ã—60Ã—60 cm ke atas):</strong> Tidak mudah menjadi <em>musta'mal</em>, namun tetap lebih beradab dan bersih jika menggunakan gayung.</li>
+                <li><strong>Hemat Air:</strong> Cukup 1â€“2 gayung dituang perlahan sudah mencukupi seluruh rukun wudhu.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: ZONA KINESTETIK SISWA -->
+      <section class="view" id="view-kinesthetic" aria-labelledby="kin-title">
+        <div class="section-header">
+          <div>
+            <h2 id="kin-title">Zona Interaksi Kinestetik Siswa</h2>
+            <p>Latihan aktif menyentuh titik batas wajib wudhu dan praktik gerak kering (<em>dry rehearsal</em>) 3Ã— dengan tempo tenang.</p>
+          </div>
+        </div>
+
+        <div class="kin-grid">
+          <!-- Tantangan 1: Sentuh Titik Batas Wajib -->
+          <div class="panel-card kin-card">
+            <div class="panel-head record-head-row">
+              <div class="record-head-left">
+                <span class="panel-ico">ðŸŽ¯</span>
+                <div>
+                  <h3>Tantangan 1: Temukan Urutan Batas Wajib</h3>
+                  <small>Cari &amp; sentuh titik bertanda <strong>?</strong> secara berurutan dari awal hingga akhir!</small>
+                </div>
+              </div>
+              <button class="btn btn-xs btn-outline" id="btn-reset-kin-area" type="button">â†» Ulangi</button>
+            </div>
+
+            <div class="kin-tabs" id="kin-area-tabs">
+              <button class="kin-tab active" data-area="wajah" type="button">Wajah</button>
+              <button class="kin-tab" data-area="tangan" type="button">Tangan &amp; Siku</button>
+              <button class="kin-tab" data-area="kepala" type="button">Kepala</button>
+              <button class="kin-tab" data-area="kaki" type="button">Kaki &amp; Mata Kaki</button>
+            </div>
+
+            <div class="hotspot-board" id="hotspot-board"></div>
+
+            <div class="hotspot-feedback" id="hotspot-feedback">
+              Cari dan sentuh titik awal batas wajib pada gambar di atas!
+            </div>
+
+            <div class="kin-nav-row">
+              <button class="btn btn-outline btn-sm" id="btn-kin1-prev" type="button">â†  Sebelumnya</button>
+              <span class="kin-nav-counter" id="kin1-counter">Area 1 / 4</span>
+              <button class="btn btn-primary btn-sm" id="btn-kin1-next" type="button">Selanjutnya â†’</button>
+            </div>
+          </div>
+
+          <!-- Tantangan 2: Panduan Gerak 3x Tenang (Thuma'ninah) -->
+          <div class="panel-card kin-card">
+            <div class="panel-head">
+              <span class="panel-ico">ðŸ«§</span>
+              <div>
+                <h3>Tantangan 2: Gerak 3Ã— Tenang (<em>Thuma'ninah</em>)</h3>
+                <small>Pilih gerakan, perhatikan status keran, lalu ikuti panduan 3 hitungan secara tenang.</small>
+              </div>
+            </div>
+
+            <div class="tempo-select-wrap">
+              <label for="tempo-segment-select">Pilih Gerakan untuk Dipraktikkan:</label>
+              <select id="tempo-segment-select" class="select-input"></select>
+            </div>
+
+            <div class="tempo-water-badge" id="tempo-water-badge">ðŸ’§ Keran: Aliran Kecil (Hemat Air)</div>
+
+            <div class="tempo-arena">
+              <div class="tempo-circle" id="tempo-circle">
+                <div class="tempo-inner">
+                  <span class="tempo-count" id="tempo-count">Siap</span>
+                  <small id="tempo-cue">Tekan Mulai</small>
+                </div>
+              </div>
+              <div class="tempo-dots" id="tempo-dots">
+                <span class="t-dot" data-step="1">1</span>
+                <span class="t-dot" data-step="2">2</span>
+                <span class="t-dot" data-step="3">3</span>
+              </div>
+              <p class="tempo-instruction" id="tempo-instruction">
+                Berdiri tenang, baca Basmalah, lalu gosok telapak, punggung tangan, dan tautkan sela jari mengikuti 3 hitungan.
+              </p>
+              <div class="tempo-btns">
+                <button class="btn btn-primary" id="btn-start-tempo" type="button">â–¶ Mulai Panduan 3Ã—</button>
+                <button class="btn btn-outline" id="btn-stop-tempo" type="button">â ¹ Berhenti</button>
+              </div>
+            </div>
+
+            <div class="kin-nav-row">
+              <button class="btn btn-outline btn-sm" id="btn-kin2-prev" type="button">â†  Sebelumnya</button>
+              <span class="kin-nav-counter" id="kin2-counter">Gerakan 1 / 8</span>
+              <button class="btn btn-primary btn-sm" id="btn-kin2-next" type="button">Selanjutnya â†’</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: CEK PEMAHAMAN (MANIPULATION CHECK) -->
+      <section class="view" id="view-quiz" aria-labelledby="quiz-title">
+        <div class="section-header">
+          <div>
+            <h2 id="quiz-title">Cek Pemahaman Singkat (10 Soal)</h2>
+            <p>Digunakan guru sebagai <em>comprehension/manipulation check</em> pasca-penayangan media (mencakup seluruh 8 segmen, adab wudhu, serta ketentuan putra &amp; putri).</p>
+          </div>
+          <div class="quiz-header-actions">
+            <button class="btn btn-outline btn-sm" id="btn-reset-quiz" type="button">â†» Ulangi Kuis</button>
+            <button class="btn btn-soft btn-sm" id="btn-teacher-lock" type="button">ðŸ”’ Mode Guru</button>
+          </div>
+        </div>
+
+        <div class="quiz-wrapper">
+          <div class="quiz-student-bar">
+            <div class="student-field-level">
+              <label for="student-level-select">Jenjang (Terkunci):</label>
+              <select id="student-level-select" class="select-input" disabled>
+                <option value="SD/MI" selected>SD / MI</option>
+              </select>
+            </div>
+            <div class="student-field-name">
+              <label for="student-name-input">Nama Lengkap &amp; Kelas Siswa SD / MI (Wajib diisi):</label>
+              <input type="text" id="student-name-input" class="text-input" placeholder="Contoh: Ahmad Fauzi â€” Kelas V-A" />
+            </div>
+          </div>
+
+          <div id="quiz-container" class="quiz-list"></div>
+
+          <div class="quiz-result-card hidden" id="quiz-result-card">
+            <div class="result-score-badge" id="result-score-badge">10 / 10 Terjawab</div>
+            <h3 id="result-title">Seluruh Pertanyaan Sudah Dijawab!</h3>
+            <p id="result-desc">Pastikan Nama Lengkap &amp; Kelas sudah terisi, lalu klik tombol di bawah untuk mengirim hasil kepada guru.</p>
+            <div class="result-actions">
+              <button class="btn btn-primary" id="btn-save-record" type="button">ðŸ“¤ Kirim &amp; Simpan Jawaban</button>
+            </div>
+            <p class="submit-locked-note hidden" id="submit-locked-note">
+              ðŸ”’ Jawaban Anda berhasil dikirim &amp; tersimpan. Terima kasih telah mengerjakan dengan jujur!
+            </p>
+          </div>
+
+          <!-- Panel Rekap Guru (TERKUNCI dengan PIN Guru agar siswa tidak bisa mengubah/menghapus) -->
+          <div class="panel-card record-card hidden" id="record-card">
+            <div class="panel-head record-head-row">
+              <div class="record-head-left">
+                <span class="panel-ico">ðŸ“‹</span>
+                <div>
+                  <h3>Rekap Cek Pemahaman Kelas (Khusus Guru â€” Terbuka)</h3>
+                  <small>Hanya dapat diakses &amp; dikelola oleh guru menggunakan PIN.</small>
+                </div>
+              </div>
+              <div class="record-teacher-btns">
+                <button class="btn btn-emerald btn-sm" id="btn-export-csv" type="button">â¬‡ Unduh CSV</button>
+                <button class="btn btn-rose-soft btn-sm" id="btn-clear-records" type="button">ðŸ—‘ï¸  Hapus Semua</button>
+                <button class="btn btn-outline btn-sm" id="btn-teacher-relock" type="button">ðŸ”’ Kunci Lagi</button>
+              </div>
+            </div>
+
+            <div class="sheets-sync-bar">
+              <span id="sheets-status-badge" class="studio-status">Google Sheets: Belum dihubungkan</span>
+              <input type="url" id="sheets-url-input" class="text-input select-sm" placeholder="Tempel URL Web App Google Apps Script (https://script.google.com/macros/s/.../exec)" />
+              <button class="btn btn-soft btn-sm" id="btn-save-sheets-url" type="button">ðŸ’¾ Simpan URL Sheets</button>
+            </div>
+
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Nama / Kelas</th>
+                    <th>Skor</th>
+                    <th>Persentase</th>
+                    <th>Status Kirim</th>
+                    <th>Waktu</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="quiz-records-body">
+                  <tr><td colspan="7" class="empty-row">Belum ada data tersimpan.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Toast Notification -->
+    <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script>window.LOCKED_LEVEL="sd";window.ASSET_BASE="../web-adab-wudhu/";</script>
+  <script src="../web-adab-wudhu/js/data.js"></script>
+  <script src="../web-adab-wudhu/js/audio.js"></script>
+  <script src="../web-adab-wudhu/js/animator.js"></script>
+  <script src="../web-adab-wudhu/js/app.js"></script>
+</body>
+</html>
