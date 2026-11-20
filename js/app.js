@@ -170,12 +170,8 @@
   }
 
   function checkExitWhen100AndSubmitted() {
+    if (isTeacherSession()) return false;
     const prog = getOverallProgress();
-    if (isTeacherSession() && prog.is100) {
-      showToast("🎉 Materi Pengajaran 100% Selesai! Otomatis kembali ke Halaman Awal...");
-      performFinalExit();
-      return true;
-    }
     if (state.quizSubmitted && prog.is100) {
       showToast("🎉 Pemahaman Materi sudah 100% & Cek Pemahaman terkirim! Otomatis keluar ke Halaman Awal...");
       performFinalExit();
@@ -185,23 +181,64 @@
   }
 
   function renderHome() {
-    const prog = getOverallProgress();
-    const { segDone, kinDone, pct } = prog;
+    const teacherMode = isTeacherSession();
+    const prof = state.studentProfile || {};
+    const progBox = document.querySelector(".hero-progress-box");
 
-    document.getElementById("home-progress-pct").textContent = `${pct}%`;
-    const ring = document.getElementById("home-ring-fg");
-    const circ = 314.16;
-    ring.style.strokeDashoffset = String(circ - (circ * pct) / 100);
+    if (teacherMode) {
+      const homeTitle = document.getElementById("home-title");
+      const homeDesc = document.getElementById("home-level-desc");
+      const startBtn = document.getElementById("btn-start-learning");
+      const kinBtn = document.getElementById("btn-go-kinesthetic");
 
-    document.getElementById("stat-segments").textContent = `${segDone} / 8`;
-    document.getElementById("stat-kinesthetic").textContent = `${kinDone} / 4`;
-    const statQuizEl = document.getElementById("stat-quiz");
-    if (statQuizEl) {
-      const quizStatRow = statQuizEl.closest(".m-stat");
-      if (isTeacherSession()) {
-        if (quizStatRow) quizStatRow.style.display = "none";
-      } else {
-        if (quizStatRow) quizStatRow.style.display = "";
+      if (homeTitle) {
+        homeTitle.textContent = "Panel Pengajaran Tata Cara & Adab Wudhu (Mode Guru)";
+      }
+      if (homeDesc) {
+        homeDesc.innerHTML =
+          state.level === "smp"
+            ? "Mode presentasi &amp; pengajaran guru tingkat <strong>SMP / MTs</strong> berbasis fikih Mazhab Syafi'i (<em>Fath al-Qarib</em> &amp; <em>Ihya' 'Ulum al-Din</em>) untuk menayangkan peragaan animasi Putra &amp; Putri, batas wajib wudhu, kaidah air 2 qullah, serta demonstrasi kinestetik di kelas."
+            : "Mode presentasi &amp; pengajaran guru tingkat <strong>SD / MI</strong> untuk menayangkan animasi peragaan wudhu Putra &amp; Putri, penjelasan batas wajib yang ramah anak, panduan wudhu gayung, serta demonstrasi praktik kinestetik 3× bersama siswa di kelas.";
+      }
+      if (startBtn) startBtn.textContent = "▶ Tayangkan Animasi Segmen 1";
+      if (kinBtn) kinBtn.textContent = "✋ Demonstrasi Kinestetik";
+
+      if (progBox) {
+        progBox.innerHTML = `
+          <div class="teacher-hero-card" style="width:100%;text-align:left;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(254,243,199,0.22);border:1px solid rgba(253,230,138,0.55);color:#fef3c7;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:800;width:fit-content;">
+              👨‍🏫 IDENTITAS PENGAJAR (MODE GURU)
+            </div>
+            <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:#ffffff;">
+              <div><span style="opacity:0.8">Nama Guru:</span> <strong>${escapeHtml(prof.name || "Guru Pengajar")}</strong></div>
+              <div><span style="opacity:0.8">Sekolah / Madrasah:</span> <strong>${escapeHtml(prof.school || "-")}</strong></div>
+              <div><span style="opacity:0.8">Kelas Diajar:</span> <strong>${escapeHtml(prof.kelas || "-")}</strong></div>
+              <div><span style="opacity:0.8">Jenjang Materi:</span> <strong>${state.level === "smp" ? "SMP / MTs" : "SD / MI"}</strong></div>
+            </div>
+            <div style="font-size:12px;color:#d1fae5;line-height:1.45;">
+              💡 Seluruh 8 segmen animasi, audio narator, panduan wudhu gayung, dan zona kinestetik siap ditayangkan di kelas.
+            </div>
+          </div>
+        `;
+      }
+    } else {
+      const prog = getOverallProgress();
+      const { segDone, kinDone, pct } = prog;
+
+      const pctEl = document.getElementById("home-progress-pct");
+      if (pctEl) pctEl.textContent = `${pct}%`;
+      const ring = document.getElementById("home-ring-fg");
+      if (ring) {
+        const circ = 314.16;
+        ring.style.strokeDashoffset = String(circ - (circ * pct) / 100);
+      }
+
+      const segEl = document.getElementById("stat-segments");
+      if (segEl) segEl.textContent = `${segDone} / 8`;
+      const kinEl = document.getElementById("stat-kinesthetic");
+      if (kinEl) kinEl.textContent = `${kinDone} / 4`;
+      const statQuizEl = document.getElementById("stat-quiz");
+      if (statQuizEl) {
         statQuizEl.textContent =
           state.quizSubmitted ? "Terkirim ✓" : state.quizScore !== null ? "Selesai" : "Belum";
       }
@@ -211,7 +248,7 @@
     const lvlExtras = (DATA.levelSegmentExtras && DATA.levelSegmentExtras[state.level]) || {};
     grid.innerHTML = DATA.segments
       .map((seg, idx) => {
-        const done = state.completedSegments.has(seg.id);
+        const done = !teacherMode && state.completedSegments.has(seg.id);
         const segSummary = (lvlExtras[seg.id] && lvlExtras[seg.id].summary) || seg.summary;
         return `
           <button class="seg-card ${done ? "done" : ""}" data-open-seg="${idx}" type="button">
@@ -224,7 +261,7 @@
             <p>${segSummary}</p>
             <div class="seg-card-foot">
               <span>${seg.substeps.length} Animasi Gerakan</span>
-              <span>${done ? "✓ Selesai" : "Buka →"}</span>
+              <span>${teacherMode ? "Tayangkan →" : done ? "✓ Selesai" : "Buka →"}</span>
             </div>
           </button>
         `;
@@ -434,10 +471,17 @@
       speakCurrentSubstep();
     }
 
-    // Mark Done button
+    // Mark Done button (sembunyikan di Mode Guru agar UI murni untuk pengajaran guru)
     const doneBtn = document.getElementById("btn-mark-seg-done");
-    const isDone = state.completedSegments.has(seg.id);
-    doneBtn.textContent = isDone ? "✓ Segmen Ini Sudah Ditandai Selesai" : "✓ Tandai Segmen Ini Sudah Dipahami";
+    const kinSegBtn = document.getElementById("btn-try-kinesthetic-seg");
+    if (isTeacherSession()) {
+      if (doneBtn) doneBtn.style.display = "none";
+      if (kinSegBtn) kinSegBtn.textContent = "✋ Demonstrasi Kinestetik 3×";
+    } else if (doneBtn) {
+      doneBtn.style.display = "";
+      const isDone = state.completedSegments.has(seg.id);
+      doneBtn.textContent = isDone ? "✓ Segmen Ini Sudah Ditandai Selesai" : "✓ Tandai Segmen Ini Sudah Dipahami";
+    }
   }
 
   // ==================== VIEW 2B: WUDHU GAYUNG ====================
@@ -1353,7 +1397,7 @@
     } catch (e) {}
 
     window.addEventListener("popstate", () => {
-      if (isExitingToGateway) return;
+      if (isExitingToGateway || isTeacherSession()) return;
       const prog = getOverallProgress();
       if (!prog.is100 || !state.quizSubmitted) {
         try {
