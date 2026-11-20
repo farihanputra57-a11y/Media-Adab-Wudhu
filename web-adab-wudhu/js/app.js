@@ -574,7 +574,7 @@
                 .map((opt, idx) => {
                   const cls = answered && idx === picked ? "selected" : "";
                   return `
-                    <button class="q-opt ${cls}" data-qid="${q.id}" data-opt="${idx}" ${answered ? "disabled" : ""} type="button">
+                    <button class="q-opt ${cls}" data-qid="${q.id}" data-opt="${idx}" ${state.quizSubmitted ? "disabled" : ""} type="button">
                       ${String.fromCharCode(65 + idx)}. ${opt}${answered && idx === picked ? "  ✓" : ""}
                     </button>
                   `;
@@ -1036,7 +1036,7 @@
       nameInp.value = "";
       saveBtn.textContent = "✅ Terkirim & Terkunci";
       document.getElementById("submit-locked-note").classList.remove("hidden");
-      renderQuizRecords();
+      renderQuiz();
       showToast(synced ? "✅ Hasil terkirim ke Google Sheets Guru & terkunci!" : "✅ Hasil tercatat & terkunci!");
     });
 
