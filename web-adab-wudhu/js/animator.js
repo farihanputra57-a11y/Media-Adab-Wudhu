@@ -1210,6 +1210,135 @@ window.WudhuAnimator = (function () {
       );
     }
 
+    // Dynamic Left-Side Character Pose matching EACH of the 6 Gayung steps!
+    let gayungOnRim = "";
+    let charLegs = `
+      <rect x="300" y="320" width="24" height="98" rx="11" fill="#334155"/>
+      <rect x="340" y="320" width="24" height="98" rx="11" fill="#334155"/>
+      <ellipse cx="310" cy="422" rx="20" ry="10" fill="#f3c6a5" stroke="#d9a07b" stroke-width="1.6"/>
+      <ellipse cx="352" cy="422" rx="20" ry="10" fill="#f3c6a5" stroke="#d9a07b" stroke-width="1.6"/>
+    `;
+    let charArmsAndGayung = "";
+    let headOverlay = "";
+
+    if (pose === "gayung_rule") {
+      // Scooping cleanly from the bak using ONLY the gayung (hand stays outside bak)
+      charArmsAndGayung = `
+        <path d="M376 222 Q390 258 380 294" stroke="#ffffff" stroke-width="20" stroke-linecap="round" fill="none"/>
+        <circle cx="380" cy="300" r="11" fill="#fbd6b9" stroke="#d9a07b" stroke-width="1.6"/>
+        <g class="anim-rub-v">
+          <path d="M286 222 Q242 232 206 238" stroke="#ffffff" stroke-width="20" stroke-linecap="round" fill="none"/>
+          <circle cx="202" cy="238" r="11" fill="#fbd6b9" stroke="#d9a07b" stroke-width="1.8"/>
+          <!-- Gayung handle held outside, cup dipping cleanly into bak water -->
+          <rect x="132" y="232" width="70" height="8" rx="4" fill="#0a4f3f"/>
+          <rect x="92" y="220" width="44" height="32" rx="7" fill="#0f6b56"/>
+          <ellipse cx="114" cy="222" rx="20" ry="5" fill="#7dd3fc"/>
+        </g>
+        <rect x="176" y="182" width="144" height="26" rx="13" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="248" y="199" text-anchor="middle" font-size="10.5" font-weight="800" fill="#166534">Sendok Pakai Gayung ✓</text>
+      `;
+    } else if (pose === "gayung_palms") {
+      // Left hand pours gently from gayung outside bak into right cupped hand moving to mouth/palms
+      charArmsAndGayung = `
+        <path d="M286 222 Q256 232 236 244" stroke="#ffffff" stroke-width="20" stroke-linecap="round" fill="none"/>
+        <g transform="translate(194, 218)" class="anim-bob">
+          <rect x="0" y="6" width="42" height="28" rx="7" fill="#0f6b56" transform="rotate(-24 21 20)"/>
+          <rect x="34" y="14" width="28" height="8" rx="4" fill="#0a4f3f" transform="rotate(-24 21 20)"/>
+          <line x1="8" y1="34" x2="22" y2="74" stroke="#38bdf8" stroke-width="5.5" stroke-linecap="round" class="anim-water"/>
+        </g>
+        <g class="anim-rub-v">
+          <path d="M376 220 Q320 278 228 290" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
+          <ellipse cx="218" cy="292" rx="19" ry="11" fill="#fbd6b9" stroke="#d9a07b" stroke-width="2"/>
+          <circle cx="218" cy="285" r="6" fill="#38bdf8" class="anim-splash"/>
+        </g>
+      `;
+    } else if (pose === "gayung_face") {
+      // Gayung resting neatly on bak rim while BOTH wet hands wash the face!
+      gayungOnRim = `
+        <g transform="translate(88, 194)">
+          <rect x="0" y="0" width="42" height="26" rx="6" fill="#0f6b56"/>
+          <rect x="40" y="7" width="28" height="7" rx="3.5" fill="#0a4f3f"/>
+        </g>
+      `;
+      headOverlay = `
+        <ellipse cx="332" cy="138" rx="46" ry="42" fill="rgba(56,189,248,0.16)" stroke="#0284c7" stroke-width="2.5" stroke-dasharray="5 4"/>
+      `;
+      charArmsAndGayung = `
+        <g class="anim-rub-v">
+          <path d="M286 214 Q264 172 302 140" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
+          <path d="M378 214 Q400 172 362 140" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
+          <ellipse cx="305" cy="138" rx="13" ry="18" fill="#fbd6b9" stroke="#d9a07b" stroke-width="2"/>
+          <ellipse cx="359" cy="138" rx="13" ry="18" fill="#fbd6b9" stroke="#d9a07b" stroke-width="2"/>
+          <circle cx="308" cy="124" r="5" fill="#38bdf8" class="anim-splash"/>
+          <circle cx="356" cy="124" r="5" fill="#38bdf8" class="anim-splash"/>
+        </g>
+      `;
+    } else if (pose === "gayung_arms") {
+      // Right bare forearm extended outside bak (elbow highlighted!) while left hand pours gayung sweeping along forearm!
+      charArmsAndGayung = `
+        <!-- Extended bare forearm (rolled sleeve) -->
+        <path d="M286 220 L270 236" stroke="#ffffff" stroke-width="23" stroke-linecap="round" fill="none"/>
+        <path d="M270 236 L194 294" stroke="#fbd6b9" stroke-width="20" stroke-linecap="round" fill="none"/>
+        <circle cx="268" cy="238" r="14" fill="rgba(16,185,129,0.28)" stroke="#059669" stroke-width="2.5" stroke-dasharray="4 3"/>
+        <text x="268" y="216" text-anchor="middle" font-size="10.5" font-weight="800" fill="#065f46">Siku ✓</text>
+
+        <!-- Other hand pouring gayung directly over forearm -->
+        <g class="anim-rub-h">
+          <path d="M376 220 Q314 196 254 202" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
+          <g transform="translate(206, 182)">
+            <rect x="0" y="6" width="42" height="28" rx="7" fill="#0f6b56" transform="rotate(-24 21 20)"/>
+            <rect x="34" y="14" width="26" height="7" rx="3.5" fill="#0a4f3f" transform="rotate(-24 21 20)"/>
+            <line x1="8" y1="34" x2="14" y2="92" stroke="#38bdf8" stroke-width="5.5" stroke-linecap="round" class="anim-water"/>
+          </g>
+        </g>
+      `;
+    } else if (pose === "gayung_head") {
+      // Gayung resting on bak rim (Hemat Air!), BOTH wet hands raised wiping head!
+      gayungOnRim = `
+        <g transform="translate(88, 194)">
+          <rect x="0" y="0" width="42" height="26" rx="6" fill="#0f6b56"/>
+          <rect x="40" y="7" width="28" height="7" rx="3.5" fill="#0a4f3f"/>
+        </g>
+        <rect x="28" y="162" width="136" height="24" rx="12" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="96" y="178" text-anchor="middle" font-size="10" font-weight="800" fill="#166534">Gayung Diletakkan ✓</text>
+      `;
+      headOverlay = `
+        <path d="M294 98 Q332 70 370 98" fill="none" stroke="#0284c7" stroke-width="5" stroke-dasharray="6 4"/>
+      `;
+      charArmsAndGayung = `
+        <g class="anim-rub-h">
+          <path d="M286 214 Q256 140 306 86" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
+          <path d="M378 214 Q408 140 358 86" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
+          <ellipse cx="314" cy="84" rx="17" ry="10" fill="#fbd6b9" stroke="#d9a07b" stroke-width="2"/>
+          <ellipse cx="350" cy="84" rx="17" ry="10" fill="#fbd6b9" stroke="#d9a07b" stroke-width="2"/>
+        </g>
+      `;
+    } else {
+      // gayung_feet: Right foot lifted over outside drain, left hand pouring gayung onto foot & ankle!
+      charLegs = `
+        <path d="M312 320 Q268 352 214 378" stroke="#334155" stroke-width="24" stroke-linecap="round" fill="none"/>
+        <ellipse cx="204" cy="382" rx="22" ry="11" fill="#fbd6b9" stroke="#d9a07b" stroke-width="2"/>
+        <circle cx="222" cy="368" r="10" fill="rgba(16,185,129,0.28)" stroke="#059669" stroke-width="2"/>
+        <circle cx="206" cy="374" r="7" fill="#38bdf8" class="anim-splash"/>
+        <rect x="340" y="320" width="24" height="98" rx="11" fill="#334155"/>
+        <ellipse cx="352" cy="422" rx="20" ry="10" fill="#f3c6a5" stroke="#d9a07b" stroke-width="1.6"/>
+      `;
+      charArmsAndGayung = `
+        <!-- Left arm holding gayung tilted downward pouring directly onto raised foot -->
+        <path d="M286 226 Q256 266 238 286" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
+        <g transform="translate(194, 268)" class="anim-bob">
+          <rect x="0" y="6" width="42" height="28" rx="7" fill="#0f6b56" transform="rotate(-28 21 20)"/>
+          <rect x="34" y="14" width="26" height="7" rx="3.5" fill="#0a4f3f" transform="rotate(-28 21 20)"/>
+          <line x1="8" y1="34" x2="12" y2="104" stroke="#38bdf8" stroke-width="5.5" stroke-linecap="round" class="anim-water"/>
+        </g>
+        <!-- Right hand reaching down to rub foot/toes -->
+        <g class="anim-rub-h">
+          <path d="M376 232 Q314 316 244 364" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
+          <circle cx="238" cy="368" r="12" fill="#fbd6b9" stroke="#d9a07b" stroke-width="2"/>
+        </g>
+      `;
+    }
+
     return `
       <svg viewBox="0 0 900 480" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${step.title}">
         <defs>
@@ -1242,18 +1371,16 @@ window.WudhuAnimator = (function () {
         <ellipse cx="95" cy="242" rx="60" ry="9" fill="#38bdf8" opacity="0.75"/>
         <text x="95" y="318" text-anchor="middle" font-size="13" font-weight="800" fill="#0369a1">BAK AIR</text>
         <text x="95" y="336" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0284c7">(Tetap Suci ✓)</text>
+        ${gayungOnRim}
 
         <!-- Drain floor outside the bak -->
         <rect x="176" y="394" width="126" height="22" rx="8" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.8"/>
         <text x="239" y="409" text-anchor="middle" font-size="10" font-weight="800" fill="#475569">Saluran Luar Bak</text>
 
-        <!-- Child standing beside bak holding Gayung pouring OUTSIDE bak -->
+        <!-- Child Character with Step-Specific Dynamic Pose -->
         <g class="anim-bob">
           <ellipse cx="332" cy="432" rx="68" ry="12" fill="#94a3b8" opacity="0.3"/>
-          <rect x="300" y="320" width="24" height="98" rx="11" fill="#334155"/>
-          <rect x="340" y="320" width="24" height="98" rx="11" fill="#334155"/>
-          <ellipse cx="310" cy="422" rx="20" ry="10" fill="#f3c6a5" stroke="#d9a07b" stroke-width="1.6"/>
-          <ellipse cx="352" cy="422" rx="20" ry="10" fill="#f3c6a5" stroke="#d9a07b" stroke-width="1.6"/>
+          ${charLegs}
           <path d="M284 202 Q332 190 380 202 L388 326 L276 326 Z" fill="#ffffff" stroke="#cbd5e1" stroke-width="2.5"/>
           <path d="M318 198 L332 226 L346 198 Z" fill="#0f6b56"/>
           <rect x="319" y="174" width="26" height="22" rx="8" fill="#f3c6a5"/>
@@ -1263,20 +1390,8 @@ window.WudhuAnimator = (function () {
           <circle cx="315" cy="128" r="5" fill="#1e293b"/>
           <circle cx="349" cy="128" r="5" fill="#1e293b"/>
           <path d="M320 152 Q332 162 344 152" fill="none" stroke="#9a3412" stroke-width="2.8" stroke-linecap="round"/>
-
-          <!-- Arm holding green Gayung pouring cleanly OUTSIDE the bak (x=220) -->
-          <path d="M286 222 Q256 244 236 254" stroke="#ffffff" stroke-width="20" stroke-linecap="round" fill="none"/>
-          <g transform="translate(194, 232)">
-            <rect x="0" y="6" width="44" height="30" rx="7" fill="#0f6b56" transform="rotate(-22 22 21)"/>
-            <rect x="36" y="14" width="28" height="8" rx="4" fill="#0a4f3f" transform="rotate(-22 22 21)"/>
-            ${pose !== "gayung_head" ? `
-              <line x1="8" y1="36" x2="26" y2="156" stroke="#38bdf8" stroke-width="6" stroke-linecap="round" class="anim-water"/>
-              <ellipse cx="28" cy="160" rx="16" ry="5" fill="#7dd3fc" opacity="0.7" class="anim-splash"/>
-            ` : ''}
-          </g>
-          <!-- Other arm catching water outside bak -->
-          <path d="M376 226 Q344 282 232 296" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
-          <ellipse cx="224" cy="296" rx="16" ry="10" fill="#fbd6b9" stroke="#d9a07b" stroke-width="2" class="anim-rub-h"/>
+          ${headOverlay}
+          ${charArmsAndGayung}
         </g>
 
         <!-- Right Half: Close-Up Detail -->
