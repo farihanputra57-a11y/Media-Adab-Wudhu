@@ -434,21 +434,21 @@
         <p>Silakan lengkapi data diri dan pilih jenjang Anda sebelum masuk ke beranda pembelajaran.</p>
       </div>
 
-      <form id="portal-form" novalidate>
+      <form id="portal-form" autocomplete="off" novalidate>
         <div class="form-grid">
           <div class="field-group">
             <label for="portal-name">Nama Lengkap <span class="req">*</span></label>
-            <input type="text" id="portal-name" class="field-input" placeholder="Contoh: Ahmad Fauzan / Siti Aisyah" autocomplete="name" required />
+            <input type="text" id="portal-name" class="field-input" placeholder="Contoh: Ahmad Fauzan / Siti Aisyah" autocomplete="off" required />
           </div>
 
           <div class="form-row-2">
             <div class="field-group">
               <label for="portal-school">Asal Sekolah / Madrasah <span class="req">*</span></label>
-              <input type="text" id="portal-school" class="field-input" placeholder="Contoh: SDN 01 / SMPN 1" required />
+              <input type="text" id="portal-school" class="field-input" placeholder="Contoh: SDN 01 / SMPN 1" autocomplete="off" required />
             </div>
             <div class="field-group">
               <label for="portal-class">Kelas <span class="req">*</span></label>
-              <input type="text" id="portal-class" class="field-input" placeholder="Contoh: 5-A / VII-A" required />
+              <input type="text" id="portal-class" class="field-input" placeholder="Contoh: 5-A / VII-A" autocomplete="off" required />
             </div>
           </div>
         </div>
@@ -504,22 +504,52 @@
       const urlParams = new URLSearchParams(window.location.search);
       const isFinishedExit = urlParams.get("selesai") === "1";
 
+      function resetPortalForm() {
+        try {
+          form.reset();
+        } catch (e) {}
+        nameInp.value = "";
+        schoolInp.value = "";
+        classInp.value = "";
+        selectedLevel = "";
+        pickSd.classList.remove("selected-sd");
+        pickSmp.classList.remove("selected-smp");
+        pickSd.setAttribute("aria-pressed", "false");
+        pickSmp.setAttribute("aria-pressed", "false");
+        errorBox.classList.remove("show");
+      }
+
       function revealPortalCard() {
+        resetPortalForm();
         loader.classList.add("hidden");
         portalCard.classList.remove("hidden");
       }
 
+      // Pastikan setiap kali halaman awal dimuat atau dikembalikan lewat cache (tombol Back), seluruh kolom selalu kosong bersih
+      window.addEventListener("pageshow", () => {
+        resetPortalForm();
+      });
+
       if (isFinishedExit) {
         try {
           sessionStorage.removeItem(PROFILE_KEY);
+          const cleanUrl = window.location.href.split("?")[0].split("#")[0];
           if (window.history && window.history.replaceState) {
-            window.history.replaceState({}, document.title, window.location.pathname);
+            window.history.replaceState({ portalRoot: true }, document.title, cleanUrl);
+            window.history.pushState({ portalRoot: true }, document.title, cleanUrl);
           }
         } catch (e) {}
+        window.addEventListener("popstate", () => {
+          const cleanUrl = window.location.href.split("?")[0].split("#")[0];
+          try {
+            window.history.pushState({ portalRoot: true }, document.title, cleanUrl);
+          } catch (e) {}
+          resetPortalForm();
+        });
         if (doneBanner) doneBanner.classList.add("show");
         revealPortalCard();
       } else {
-        // Animasi loading screen pembuka singkat (0.95 detik) -> langsung tampilkan form identitas
+        // Animasi loading screen pembuka singkat (0.95 detik) -> langsung tampilkan form identitas kosong
         const steps = [
           { pct: 40, text: "Menyiapkan animasi peragaan Putra & Putri...", delay: 180 },
           { pct: 80, text: "Menyiapkan audio narasi & musik latar Islami...", delay: 480 },
@@ -588,7 +618,9 @@
         });
 
         const targetFolder = selectedLevel === "smp" ? "./smp/" : "./sd/";
-        window.location.href = targetFolder + "?" + params.toString();
+        const targetUrl = targetFolder + "?" + params.toString();
+        resetPortalForm();
+        window.location.replace(targetUrl);
       });
     })();
   </script>
