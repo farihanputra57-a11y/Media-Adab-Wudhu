@@ -155,6 +155,80 @@ button, input, select {
   gap: 8px;
 }
 
+.level-switch {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  padding: 3px;
+  border-radius: 999px;
+  gap: 3px;
+}
+
+.level-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  white-space: nowrap;
+}
+
+.level-btn:hover {
+  color: var(--emerald-dark);
+}
+
+.level-btn.active[data-level="sd"] {
+  background: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.28);
+}
+
+.level-btn.active[data-level="smp"] {
+  background: var(--emerald);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 107, 86, 0.28);
+}
+
+.hero-level-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.hero-level-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fef3c7;
+}
+
+.level-switch-hero {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.level-switch-hero .level-btn {
+  color: rgba(255, 255, 255, 0.88);
+  padding: 7px 14px;
+  font-size: 13px;
+}
+
+.level-switch-hero .level-btn.active[data-level="sd"] {
+  background: #38bdf8;
+  color: #0c2942;
+}
+
+.level-switch-hero .level-btn.active[data-level="smp"] {
+  background: #fbbf24;
+  color: #1c1917;
+}
+
 .gender-switch {
   display: inline-flex;
   align-items: center;
@@ -1482,18 +1556,25 @@ button, input, select {
   border-radius: var(--radius-md);
   padding: 14px 18px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 14px;
   flex-wrap: wrap;
 }
 
 .quiz-student-bar label {
-  font-size: 13.5px;
+  display: block;
+  font-size: 13px;
   font-weight: 700;
   color: var(--emerald-dark);
+  margin-bottom: 5px;
 }
 
-.quiz-student-bar .text-input {
+.student-field-level {
+  width: 155px;
+  flex-shrink: 0;
+}
+
+.student-field-name {
   flex: 1;
   min-width: 220px;
 }
