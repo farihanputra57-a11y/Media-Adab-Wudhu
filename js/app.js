@@ -1295,7 +1295,7 @@
 
     // Cegah siswa menutup/meninggalkan halaman secara paksa sebelum Pemahaman Materi mencapai 100%
     window.addEventListener("beforeunload", (e) => {
-      if (!isExitingToGateway && !getOverallProgress().is100) {
+      if (!isTeacherSession() && !isExitingToGateway && !getOverallProgress().is100) {
         e.preventDefault();
         e.returnValue = "Pemahaman Materi Anda belum mencapai 100%. Selesaikan seluruh materi terlebih dahulu sebelum keluar.";
         return e.returnValue;
@@ -1448,15 +1448,36 @@
       classInp.disabled = true;
     }
 
-    // Jika masuk dalam Mode Guru: sembunyikan tab & halaman Cek Pemahaman sepenuhnya (hanya materi saja)
+    // Jika masuk dalam Mode Guru: sembunyikan tab & halaman Cek Pemahaman sepenuhnya, dan tampilkan menu "🚪 Keluar"
     const quizTabBtn = document.querySelector('.nav-tab[data-view="quiz"]');
     const quizViewSec = document.getElementById("view-quiz");
+    const mainNav = document.querySelector(".main-nav");
+    let teacherExitBtn = document.getElementById("btn-teacher-exit-menu");
+
     if (prof.isTeacher) {
       if (quizTabBtn) quizTabBtn.style.display = "none";
       if (quizViewSec) quizViewSec.style.display = "none";
+      if (mainNav && !teacherExitBtn) {
+        teacherExitBtn = document.createElement("button");
+        teacherExitBtn.id = "btn-teacher-exit-menu";
+        teacherExitBtn.type = "button";
+        teacherExitBtn.className = "nav-tab teacher-exit-tab";
+        teacherExitBtn.style.background = "#fee2e2";
+        teacherExitBtn.style.color = "#991b1b";
+        teacherExitBtn.style.border = "1px solid #fca5a5";
+        teacherExitBtn.style.fontWeight = "800";
+        teacherExitBtn.innerHTML = `<span class="tab-ico">🚪</span><span>Keluar</span>`;
+        teacherExitBtn.addEventListener("click", () => {
+          showToast("🚪 Keluar dari Mode Mengajar Guru ke Halaman Awal...");
+          performFinalExit();
+        });
+        mainNav.appendChild(teacherExitBtn);
+      }
+      if (teacherExitBtn) teacherExitBtn.style.display = "";
     } else {
       if (quizTabBtn) quizTabBtn.style.display = "";
       if (quizViewSec) quizViewSec.style.display = "";
+      if (teacherExitBtn) teacherExitBtn.style.display = "none";
     }
   }
 
