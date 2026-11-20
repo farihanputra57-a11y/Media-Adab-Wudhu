@@ -107,9 +107,19 @@
     }).length;
   }
 
+  function isTeacherSession() {
+    return Boolean(state.studentProfile && state.studentProfile.isTeacher);
+  }
+
   function getOverallProgress() {
     const segDone = state.completedSegments.size;
     const kinDone = getMasteredKinCount();
+    if (isTeacherSession()) {
+      const totalTasks = 8 + 4;
+      const pct = Math.round(((segDone + kinDone) / totalTasks) * 100);
+      const is100 = segDone >= 8 && kinDone >= 4;
+      return { segDone, kinDone, quizDone: 0, pct, is100 };
+    }
     const quizDone = state.quizScore !== null ? 1 : 0;
     const totalTasks = 8 + 4 + 1;
     const pct = Math.round(((segDone + kinDone + quizDone) / totalTasks) * 100);
@@ -137,7 +147,9 @@
       showToast(`✋ Silakan tuntaskan Zona Kinestetik (${prog.kinDone}/4 bintang) hingga 100%!`);
       return;
     }
-    switchView("quiz");
+    if (!isTeacherSession()) {
+      switchView("quiz");
+    }
   }
 
   function performFinalExit() {
@@ -151,7 +163,7 @@
       AUDIO.stopVoice();
       AUDIO.stopBgm();
     } catch (e) {}
-    const targetHome = getGatewayUrl() + "?selesai=1";
+    const targetHome = getGatewayUrl() + (isTeacherSession() ? "" : "?selesai=1");
     setTimeout(() => {
       window.location.replace(targetHome);
     }, 950);
@@ -159,6 +171,11 @@
 
   function checkExitWhen100AndSubmitted() {
     const prog = getOverallProgress();
+    if (isTeacherSession() && prog.is100) {
+      showToast("🎉 Materi Pengajaran 100% Selesai! Otomatis kembali ke Halaman Awal...");
+      performFinalExit();
+      return true;
+    }
     if (state.quizSubmitted && prog.is100) {
       showToast("🎉 Pemahaman Materi sudah 100% & Cek Pemahaman terkirim! Otomatis keluar ke Halaman Awal...");
       performFinalExit();
@@ -168,11 +185,8 @@
   }
 
   function renderHome() {
-    const segDone = state.completedSegments.size;
-    const kinDone = getMasteredKinCount();
-    const quizDone = state.quizScore !== null ? 1 : 0;
-    const totalTasks = 8 + 4 + 1;
-    const pct = Math.round(((segDone + kinDone + quizDone) / totalTasks) * 100);
+    const prog = getOverallProgress();
+    const { segDone, kinDone, pct } = prog;
 
     document.getElementById("home-progress-pct").textContent = `${pct}%`;
     const ring = document.getElementById("home-ring-fg");
@@ -181,8 +195,17 @@
 
     document.getElementById("stat-segments").textContent = `${segDone} / 8`;
     document.getElementById("stat-kinesthetic").textContent = `${kinDone} / 4`;
-    document.getElementById("stat-quiz").textContent =
-      state.quizSubmitted ? "Terkirim ✓" : state.quizScore !== null ? "Selesai" : "Belum";
+    const statQuizEl = document.getElementById("stat-quiz");
+    if (statQuizEl) {
+      const quizStatRow = statQuizEl.closest(".m-stat");
+      if (isTeacherSession()) {
+        if (quizStatRow) quizStatRow.style.display = "none";
+      } else {
+        if (quizStatRow) quizStatRow.style.display = "";
+        statQuizEl.textContent =
+          state.quizSubmitted ? "Terkirim ✓" : state.quizScore !== null ? "Selesai" : "Belum";
+      }
+    }
 
     const grid = document.getElementById("home-segment-grid");
     const lvlExtras = (DATA.levelSegmentExtras && DATA.levelSegmentExtras[state.level]) || {};
@@ -1359,6 +1382,7 @@
     const qNama = (params.get("nama") || "").trim();
     const qSekolah = (params.get("sekolah") || "").trim();
     const qKelas = (params.get("kelas") || "").trim();
+    const qGuru = params.get("guru") === "1";
 
     if (qNama && qSekolah && qKelas) {
       state.studentProfile = {
@@ -1366,7 +1390,8 @@
         school: qSekolah,
         kelas: qKelas,
         level: state.level,
-        levelLabel: state.level === "smp" ? "SMP/MTs" : "SD/MI"
+        levelLabel: state.level === "smp" ? "SMP/MTs" : "SD/MI",
+        isTeacher: qGuru
       };
       try {
         sessionStorage.setItem(PROFILE_KEY, JSON.stringify(state.studentProfile));
@@ -1383,7 +1408,8 @@
           school: String(saved.school).trim(),
           kelas: String(saved.kelas).trim(),
           level: state.level,
-          levelLabel: state.level === "smp" ? "SMP/MTs" : "SD/MI"
+          levelLabel: state.level === "smp" ? "SMP/MTs" : "SD/MI",
+          isTeacher: Boolean(saved.isTeacher)
         };
         installBackButtonLock();
         return true;
@@ -1421,6 +1447,17 @@
       classInp.readOnly = true;
       classInp.disabled = true;
     }
+
+    // Jika masuk dalam Mode Guru: sembunyikan tab & halaman Cek Pemahaman sepenuhnya (hanya materi saja)
+    const quizTabBtn = document.querySelector('.nav-tab[data-view="quiz"]');
+    const quizViewSec = document.getElementById("view-quiz");
+    if (prof.isTeacher) {
+      if (quizTabBtn) quizTabBtn.style.display = "none";
+      if (quizViewSec) quizViewSec.style.display = "none";
+    } else {
+      if (quizTabBtn) quizTabBtn.style.display = "";
+      if (quizViewSec) quizViewSec.style.display = "";
+    }
   }
 
   // ==================== SPLASH / WELCOME SCREEN ====================
@@ -1455,9 +1492,9 @@
           </svg>
         </div>
       </div>
-      <span class="splash-badge">${levelLabel}</span>
+      <span class="splash-badge">${prof && prof.isTeacher ? `👨‍🏫 Mode Mengajar Guru • ${levelLabel}` : levelLabel}</span>
       <h1 class="splash-title">${prof ? `Assalamu'alaikum, ${safeName}!` : "Adab Wudhu Multi-Sensory"}</h1>
-      <p class="splash-sub">${prof ? `🏫 ${safeSchool} &nbsp;•&nbsp; Kelas ${safeClass}<br/>Identitas Anda telah terkunci otomatis untuk Cek Pemahaman.` : "Media Pembelajaran Interaktif Tata Cara &amp; Adab Berwudhu Sesuai Mazhab Syafi'i"}</p>
+      <p class="splash-sub">${prof ? (prof.isTeacher ? `🏫 ${safeSchool} &nbsp;•&nbsp; ${safeClass}<br/>Mode Mengajar Guru Aktif (Hanya Materi Pembelajaran, Tanpa Cek Pemahaman).` : `🏫 ${safeSchool} &nbsp;•&nbsp; Kelas ${safeClass}<br/>Identitas Anda telah terkunci otomatis untuk Cek Pemahaman.`) : "Media Pembelajaran Interaktif Tata Cara &amp; Adab Berwudhu Sesuai Mazhab Syafi'i"}</p>
       <div class="splash-bar-wrap">
         <div class="splash-bar-fill" id="splash-bar-fill" style="width:${prof ? "100%" : "0%"}"></div>
       </div>
