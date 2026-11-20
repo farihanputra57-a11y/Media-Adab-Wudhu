@@ -727,6 +727,12 @@
 
     document.getElementById("btn-speak-female-note").addEventListener("click", () => {
       const seg = DATA.segments[state.segIdx];
+      const range = DATA.femaleAudioRanges && DATA.femaleAudioRanges[seg.id];
+      if (DATA.femaleVoiceFile && range) {
+        AUDIO.playMp3Range(DATA.femaleVoiceFile, range[0], range[1]);
+        showToast(`🔊 Memutar Penjelasan Khusus Putri — Segmen ${seg.id}`);
+        return;
+      }
       const guide = DATA.femaleSegmentGuides && DATA.femaleSegmentGuides[seg.id];
       if (guide && guide.audioTip) {
         AUDIO.speakText(guide.audioTip);

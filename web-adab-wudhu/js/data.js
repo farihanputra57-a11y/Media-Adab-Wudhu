@@ -1,6 +1,19 @@
 window.WUDHU_DATA = {
   uasYoutubeUrl: "https://www.youtube.com/results?search_query=Ustadz+Abdul+Somad+Official+BACA+BUKU+FIQH+WUDHU+TEORI+DAN+PRAKTEK",
   masterVoiceFile: "assets/audio/narasi_lengkap.mp3",
+  femaleVoiceFile: "assets/audio/narasi_putri.mp3",
+
+  // Exact timestamp slices [startSec, endSec] from assets/audio/narasi_putri.mp3 (Segmen 1-8 Putri)
+  femaleAudioRanges: {
+    1: [0.0, 25.0],
+    2: [25.0, 43.0],
+    3: [43.0, 70.8],
+    4: [70.8, 96.0],
+    5: [96.0, 145.0],
+    6: [145.0, 173.8],
+    7: [173.8, 193.8],
+    8: [193.8, 214.0]
+  },
 
   // Keamanan Rekap Uji Kemampuan
   teacherPin: "2026",
