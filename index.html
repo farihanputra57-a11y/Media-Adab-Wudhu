@@ -344,6 +344,21 @@
     }
     .error-msg.show { display: block; }
 
+    .done-banner {
+      display: none;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1.5px solid #6ee7b7;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-align: center;
+      line-height: 1.45;
+    }
+    .done-banner.show { display: block; }
+
     .btn-enter {
       width: 100%;
       padding: 14px 20px;
@@ -409,6 +424,10 @@
 
     <!-- FASE 2: FORM IDENTITAS AWAL & PILIHAN TINGKATAN -->
     <section class="portal-card hidden" id="portal-card" aria-labelledby="portal-heading">
+      <div class="done-banner" id="done-banner" role="status">
+        ✅ <strong>Jawaban Cek Pemahaman Berhasil Dikirim!</strong><br/>
+        Sesi pembelajaran Anda telah selesai dan otomatis kembali ke halaman awal.
+      </div>
       <div class="portal-header">
         <span class="portal-mini-badge">💧 Media Adab Wudhu • Mazhab Syafi'i</span>
         <h1 id="portal-heading">Identitas Siswa &amp; Pilihan Tingkatan</h1>
@@ -481,24 +500,40 @@
       const errorBox = document.getElementById("portal-error");
 
       let selectedLevel = "";
+      const doneBanner = document.getElementById("done-banner");
+      const urlParams = new URLSearchParams(window.location.search);
+      const isFinishedExit = urlParams.get("selesai") === "1";
 
-      // Animasi loading screen pembuka (1.35 detik) -> langsung tampilkan form identitas
-      const steps = [
-        { pct: 35, text: "Menyiapkan animasi peragaan Putra & Putri...", delay: 220 },
-        { pct: 72, text: "Menyiapkan audio narasi & musik latar Islami...", delay: 620 },
-        { pct: 100, text: "Siap! Silakan lengkapi identitas diri Anda.", delay: 1050 }
-      ];
-      steps.forEach((s) => {
-        setTimeout(() => {
-          barFill.style.width = s.pct + "%";
-          loaderStatus.textContent = s.text;
-        }, s.delay);
-      });
-      setTimeout(() => {
+      function revealPortalCard() {
         loader.classList.add("hidden");
         portalCard.classList.remove("hidden");
-        nameInp.focus();
-      }, 1450);
+      }
+
+      if (isFinishedExit) {
+        try {
+          sessionStorage.removeItem(PROFILE_KEY);
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        } catch (e) {}
+        if (doneBanner) doneBanner.classList.add("show");
+        revealPortalCard();
+      } else {
+        // Animasi loading screen pembuka singkat (0.95 detik) -> langsung tampilkan form identitas
+        const steps = [
+          { pct: 40, text: "Menyiapkan animasi peragaan Putra & Putri...", delay: 180 },
+          { pct: 80, text: "Menyiapkan audio narasi & musik latar Islami...", delay: 480 },
+          { pct: 100, text: "Siap! Silakan lengkapi identitas diri Anda.", delay: 760 }
+        ];
+        steps.forEach((s) => {
+          setTimeout(() => {
+            barFill.style.width = s.pct + "%";
+            loaderStatus.textContent = s.text;
+          }, s.delay);
+        });
+        setTimeout(revealPortalCard, 980);
+        loader.addEventListener("click", revealPortalCard);
+      }
 
       function selectLevel(lvl) {
         selectedLevel = lvl;
