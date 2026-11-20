@@ -1973,6 +1973,145 @@ button, input, select {
   transform-origin: center;
 }
 
+/* ==================== SPLASH / LOADING SCREEN ==================== */
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: radial-gradient(circle at 50% 35%, #11826a 0%, #0b5242 52%, #063128 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  color: #ffffff;
+  transition: opacity 0.55s ease, visibility 0.55s ease;
+}
+
+.splash-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.splash-logo-wrap {
+  position: relative;
+  width: 116px;
+  height: 116px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 18px;
+}
+
+.splash-ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(125, 211, 252, 0.55);
+  animation: splashRipple 2.2s ease-out infinite;
+}
+
+.splash-ripple.delay {
+  animation-delay: 1.1s;
+}
+
+@keyframes splashRipple {
+  0% { transform: scale(0.75); opacity: 0.9; }
+  100% { transform: scale(1.65); opacity: 0; }
+}
+
+.splash-emblem {
+  width: 92px;
+  height: 92px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1.5px solid rgba(255, 255, 255, 0.34);
+  backdrop-filter: blur(8px);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+  animation: gentleBob 2.4s ease-in-out infinite;
+}
+
+.splash-badge {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: rgba(251, 191, 36, 0.2);
+  border: 1px solid rgba(251, 191, 36, 0.55);
+  color: #fef3c7;
+  font-size: 12.5px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.splash-title {
+  margin: 0 0 6px;
+  font-size: clamp(24px, 3.6vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.splash-sub {
+  margin: 0 0 22px;
+  font-size: 14.5px;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 440px;
+}
+
+.splash-bar-wrap {
+  width: min(320px, 86vw);
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.splash-bar-fill {
+  width: 0%;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #38bdf8, #fbbf24);
+  transition: width 0.25s ease;
+}
+
+.splash-status {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #bae6fd;
+  min-height: 20px;
+  margin-bottom: 18px;
+}
+
+.splash-enter-btn {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #1c1917;
+  border: none;
+  border-radius: 999px;
+  padding: 13px 30px;
+  font-size: 15.5px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.splash-enter-btn.ready {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.splash-enter-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+
 /* ==================== TOAST ==================== */
 .toast {
   position: fixed;
