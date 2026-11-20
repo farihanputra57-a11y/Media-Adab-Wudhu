@@ -1540,10 +1540,38 @@ button, input, select {
   background: var(--emerald-light);
 }
 
+.q-opt.selected {
+  background: var(--emerald-light);
+  border-color: var(--emerald);
+  color: var(--emerald-dark);
+  font-weight: 800;
+}
+
 .q-opt.correct {
   background: #dcfce7;
   border-color: #16a34a;
   color: #14532d;
+}
+
+.gayung-stage-wrap {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid #bae6fd;
+  background: linear-gradient(180deg, #e0f2fe 0%, #f0fdf4 100%);
+  margin-bottom: 18px;
+}
+
+.gayung-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+@media (max-width: 900px) {
+  .gayung-detail-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .q-opt.wrong {
