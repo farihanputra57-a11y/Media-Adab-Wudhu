@@ -495,14 +495,18 @@
         <div class="quiz-wrapper">
           <div class="quiz-student-bar">
             <div class="student-field-level">
-              <label for="student-level-select">Jenjang (Terkunci):</label>
+              <label for="student-level-select">Jenjang:</label>
               <select id="student-level-select" class="select-input" disabled>
                 <option value="SMP/MTs" selected>SMP / MTs</option>
               </select>
             </div>
             <div class="student-field-name">
-              <label for="student-name-input">Nama Lengkap &amp; Kelas Siswa SMP / MTs (Wajib diisi):</label>
-              <input type="text" id="student-name-input" class="text-input" placeholder="Contoh: Siti Aisyah — Kelas VII-A" />
+              <label for="student-name-input">Nama Lengkap Siswa <span class="req-star">*</span></label>
+              <input type="text" id="student-name-input" class="text-input" placeholder="Contoh: Siti Aisyah" required />
+            </div>
+            <div class="student-field-class">
+              <label for="student-class-input">Kelas <span class="req-star">*</span></label>
+              <input type="text" id="student-class-input" class="text-input" placeholder="Contoh: VII-A" required />
             </div>
           </div>
 
