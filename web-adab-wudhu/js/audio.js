@@ -6,30 +6,97 @@ window.AudioEngine = (function () {
   let wetGain = null;
 
   let bgmPlaying = false;
-  let bgmVolume = 0.4;
+  let bgmVolume = 0.34;
   let isDucked = false;
   let bgmTimer = null;
   let beatStep = 0;
+  let currentTheme = "home";
 
   let customBgmAudio = null;
   let customBgmUrl = null;
 
-  // Serene Islamic Nahawand / D-Minor Ambient Progression (4 bars x 8 eighth-steps = 32 steps)
-  // Chords: Dm9 -> Cadd9 -> Bbmaj7 -> A7sus4
-  const CHORDS = [
-    { root: 146.83, pad: [146.83, 220.0, 261.63, 329.63], arp: [293.66, 349.23, 440.0, 523.25, 440.0, 349.23, 329.63, 293.66] },
-    { root: 130.81, pad: [130.81, 196.0, 261.63, 329.63], arp: [261.63, 329.63, 392.0, 523.25, 392.0, 329.63, 293.63, 261.63] },
-    { root: 116.54, pad: [116.54, 174.61, 233.08, 293.66], arp: [233.08, 293.66, 349.23, 440.0, 349.23, 293.66, 261.63, 233.08] },
-    { root: 110.0,  pad: [110.0,  164.81, 220.0,  293.66], arp: [220.0,  293.66, 329.63, 440.0, 329.63, 293.66, 277.18, 220.0] }
-  ];
-
-  // Gentle Ney Flute melody notes (null = rest) across 32 steps
-  const NEY_MELODY = [
-    587.33, null, null, 659.25, 587.33, null, 523.25, null,
-    523.25, null, null, 587.33, 523.25, null, 440.0,  null,
-    466.16, null, null, 523.25, 466.16, null, 440.0,  null,
-    440.0,  null, 392.0, null,  440.0,  null, null,   null
-  ];
+  // 5 Distinct Serene Islamic Ambient BGM Themes (one unique theme per tab!)
+  const BGM_THEMES = {
+    home: {
+      stepMs: 660,
+      chords: [
+        { pad: [146.83, 220.0, 261.63, 329.63], arp: [293.66, 349.23, 440.0, 523.25, 440.0, 349.23, 329.63, 293.66] },
+        { pad: [130.81, 196.0, 261.63, 329.63], arp: [261.63, 329.63, 392.0, 523.25, 392.0, 329.63, 293.63, 261.63] },
+        { pad: [116.54, 174.61, 233.08, 293.66], arp: [233.08, 293.66, 349.23, 440.0, 349.23, 293.66, 261.63, 233.08] },
+        { pad: [110.0,  164.81, 220.0,  293.66], arp: [220.0,  293.66, 329.63, 440.0, 329.63, 293.66, 277.18, 220.0] }
+      ],
+      melody: [
+        587.33, null, null, 659.25, 587.33, null, 523.25, null,
+        523.25, null, null, 587.33, 523.25, null, 440.0,  null,
+        466.16, null, null, 523.25, 466.16, null, 440.0,  null,
+        440.0,  null, 392.0, null,  440.0,  null, null,   null
+      ]
+    },
+    learn: {
+      // Calm G-Hijaz meditative atmosphere for watching animations
+      stepMs: 720,
+      chords: [
+        { pad: [196.0, 246.94, 293.66, 392.0], arp: [392.0, 415.30, 493.88, 587.33, 493.88, 415.30, 392.0, 293.66] },
+        { pad: [155.56, 196.0, 233.08, 311.13], arp: [311.13, 392.0, 466.16, 587.33, 466.16, 392.0, 349.23, 311.13] },
+        { pad: [174.61, 220.0, 261.63, 349.23], arp: [349.23, 415.30, 493.88, 523.25, 493.88, 415.30, 349.23, 293.66] },
+        { pad: [196.0, 246.94, 293.66, 392.0], arp: [392.0, 493.88, 587.33, 493.88, 415.30, 392.0, 349.23, 392.0] }
+      ],
+      melody: [
+        783.99, null, null, 698.46, 622.25, null, 587.33, null,
+        622.25, null, 587.33, null, 493.88, null, null, null,
+        523.25, null, null, 587.33, 493.88, null, 415.30, null,
+        392.0,  null, null, null,   493.88, null, null, null
+      ]
+    },
+    gayung: {
+      // Flowing C-Pentatonic / A-minor water-harp shimmer
+      stepMs: 620,
+      chords: [
+        { pad: [220.0, 261.63, 329.63, 392.0], arp: [440.0, 523.25, 659.25, 523.25, 440.0, 392.0, 329.63, 392.0] },
+        { pad: [174.61, 220.0, 261.63, 329.63], arp: [349.23, 440.0, 523.25, 659.25, 523.25, 440.0, 392.0, 349.23] },
+        { pad: [130.81, 196.0, 261.63, 329.63], arp: [261.63, 329.63, 392.0, 523.25, 587.33, 523.25, 392.0, 329.63] },
+        { pad: [196.0, 246.94, 293.66, 392.0], arp: [392.0, 493.88, 587.33, 523.25, 493.88, 392.0, 329.63, 293.66] }
+      ],
+      melody: [
+        659.25, null, 587.33, null, 523.25, null, 440.0, null,
+        523.25, null, null, 587.33, 523.25, null, null, null,
+        783.99, null, 659.25, null, 587.33, null, 523.25, null,
+        587.33, null, 493.88, null, 440.0, null, null, null
+      ]
+    },
+    kinesthetic: {
+      // Brighter gentle rhythmic E-minor pulse for active student movement
+      stepMs: 540,
+      chords: [
+        { pad: [164.81, 246.94, 293.66, 329.63], arp: [329.63, 392.0, 493.88, 587.33, 493.88, 392.0, 440.0, 392.0] },
+        { pad: [130.81, 196.0, 246.94, 329.63], arp: [261.63, 329.63, 392.0, 493.88, 523.25, 493.88, 392.0, 329.63] },
+        { pad: [146.83, 220.0, 293.66, 369.99], arp: [293.66, 369.99, 440.0, 587.33, 440.0, 369.99, 329.63, 293.66] },
+        { pad: [164.81, 246.94, 329.63, 392.0], arp: [329.63, 392.0, 493.88, 659.25, 493.88, 392.0, 369.99, 329.63] }
+      ],
+      melody: [
+        659.25, null, 739.99, null, 783.99, null, 659.25, null,
+        523.25, null, 587.33, null, 659.25, null, null, null,
+        587.33, null, 659.25, null, 739.99, null, 587.33, null,
+        659.25, null, null, 587.33, 493.88, null, null, null
+      ]
+    },
+    quiz: {
+      // Ultra-calm minimalist F-major concentration atmosphere
+      stepMs: 820,
+      chords: [
+        { pad: [174.61, 220.0, 261.63, 329.63], arp: [349.23, null, 440.0, null, 523.25, null, 440.0, null] },
+        { pad: [146.83, 220.0, 261.63, 349.23], arp: [293.66, null, 349.23, null, 440.0, null, 349.23, null] },
+        { pad: [116.54, 174.61, 220.0, 293.66], arp: [233.08, null, 293.66, null, 349.23, null, 293.66, null] },
+        { pad: [130.81, 196.0, 261.63, 329.63], arp: [261.63, null, 329.63, null, 392.0, null, 329.63, null] }
+      ],
+      melody: [
+        523.25, null, null, null, 587.33, null, null, null,
+        440.0,  null, null, null, null,   null, null, null,
+        466.16, null, null, null, 440.0,  null, null, null,
+        392.0,  null, null, null, 349.23, null, null, null
+      ]
+    }
+  };
 
   // ==================== INDEXEDDB STORAGE ====================
   const DB_NAME = "AdabWudhuAudioDB";
@@ -274,37 +341,41 @@ window.AudioEngine = (function () {
     lfo.stop(now + duration + 0.08);
   }
 
-  function startBgm() {
-    if (bgmPlaying) return;
-    bgmPlaying = true;
-    if (customBgmAudio) {
-      customBgmAudio.volume = getEffectiveBgmGain();
-      customBgmAudio.loop = true;
-      customBgmAudio.play().catch(() => {});
-      return;
+  function startBgm(themeName) {
+    if (themeName && BGM_THEMES[themeName]) {
+      currentTheme = themeName;
     }
+    if (bgmTimer) {
+      clearInterval(bgmTimer);
+      bgmTimer = null;
+    }
+    bgmPlaying = true;
     ensureCtx();
-    const stepMs = 660; // Serene ~90 BPM eighth-note flow
+    const theme = BGM_THEMES[currentTheme] || BGM_THEMES.home;
+    const stepMs = theme.stepMs;
     const tick = () => {
       if (!bgmPlaying) return;
+      const activeTheme = BGM_THEMES[currentTheme] || BGM_THEMES.home;
       const stepInCycle = beatStep % 32;
       const barIdx = Math.floor(stepInCycle / 8);
       const stepInBar = stepInCycle % 8;
-      const chord = CHORDS[barIdx];
+      const chord = activeTheme.chords[barIdx];
 
       // Warm Pad at start of each bar
       if (stepInBar === 0) {
-        playWarmPad(chord.pad, (stepMs * 8.2) / 1000);
+        playWarmPad(chord.pad, (activeTheme.stepMs * 8.2) / 1000);
       }
 
       // Plucked Oud / Harp arpeggio with gentle stereo sway
       const arpFreq = chord.arp[stepInBar];
-      const pan = stepInBar % 2 === 0 ? -0.25 : 0.25;
-      playOudArp(arpFreq, pan);
+      if (arpFreq) {
+        const pan = stepInBar % 2 === 0 ? -0.25 : 0.25;
+        playOudArp(arpFreq, pan);
+      }
 
       // Soft Ney Flute enters gently
-      const neyNote = NEY_MELODY[stepInCycle];
-      if (neyNote && beatStep >= 4) {
+      const neyNote = activeTheme.melody[stepInCycle];
+      if (neyNote && beatStep >= 2) {
         playNeyFlute(neyNote, 1.55);
       }
 
@@ -312,6 +383,16 @@ window.AudioEngine = (function () {
     };
     tick();
     bgmTimer = setInterval(tick, stepMs);
+  }
+
+  function setBgmTheme(themeName) {
+    const next = BGM_THEMES[themeName] ? themeName : "home";
+    if (next === currentTheme && bgmPlaying) return;
+    currentTheme = next;
+    beatStep = 0;
+    if (bgmPlaying) {
+      startBgm(currentTheme);
+    }
   }
 
   function stopBgm() {
@@ -627,6 +708,8 @@ window.AudioEngine = (function () {
   }
 
   return {
+    startBgm,
+    setBgmTheme,
     toggleBgm,
     stopBgm,
     setVolume,

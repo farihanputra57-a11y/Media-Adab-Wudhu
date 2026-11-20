@@ -610,6 +610,87 @@ window.WUDHU_DATA = {
     }
   ],
 
+  gayungSteps: [
+    {
+      id: 1,
+      badge: "KAIDAH EMAS MAZHAB SYAFI'I",
+      title: "1. Siapkan Bak & Gayung (Aturan 2 Qullah / Anti-Musta'mal)",
+      summary: "Perbedaan utama wudhu memakai gayung adalah menjaga agar air di dalam bak kecil (< 216 liter / < 2 qullah) tidak tercampur air bekas basuhan rukun (air musta'mal).",
+      pose: "gayung_rule",
+      points: [
+        "Jika bak air/ember berukuran kecil (< 216 liter atau kurang dari ±60×60×60 cm), JANGAN mencelupkan tangan langsung ke dalam bak setelah berniat wudhu.",
+        "Selalu sendok air memakai gayung, lalu tuangkan air di LUAR bak (di atas saluran pembuangan) agar tetesan bekas basuhan tidak jatuh kembali ke dalam bak.",
+        "Dengan gayung, wudhu justru sangat hemat air — cukup 1 hingga 2 gayung saja jika dituang perlahan dan tenang!"
+      ],
+      tip: "💡 Ingat: Mencelupkan tangan ke bak kecil (< 2 qullah) setelah niat basuhan wajib membuat air di bak menjadi musta'mal (tidak bisa dipakai bersuci lagi). Pakai gayung di luar bak = 100% aman & sah!"
+    },
+    {
+      id: 2,
+      badge: "SUNNAH PEMBUKA",
+      title: "2. Membasuh Telapak Tangan, Berkumur & Istinsyaq",
+      summary: "Mulai dengan Basmalah, ambil air dengan gayung di luar bak, lalu basuh telapak tangan, berkumur, dan bersihkan hidung secara tenang.",
+      pose: "gayung_palms",
+      points: [
+        "Baca Bismillahirrahmanirrahim, sendok 1 gayung air bersih, lalu miringkan sedikit untuk membasuh kedua telapak tangan & sela jari di luar bak (3×).",
+        "Tuang sedikit air dari gayung ke telapak tangan kanan untuk berkumur (3×) dan membersihkan hidung/istinsyaq (3×).",
+        "Jangan menempelkan mulut langsung ke bibir gayung — selalu pindahkan air ke telapak tangan kanan terlebih dahulu agar tetap higienis dan beradab."
+      ],
+      tip: "💧 Adab Hemat Air: Miringkan gayung sedikit demi sedikit, tidak perlu langsung menumpahkan setengah gayung sekaligus."
+    },
+    {
+      id: 3,
+      badge: "RUKUN WAJIB + NIAT",
+      title: "3. Membasuh Wajah Menggunakan Gayung",
+      summary: "Hadirkan niat wudhu di dalam hati tepat saat air pertama menyentuh wajah, lalu ratakan ke seluruh batas wajib Mazhab Syafi'i.",
+      pose: "gayung_face",
+      points: [
+        "Pegang gayung dengan tangan kiri (atau letakkan gayung di tepi bak), tuang air secukupnya ke telapak tangan kanan, lalu usapkan ke wajah sambil berniat di dalam hati.",
+        "Pastikan seluruh batas wajib wajah basah: dari garis tumbuh rambut di dahi hingga bawah dagu, serta dari pangkal telinga kanan hingga pangkal telinga kiri (3×).",
+        "Bagi siswi perempuan: geser sedikit tepi ciput/jilbab agar dahi dan pangkal telinga ikut terkena air."
+      ],
+      tip: "🌿 Lakukan dengan tenang (thuma'ninah) di luar bibir bak agar tetesan air wajah tidak masuk kembali ke dalam bak."
+    },
+    {
+      id: 4,
+      badge: "RUKUN WAJIB",
+      title: "4. Membasuh Tangan Kanan & Kiri hingga Melewati Siku",
+      summary: "Gunakan satu tangan memegang gayung dan tuangkan air perlahan ke lengan yang lain mulai dari ujung jari hingga melewati siku.",
+      pose: "gayung_arms",
+      points: [
+        "Tangan Kanan (3×): Pegang gayung dengan tangan kiri, tuang air perlahan ke ujung jari tangan kanan, lalu alirkan dan gosok hingga 2–3 cm melewati tulang siku kanan.",
+        "Tangan Kiri (3×): Pindahkan gayung ke tangan kanan, lalu tuang air perlahan ke ujung jari tangan kiri hingga melewati tulang siku kiri.",
+        "Pastikan bagian belakang siku, pergelangan, dan sela jari benar-benar basah tanpa ada bagian yang kering."
+      ],
+      tip: "💡 Cara memegang gayung bergantian (kiri untuk kanan, kanan untuk kiri) membuat aliran air sangat terkendali dan hemat!"
+    },
+    {
+      id: 5,
+      badge: "RUKUN & HEMAT AIR",
+      title: "5. Mengusap Sebagian Kepala & Telinga",
+      summary: "Tidak perlu menyiram satu gayung penuh ke kepala! Cukup basahi kedua telapak tangan dengan sedikit air, lalu usap sebagian kepala dan telinga.",
+      pose: "gayung_head",
+      points: [
+        "Letakkan gayung di tepi bak setelah membasahi kedua telapak tangan dengan sedikit tuangan air.",
+        "Usapkan tangan basah ke sebagian rambut atau kulit di batas kepala (Putri berhijab: masukkan tangan basah di balik tepi jilbab/ciput menyentuh rambut di batas kepala).",
+        "Lanjutkan mengusap lekuk dalam telinga dengan jari telunjuk dan bagian belakang daun telinga dengan ibu jari secara bersamaan."
+      ],
+      tip: "🚫 Hindari menyiramkan air langsung dari gayung ke seluruh kepala secara berlebihan (israf) — cukup usapan lembut dengan tangan basah!"
+    },
+    {
+      id: 6,
+      badge: "RUKUN WAJIB & PENUTUP",
+      title: "6. Membasuh Kaki hingga Mata Kaki, Rapikan Gayung & Doa",
+      summary: "Basuh kaki kanan lalu kaki kiri di atas saluran pembuangan (di luar bak), letakkan gayung kembali dengan rapi, lalu baca doa setelah wudhu.",
+      pose: "gayung_feet",
+      points: [
+        "Lepas kaus kaki terlebih dahulu. Posisikan kaki kanan di atas lantai saluran air (di luar bak), tuang air perlahan dengan gayung sambil menggosok jari kaki, sela jari (pakai kelingking), tumit, hingga melewati kedua mata kaki (3×).",
+        "Lakukan hal yang sama pada kaki kiri (3×) dengan tenang agar tidak memerciki pakaian.",
+        "Letakkan kembali gayung dengan posisi bersih dan rapi di tempatnya, berdiri menghadap kiblat di tempat kering, lalu baca doa setelah wudhu."
+      ],
+      tip: "✨ Alhamdulillah! Dengan tertib memakai gayung di luar bak, air bak tetap suci (tidak musta'mal), hemat air, dan wudhu sah sempurna."
+    }
+  ],
+
   quiz: [
     {
       id: "q1",

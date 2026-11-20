@@ -14,6 +14,7 @@
     quizSubmitted: false,
     segIdx: 0,
     subIdx: 0,
+    gayungIdx: 0,
     animPaused: false,
     zoomOpen: false,
     kinArea: "wajah",
@@ -84,8 +85,10 @@
 
     if (viewName !== "kinesthetic") stopTempo();
     if (viewName !== "learn") AUDIO.stopVoice();
+    AUDIO.setBgmTheme(viewName);
     if (viewName === "home") renderHome();
     if (viewName === "learn") renderLearn(true);
+    if (viewName === "gayung") renderGayung();
     if (viewName === "kinesthetic") renderKinesthetic();
     if (viewName === "quiz") renderQuiz();
 
@@ -329,6 +332,46 @@
     doneBtn.textContent = isDone ? "✓ Segmen Ini Sudah Ditandai Selesai" : "✓ Tandai Segmen Ini Sudah Dipahami";
   }
 
+  // ==================== VIEW 2B: WUDHU GAYUNG ====================
+  function renderGayung() {
+    const steps = DATA.gayungSteps || [];
+    if (!steps.length) return;
+    const step = steps[state.gayungIdx] || steps[0];
+
+    const stepper = document.getElementById("gayung-stepper");
+    stepper.innerHTML = steps
+      .map(
+        (s, i) => `
+          <button class="step-pill ${i === state.gayungIdx ? "active" : ""}" data-gayung-idx="${i}" type="button">
+            ${s.id}. ${s.title.replace(/^\d+\.\s*/, "").split("(")[0].trim()}
+          </button>
+        `
+      )
+      .join("");
+
+    stepper.querySelectorAll("[data-gayung-idx]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.gayungIdx = Number(btn.dataset.gayungIdx);
+        renderGayung();
+      });
+    });
+
+    document.getElementById("gayung-step-num").textContent = `Langkah ${state.gayungIdx + 1} / ${steps.length}`;
+    document.getElementById("gayung-step-badge").textContent = step.badge;
+    document.getElementById("gayung-step-title").textContent = step.title;
+    document.getElementById("gayung-step-summary").textContent = step.summary;
+    document.getElementById("gayung-step-points").innerHTML = step.points.map((p) => `<li>${p}</li>`).join("");
+    document.getElementById("gayung-step-tip").textContent = step.tip;
+
+    const stage = document.getElementById("gayung-stage");
+    if (stage && ANIM.renderGayungScene) {
+      stage.innerHTML = ANIM.renderGayungScene(step);
+    }
+
+    document.getElementById("btn-gayung-prev").disabled = state.gayungIdx <= 0;
+    document.getElementById("btn-gayung-next").disabled = state.gayungIdx >= steps.length - 1;
+  }
+
   // ==================== VIEW 3: ZONA KINESTETIK ====================
   function renderKinesthetic() {
     document.querySelectorAll("#kin-area-tabs .kin-tab").forEach((btn) => {
@@ -516,7 +559,7 @@
     syncTempoPreview();
   }
 
-  // ==================== VIEW 4: CEK PEMAHAMAN ====================
+  // ==================== VIEW 4: CEK PEMAHAMAN (ANTI-BOCOR JAWABAN) ====================
   function renderQuiz() {
     const container = document.getElementById("quiz-container");
     container.innerHTML = DATA.quiz
@@ -529,20 +572,15 @@
             <div class="q-options">
               ${q.options
                 .map((opt, idx) => {
-                  let cls = "";
-                  if (answered) {
-                    if (idx === q.correct) cls = "correct";
-                    else if (idx === picked) cls = "wrong";
-                  }
+                  const cls = answered && idx === picked ? "selected" : "";
                   return `
                     <button class="q-opt ${cls}" data-qid="${q.id}" data-opt="${idx}" ${answered ? "disabled" : ""} type="button">
-                      ${String.fromCharCode(65 + idx)}. ${opt}
+                      ${String.fromCharCode(65 + idx)}. ${opt}${answered && idx === picked ? "  ✓" : ""}
                     </button>
                   `;
                 })
                 .join("")}
             </div>
-            ${answered ? `<div class="q-explain">${picked === q.correct ? "✅ " : "💡 "}${q.explain}</div>` : ""}
           </div>
         `;
       })
@@ -552,9 +590,9 @@
       btn.addEventListener("click", () => {
         const qid = btn.dataset.qid;
         const optIdx = Number(btn.dataset.opt);
-        const qObj = DATA.quiz.find((x) => x.id === qid);
         state.quizAnswers[qid] = optIdx;
-        AUDIO.playChime(optIdx === qObj.correct ? "ok" : "err");
+        // Bunyi netral agar siswa di sebelahnya tidak tahu benar/salahnya
+        AUDIO.playChime("beat");
         checkQuizComplete();
         renderQuiz();
       });
@@ -694,18 +732,26 @@
       btn.addEventListener("click", () => setGender(btn.dataset.gender, true));
     });
 
-    // BGM controls
-    const bgmBtn = document.getElementById("btn-bgm-toggle");
-    const bgmIcon = document.getElementById("bgm-icon");
-    bgmBtn.addEventListener("click", () => {
-      const playing = AUDIO.toggleBgm();
-      bgmIcon.textContent = playing ? "🔊" : "🔇";
-      bgmBtn.setAttribute("aria-pressed", String(playing));
-      showToast(playing ? "Musik latar Islami dinyalakan" : "Musik latar dimatikan");
-    });
+    // BGM otomatis selalu menyala & berganti tema per tab (tanpa tombol matikan)
+    const ensureBgmStarted = () => {
+      AUDIO.startBgm(state.view);
+    };
+    document.addEventListener("pointerdown", ensureBgmStarted, { once: true });
+    document.addEventListener("keydown", ensureBgmStarted, { once: true });
 
-    document.getElementById("bgm-volume").addEventListener("input", (e) => {
-      AUDIO.setVolume(Number(e.target.value) / 100);
+    // Gayung step navigation
+    document.getElementById("btn-gayung-prev").addEventListener("click", () => {
+      if (state.gayungIdx > 0) {
+        state.gayungIdx--;
+        renderGayung();
+      }
+    });
+    document.getElementById("btn-gayung-next").addEventListener("click", () => {
+      const total = (DATA.gayungSteps || []).length;
+      if (state.gayungIdx < total - 1) {
+        state.gayungIdx++;
+        renderGayung();
+      }
     });
 
     // Fullscreen / Projector mode
@@ -1038,5 +1084,6 @@
   bindEvents();
   initSavedAudioClips().then(() => {
     renderHome();
+    try { AUDIO.startBgm("home"); } catch (e) {}
   });
 })();
