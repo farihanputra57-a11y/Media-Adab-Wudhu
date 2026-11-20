@@ -366,13 +366,13 @@ window.WudhuAnimator = (function () {
               <rect x="166" y="128" width="32" height="18" rx="9" fill="#fbd6b9" stroke="#c88d67" stroke-width="2"/>
             </g>
             <!-- Hand 2 overlapping -->
-            <g transform="translate(88, 22)" class="anim-rub-v">
+            <g transform="translate(88, 22)"><g class="anim-rub-v">
               <rect x="78" y="118" width="96" height="96" rx="28" fill="#f3c6a5" stroke="#c88d67" stroke-width="2.5"/>
               <rect x="86" y="72" width="15" height="54" rx="7" fill="#f3c6a5" stroke="#c88d67" stroke-width="2"/>
               <rect x="106" y="62" width="15" height="64" rx="7" fill="#f3c6a5" stroke="#c88d67" stroke-width="2"/>
               <rect x="126" y="66" width="15" height="60" rx="7" fill="#f3c6a5" stroke="#c88d67" stroke-width="2"/>
               <rect x="146" y="78" width="15" height="48" rx="7" fill="#f3c6a5" stroke="#c88d67" stroke-width="2"/>
-            </g>
+            </g></g>
             <!-- Water Drops & Motion Arrows -->
             <circle cx="176" cy="42" r="9" fill="#38bdf8" class="anim-splash"/>
             <circle cx="148" cy="28" r="6" fill="#7dd3fc" class="anim-splash"/>
@@ -1114,11 +1114,11 @@ window.WudhuAnimator = (function () {
           <rect x="44" y="204" width="90" height="70" rx="10" fill="#bae6fd" stroke="#0284c7" stroke-width="2.5"/>
           <text x="89" y="244" text-anchor="middle" font-size="10.5" font-weight="800" fill="#0369a1">Air Bak Suci ✓</text>
           <!-- Gayung pouring outside bak -->
-          <g transform="translate(158, 198)" class="anim-bob">
+          <g transform="translate(158, 198)"><g class="anim-bob">
             <rect x="0" y="12" width="44" height="28" rx="6" fill="#0f6b56" transform="rotate(24 22 26)"/>
             <rect x="-26" y="16" width="30" height="7" rx="3.5" fill="#0a4f3f" transform="rotate(24 22 26)"/>
             <line x1="46" y1="34" x2="54" y2="74" stroke="#38bdf8" stroke-width="5" stroke-linecap="round" class="anim-water"/>
-          </g>
+          </g></g>
           <text x="275" y="236" text-anchor="middle" font-size="11" font-weight="800" fill="#065f46">Tuang di atas</text>
           <text x="275" y="253" text-anchor="middle" font-size="10.5" fill="#047857">saluran luar bak</text>
         `,
@@ -1130,11 +1130,11 @@ window.WudhuAnimator = (function () {
         "DETAIL GAYUNG LANGKAH 2",
         `
           <!-- Gayung tilted gently pouring into cupped hand -->
-          <g transform="translate(76, 42)" class="anim-bob">
+          <g transform="translate(76, 42)"><g class="anim-bob">
             <rect x="20" y="16" width="66" height="44" rx="10" fill="#0f6b56" transform="rotate(28 53 38)"/>
             <rect x="-24" y="22" width="48" height="10" rx="5" fill="#0a4f3f" transform="rotate(28 53 38)"/>
             <line x1="88" y1="48" x2="104" y2="128" stroke="#38bdf8" stroke-width="6" stroke-linecap="round" class="anim-water"/>
-          </g>
+          </g></g>
           <ellipse cx="186" cy="186" rx="48" ry="20" fill="#fbd6b9" stroke="#c88d67" stroke-width="2.5" class="anim-rub-h"/>
           <circle cx="184" cy="172" r="9" fill="#38bdf8" class="anim-splash"/>
           <text x="176" y="242" text-anchor="middle" font-size="13" font-weight="800" fill="#065f46">Pindahkan Air ke Telapak Tangan Kanan</text>
@@ -1161,11 +1161,11 @@ window.WudhuAnimator = (function () {
         "DETAIL GAYUNG LANGKAH 4",
         `
           <!-- Gayung pouring over forearm to elbow -->
-          <g transform="translate(52, 22)" class="anim-rub-h">
+          <g transform="translate(52, 22)"><g class="anim-rub-h">
             <rect x="20" y="14" width="56" height="36" rx="8" fill="#0f6b56" transform="rotate(26 48 32)"/>
             <rect x="-18" y="18" width="40" height="9" rx="4.5" fill="#0a4f3f" transform="rotate(26 48 32)"/>
             <line x1="78" y1="44" x2="90" y2="122" stroke="#38bdf8" stroke-width="5.5" stroke-linecap="round" class="anim-water"/>
-          </g>
+          </g></g>
           <rect x="64" y="146" width="212" height="46" rx="22" fill="#fbd6b9" stroke="#c88d67" stroke-width="2.5"/>
           <line x1="252" y1="122" x2="252" y2="210" stroke="#d97706" stroke-width="3.5" stroke-dasharray="5 3"/>
           <text x="252" y="114" text-anchor="middle" font-size="11" font-weight="800" fill="#b45309">Melewati Siku ✓</text>
@@ -1195,11 +1195,11 @@ window.WudhuAnimator = (function () {
         "Basuh Kaki di Luar Bak + Doa",
         "DETAIL GAYUNG LANGKAH 6",
         `
-          <g transform="translate(56, 18)" class="anim-bob">
+          <g transform="translate(56, 18)"><g class="anim-bob">
             <rect x="18" y="12" width="52" height="32" rx="8" fill="#0f6b56" transform="rotate(26 44 28)"/>
             <rect x="-16" y="16" width="36" height="8" rx="4" fill="#0a4f3f" transform="rotate(26 44 28)"/>
             <line x1="72" y1="40" x2="88" y2="140" stroke="#38bdf8" stroke-width="5.5" stroke-linecap="round" class="anim-water"/>
-          </g>
+          </g></g>
           <path d="M168 88 L224 88 L224 196 Q224 224 194 224 L82 224 Q62 224 62 206 Q62 188 100 184 L168 166 Z" fill="#fbd6b9" stroke="#c88d67" stroke-width="2.5"/>
           <line x1="146" y1="130" x2="250" y2="130" stroke="#d97706" stroke-width="3.5" stroke-dasharray="5 3"/>
           <text x="256" y="134" text-anchor="start" font-size="10.5" font-weight="800" fill="#b45309">Mata Kaki ✓</text>
@@ -1241,11 +1241,11 @@ window.WudhuAnimator = (function () {
       // Left hand pours gently from gayung outside bak into right cupped hand moving to mouth/palms
       charArmsAndGayung = `
         <path d="M286 222 Q256 232 236 244" stroke="#ffffff" stroke-width="20" stroke-linecap="round" fill="none"/>
-        <g transform="translate(194, 218)" class="anim-bob">
+        <g transform="translate(194, 218)"><g class="anim-bob">
           <rect x="0" y="6" width="42" height="28" rx="7" fill="#0f6b56" transform="rotate(-24 21 20)"/>
           <rect x="34" y="14" width="28" height="8" rx="4" fill="#0a4f3f" transform="rotate(-24 21 20)"/>
           <line x1="8" y1="34" x2="22" y2="74" stroke="#38bdf8" stroke-width="5.5" stroke-linecap="round" class="anim-water"/>
-        </g>
+        </g></g>
         <g class="anim-rub-v">
           <path d="M376 220 Q320 278 228 290" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
           <ellipse cx="218" cy="292" rx="19" ry="11" fill="#fbd6b9" stroke="#d9a07b" stroke-width="2"/>
@@ -1327,11 +1327,11 @@ window.WudhuAnimator = (function () {
       charArmsAndGayung = `
         <!-- Left arm holding gayung tilted downward pouring directly onto raised foot -->
         <path d="M286 226 Q256 266 238 286" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
-        <g transform="translate(194, 268)" class="anim-bob">
+        <g transform="translate(194, 268)"><g class="anim-bob">
           <rect x="0" y="6" width="42" height="28" rx="7" fill="#0f6b56" transform="rotate(-28 21 20)"/>
           <rect x="34" y="14" width="26" height="7" rx="3.5" fill="#0a4f3f" transform="rotate(-28 21 20)"/>
           <line x1="8" y1="34" x2="12" y2="104" stroke="#38bdf8" stroke-width="5.5" stroke-linecap="round" class="anim-water"/>
-        </g>
+        </g></g>
         <!-- Right hand reaching down to rub foot/toes -->
         <g class="anim-rub-h">
           <path d="M376 232 Q314 316 244 364" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
