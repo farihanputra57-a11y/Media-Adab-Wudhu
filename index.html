@@ -520,9 +520,15 @@
             👨‍🏫 <strong>Mode Mengajar Guru:</strong> Menampilkan <strong>seluruh materi pembelajaran (Beranda, Animasi 8 Segmen, Wudhu Gayung, dan Zona Kinestetik)</strong> menggunakan identitas Guru <strong>tanpa tab Cek Pemahaman</strong>.
           </p>
           <div class="form-grid" style="margin-bottom:0">
-            <div class="field-group">
-              <label for="portal-teacher-name">Nama Lengkap Guru <span class="req">*</span></label>
-              <input type="text" id="portal-teacher-name" class="field-input" placeholder="Contoh: Ust. Farihan, S.Pd.I" autocomplete="off" />
+            <div class="form-row-2">
+              <div class="field-group">
+                <label for="portal-teacher-name">Nama Lengkap Guru <span class="req">*</span></label>
+                <input type="text" id="portal-teacher-name" class="field-input" placeholder="Contoh: Ust. Farihan, S.Pd.I" autocomplete="off" />
+              </div>
+              <div class="field-group">
+                <label for="portal-teacher-pass">Kata Sandi Mode Guru <span class="req">*</span></label>
+                <input type="password" id="portal-teacher-pass" class="field-input" placeholder="Masukkan sandi guru" autocomplete="off" />
+              </div>
             </div>
             <div class="form-row-2">
               <div class="field-group">
@@ -580,6 +586,7 @@
       const schoolInp = document.getElementById("portal-school");
       const classInp = document.getElementById("portal-class");
       const teacherNameInp = document.getElementById("portal-teacher-name");
+      const teacherPassInp = document.getElementById("portal-teacher-pass");
       const teacherSchoolInp = document.getElementById("portal-teacher-school");
       const teacherClassInp = document.getElementById("portal-teacher-class");
       const tabStudent = document.getElementById("tab-mode-student");
@@ -622,6 +629,7 @@
         schoolInp.value = "";
         classInp.value = "";
         if (teacherNameInp) teacherNameInp.value = "";
+        if (teacherPassInp) teacherPassInp.value = "";
         if (teacherSchoolInp) teacherSchoolInp.value = "";
         if (teacherClassInp) teacherClassInp.value = "";
         selectedLevel = "";
@@ -700,7 +708,7 @@
         }
       }
 
-      [nameInp, schoolInp, classInp, teacherNameInp, teacherSchoolInp, teacherClassInp].forEach((el) => {
+      [nameInp, schoolInp, classInp, teacherNameInp, teacherPassInp, teacherSchoolInp, teacherClassInp].forEach((el) => {
         if (!el) return;
         el.addEventListener("input", () => {
           el.classList.remove("error");
@@ -713,9 +721,14 @@
 
         if (isTeacherMode) {
           const tName = (teacherNameInp.value || "").trim();
+          const tPass = (teacherPassInp ? teacherPassInp.value : "").trim();
           const tSchool = (teacherSchoolInp.value || "").trim();
           const tClass = (teacherClassInp.value || "").trim();
           if (!tName) return showError("Mohon isi Nama Lengkap Guru terlebih dahulu.", teacherNameInp);
+          if (!tPass) return showError("Mohon masukkan Kata Sandi Mode Guru terlebih dahulu.", teacherPassInp);
+          if (tPass !== "guruhebat" && tPass !== "guru hebat") {
+            return showError("Kata Sandi Mode Guru salah! Hanya guru yang dapat mengakses mode ini.", teacherPassInp);
+          }
           if (!tSchool) return showError("Mohon isi Nama Sekolah / Madrasah terlebih dahulu.", teacherSchoolInp);
           if (!tClass) return showError("Mohon isi Kelas yang Diajar terlebih dahulu.", teacherClassInp);
           if (!selectedLevel) return showError("Mohon pilih Tingkatan Materi (SD / MI atau SMP / MTs) yang ingin diajarkan.");
