@@ -30,41 +30,21 @@
     activeRecorder: null,
     recordingSegId: null,
     tempoTimer: null,
+    tempoHoldTimer: null,
     tempoRunning: false
   };
 
   // ==================== PERSISTENCE ====================
+  // Setiap kali halaman dibuka/direfresh, progres pembelajaran selalu mulai bersih dari 0%
+  // (Data rekap guru di RECORDS_KEY & koneksi Google Sheets tetap tersimpan aman).
   function loadState() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw);
-      (parsed.completedSegments || []).forEach((id) => state.completedSegments.add(id));
-      if (parsed.foundHotspots) {
-        Object.keys(state.foundHotspots).forEach((k) => {
-          (parsed.foundHotspots[k] || []).forEach((pt) => state.foundHotspots[k].add(pt));
-        });
-      }
-      if (typeof parsed.quizScore === "number") state.quizScore = parsed.quizScore;
-      if (parsed.gender === "female" || parsed.gender === "male") state.gender = parsed.gender;
+      localStorage.removeItem(STORAGE_KEY);
     } catch (e) {}
   }
 
   function saveState() {
-    try {
-      const payload = {
-        gender: state.gender,
-        completedSegments: Array.from(state.completedSegments),
-        foundHotspots: {
-          wajah: Array.from(state.foundHotspots.wajah),
-          tangan: Array.from(state.foundHotspots.tangan),
-          kepala: Array.from(state.foundHotspots.kepala),
-          kaki: Array.from(state.foundHotspots.kaki)
-        },
-        quizScore: state.quizScore
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-    } catch (e) {}
+    // Sengaja hanya disimpan di memori sesi berjalan agar otomatis reset ke 0% saat dibuka ulang
   }
 
   function loadQuizRecords() {
@@ -367,10 +347,11 @@
     const fb = document.getElementById("hotspot-feedback");
     if (foundSet.size >= areaData.points.length) {
       fb.className = "hotspot-feedback complete";
-      fb.textContent = `★ Hebat! Semua ${areaData.points.length} titik batas wajib pada ${areaData.title} telah kamu kenali.`;
+      fb.textContent = `★ Hebat! Semua ${areaData.points.length} urutan batas wajib pada ${areaData.title} telah kamu temukan dengan benar.`;
     } else {
+      const nextPt = areaData.points[foundSet.size];
       fb.className = "hotspot-feedback";
-      fb.textContent = `Sentuh titik bernomor pada gambar (${foundSet.size}/${areaData.points.length} ditemukan). ${areaData.caption}`;
+      fb.innerHTML = `<strong>Langkah ${foundSet.size + 1} dari ${areaData.points.length}:</strong> ${nextPt.prompt}`;
     }
 
     board.querySelectorAll(".hotspot-dot").forEach((dot) => {
@@ -378,14 +359,35 @@
         const ptId = dot.dataset.pointId;
         const pt = areaData.points.find((p) => p.id === ptId);
         if (!pt) return;
-        const wasNew = !foundSet.has(ptId);
+
+        // Already discovered point -> show its description again
+        if (foundSet.has(ptId)) {
+          const fbNow = document.getElementById("hotspot-feedback");
+          fbNow.className = foundSet.size >= areaData.points.length ? "hotspot-feedback complete" : "hotspot-feedback";
+          fbNow.innerHTML = `<strong>${pt.title}:</strong> ${pt.desc}`;
+          return;
+        }
+
+        // Strict sequential check: student must find the next point in order!
+        const expectedPt = areaData.points[foundSet.size];
+        if (expectedPt && pt.id !== expectedPt.id) {
+          AUDIO.playChime("err");
+          const fbWrong = document.getElementById("hotspot-feedback");
+          fbWrong.className = "hotspot-feedback wrong";
+          fbWrong.innerHTML = `❌ <strong>Belum tepat urutannya!</strong> ${expectedPt.prompt}`;
+          return;
+        }
+
         foundSet.add(ptId);
         saveState();
-        AUDIO.playChime(foundSet.size >= areaData.points.length ? "win" : "ok");
+        const isAllDone = foundSet.size >= areaData.points.length;
+        AUDIO.playChime(isAllDone ? "win" : "ok");
         renderKinesthetic();
         const fbNow = document.getElementById("hotspot-feedback");
-        fbNow.innerHTML = `<strong>${pt.title}:</strong> ${pt.desc}`;
-        if (wasNew && foundSet.size >= areaData.points.length) {
+        fbNow.className = isAllDone ? "hotspot-feedback complete" : "hotspot-feedback";
+        const nextHint = !isAllDone ? `<br><span style="font-weight:700">Berikutnya: ${areaData.points[foundSet.size].prompt}</span>` : "";
+        fbNow.innerHTML = `✅ <strong>${pt.title}:</strong> ${pt.desc}${nextHint}`;
+        if (isAllDone) {
           showToast(`★ Bintang ${state.kinArea.toUpperCase()} terbuka!`);
         }
       };
@@ -398,29 +400,67 @@
       });
     });
 
-    // Populate tempo dropdown once
+    // Populate tempo dropdown once from DATA.tempoExercises
     const select = document.getElementById("tempo-segment-select");
-    if (!select.options.length) {
-      const options = [
-        "Membasuh Telapak & Sela Jari (3×)",
-        "Berkumur & Istinsyaq (3×)",
-        "Membasuh Wajah: Dahi–Dagu & Telinga–Telinga (3×)",
-        "Membasuh Tangan Kanan hingga Melewati Siku (3×)",
-        "Membasuh Tangan Kiri hingga Melewati Siku (3×)",
-        "Mengusap Sebagian Kepala & Telinga (Keran Ditutup)",
-        "Membasuh Kaki Kanan hingga Mata Kaki & Tumit (3×)",
-        "Membasuh Kaki Kiri hingga Mata Kaki & Tumit (3×)"
-      ];
-      select.innerHTML = options.map((o, i) => `<option value="${i}">${o}</option>`).join("");
+    if (!select.options.length && DATA.tempoExercises) {
+      select.innerHTML = DATA.tempoExercises
+        .map((ex, i) => `<option value="${i}">${ex.title}</option>`)
+        .join("");
     }
+    syncKin1Nav();
+    syncTempoPreview();
+  }
+
+  const KIN_AREA_ORDER = ["wajah", "tangan", "kepala", "kaki"];
+
+  function syncKin1Nav() {
+    const idx = KIN_AREA_ORDER.indexOf(state.kinArea);
+    const prev = document.getElementById("btn-kin1-prev");
+    const next = document.getElementById("btn-kin1-next");
+    const cnt = document.getElementById("kin1-counter");
+    if (prev) prev.disabled = idx <= 0;
+    if (next) next.disabled = idx >= KIN_AREA_ORDER.length - 1;
+    if (cnt) cnt.textContent = `Area ${idx + 1} / ${KIN_AREA_ORDER.length}`;
+  }
+
+  function getSelectedTempoExercise() {
+    const select = document.getElementById("tempo-segment-select");
+    const idx = select ? Number(select.value) || 0 : 0;
+    return (DATA.tempoExercises && DATA.tempoExercises[idx]) || DATA.tempoExercises[0];
+  }
+
+  function syncTempoPreview() {
+    const select = document.getElementById("tempo-segment-select");
+    const idx = select ? Number(select.value) || 0 : 0;
+    const total = DATA.tempoExercises ? DATA.tempoExercises.length : 8;
+    const ex = getSelectedTempoExercise();
+    if (!ex) return;
+    const badge = document.getElementById("tempo-water-badge");
+    const inst = document.getElementById("tempo-instruction");
+    if (badge) {
+      badge.textContent = ex.waterBadge;
+      badge.classList.toggle("closed", Boolean(ex.isTapClosed));
+    }
+    if (inst && !state.tempoRunning) {
+      inst.textContent = ex.prep;
+    }
+    const prev2 = document.getElementById("btn-kin2-prev");
+    const next2 = document.getElementById("btn-kin2-next");
+    const cnt2 = document.getElementById("kin2-counter");
+    if (prev2) prev2.disabled = idx <= 0;
+    if (next2) next2.disabled = idx >= total - 1;
+    if (cnt2) cnt2.textContent = `Gerakan ${idx + 1} / ${total}`;
   }
 
   function startTempo() {
     stopTempo();
+    const ex = getSelectedTempoExercise();
+    if (!ex) return;
     state.tempoRunning = true;
     const circle = document.getElementById("tempo-circle");
     const countEl = document.getElementById("tempo-count");
     const cueEl = document.getElementById("tempo-cue");
+    const instEl = document.getElementById("tempo-instruction");
     const dots = document.querySelectorAll("#tempo-dots .t-dot");
     dots.forEach((d) => d.classList.remove("active", "done"));
 
@@ -430,7 +470,8 @@
       if (step > 3) {
         circle.classList.remove("inhale");
         countEl.textContent = "Selesai ✓";
-        cueEl.textContent = "Masya Allah, tenang & rapi!";
+        cueEl.textContent = "Masya Allah, tenang!";
+        if (instEl) instEl.textContent = ex.done;
         AUDIO.playChime("win");
         state.tempoRunning = false;
         return;
@@ -444,17 +485,18 @@
 
       circle.classList.add("inhale");
       countEl.textContent = `Hitungan ${step}`;
-      cueEl.textContent = "Gerakkan perlahan & rata...";
+      cueEl.textContent = "Baca panduan & gerakkan perlahan...";
+      if (instEl) instEl.textContent = ex.steps[step - 1] || ex.prep;
       AUDIO.playChime("beat");
 
-      setTimeout(() => {
+      state.tempoHoldTimer = setTimeout(() => {
         if (!state.tempoRunning) return;
         circle.classList.remove("inhale");
-        cueEl.textContent = "Tahan sejenak (thuma'ninah)";
-      }, 1300);
+        cueEl.textContent = ex.hold;
+      }, 3500);
 
       step++;
-      state.tempoTimer = setTimeout(runBeat, 2600);
+      state.tempoTimer = setTimeout(runBeat, 6500);
     };
 
     runBeat();
@@ -463,6 +505,7 @@
   function stopTempo() {
     state.tempoRunning = false;
     clearTimeout(state.tempoTimer);
+    clearTimeout(state.tempoHoldTimer);
     const circle = document.getElementById("tempo-circle");
     if (circle) circle.classList.remove("inhale");
     const countEl = document.getElementById("tempo-count");
@@ -470,6 +513,7 @@
     if (countEl) countEl.textContent = "Siap";
     if (cueEl) cueEl.textContent = "Tekan Mulai";
     document.querySelectorAll("#tempo-dots .t-dot").forEach((d) => d.classList.remove("active", "done"));
+    syncTempoPreview();
   }
 
   // ==================== VIEW 4: CEK PEMAHAMAN ====================
@@ -790,6 +834,55 @@
         state.kinArea = btn.dataset.area;
         renderKinesthetic();
       });
+    });
+
+    document.getElementById("btn-reset-kin-area").addEventListener("click", () => {
+      state.foundHotspots[state.kinArea].clear();
+      saveState();
+      renderKinesthetic();
+      showToast("Tantangan area ini diulang dari awal!");
+    });
+
+    document.getElementById("tempo-segment-select").addEventListener("change", () => {
+      stopTempo();
+      syncTempoPreview();
+    });
+
+    document.getElementById("btn-kin1-prev").addEventListener("click", () => {
+      const idx = KIN_AREA_ORDER.indexOf(state.kinArea);
+      if (idx > 0) {
+        state.kinArea = KIN_AREA_ORDER[idx - 1];
+        renderKinesthetic();
+      }
+    });
+
+    document.getElementById("btn-kin1-next").addEventListener("click", () => {
+      const idx = KIN_AREA_ORDER.indexOf(state.kinArea);
+      if (idx < KIN_AREA_ORDER.length - 1) {
+        state.kinArea = KIN_AREA_ORDER[idx + 1];
+        renderKinesthetic();
+      }
+    });
+
+    document.getElementById("btn-kin2-prev").addEventListener("click", () => {
+      const select = document.getElementById("tempo-segment-select");
+      const idx = Number(select.value) || 0;
+      if (idx > 0) {
+        select.value = String(idx - 1);
+        stopTempo();
+        syncTempoPreview();
+      }
+    });
+
+    document.getElementById("btn-kin2-next").addEventListener("click", () => {
+      const select = document.getElementById("tempo-segment-select");
+      const idx = Number(select.value) || 0;
+      const total = DATA.tempoExercises ? DATA.tempoExercises.length : 8;
+      if (idx < total - 1) {
+        select.value = String(idx + 1);
+        stopTempo();
+        syncTempoPreview();
+      }
     });
 
     document.getElementById("btn-start-tempo").addEventListener("click", startTempo);

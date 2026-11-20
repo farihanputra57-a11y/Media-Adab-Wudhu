@@ -453,42 +453,149 @@ window.WUDHU_DATA = {
   kinestheticAreas: {
     wajah: {
       title: "Batas Wajib Wajah (Mazhab Syafi'i)",
-      caption: "Wajib membasuh dari batas tumbuh rambut di dahi sampai bawah dagu, serta dari pangkal telinga kanan hingga pangkal telinga kiri.",
+      caption: "Temukan urutan batas wajib wajah dari paling atas, ke paling bawah, lalu samping kanan hingga samping kiri.",
       points: [
-        { id: "w1", x: 180, y: 66, label: "1", title: "Batas Atas (Tumbuh Rambut Dahi)", desc: "Air harus mencapai garis tempat tumbuhnya rambut kepala di dahi." },
-        { id: "w2", x: 180, y: 205, label: "2", title: "Batas Bawah (Ujung Dagu)", desc: "Pastikan bagian bawah dagu ikut terbasuh air secara merata." },
-        { id: "w3", x: 108, y: 136, label: "3", title: "Batas Kanan (Pangkal Telinga Kanan)", desc: "Basuh sampai area kulit di depan pangkal telinga kanan." },
-        { id: "w4", x: 252, y: 136, label: "4", title: "Batas Kiri (Pangkal Telinga Kiri)", desc: "Basuh merata hingga pangkal telinga kiri agar seluruh wajah sah terbasuh." }
+        { id: "w1", x: 180, y: 66, label: "1", prompt: "Cari titik AWAL (paling atas) batas wajib wajah!", title: "Urutan 1 — Batas Atas (Tumbuh Rambut Dahi)", desc: "Tepat! Membasuh wajah dimulai dari batas atas tempat tumbuhnya rambut kepala di dahi." },
+        { id: "w2", x: 180, y: 205, label: "2", prompt: "Sekarang cari titik batas PALING BAWAH pada wajah!", title: "Urutan 2 — Batas Bawah (Ujung Dagu)", desc: "Benar! Alirkan air turun hingga bagian bawah ujung dagu terbasuh merata." },
+        { id: "w3", x: 108, y: 136, label: "3", prompt: "Lanjut! Cari titik batas SAMPING KANAN wajah!", title: "Urutan 3 — Batas Kanan (Pangkal Telinga Kanan)", desc: "Bagus! Ratakan air sampai kulit di depan pangkal telinga kanan." },
+        { id: "w4", x: 252, y: 136, label: "4", prompt: "Terakhir, cari titik batas SAMPING KIRI wajah!", title: "Urutan 4 — Batas Kiri (Pangkal Telinga Kiri)", desc: "Sempurna! Meratakan hingga pangkal telinga kiri menyempurnakan batas wajib wajah." }
       ]
     },
     tangan: {
       title: "Batas Wajib Tangan hingga Siku",
-      caption: "Wajib membasuh mulai dari ujung kuku & sela jari, seluruh lengan bawah, hingga sedikit MELEWATI tulang siku.",
+      caption: "Temukan urutan membasuh tangan mulai dari ujung paling depan hingga melewati batas akhir di lengan.",
       points: [
-        { id: "t1", x: 75, y: 145, label: "1", title: "Ujung Jari & Kuku", desc: "Mulai aliran air dari ujung jari, bersihkan sela-sela jari." },
-        { id: "t2", x: 165, y: 145, label: "2", title: "Pergelangan & Lengan Bawah", desc: "Lepas jam tangan atau gelang ketat agar air merata ke seluruh kulit." },
-        { id: "t3", x: 268, y: 145, label: "3", title: "Melewati Tulang Siku", desc: "Dalam Mazhab Syafi'i, tulang siku wajib ikut terbasuh (lebihkan 2–3 cm di atas siku)." }
+        { id: "t1", x: 75, y: 145, label: "1", prompt: "Dari bagian mana aliran air tangan DIMULAI? Sentuh titik awalnya!", title: "Urutan 1 — Ujung Jari & Kuku", desc: "Benar! Membasuh tangan dimulai dari ujung jari, kuku, dan sela-sela jari." },
+        { id: "t2", x: 165, y: 145, label: "2", prompt: "Setelah ujung jari, ke bagian tengah mana air dialirkan?", title: "Urutan 2 — Pergelangan & Lengan Bawah", desc: "Tepat! Alirkan air ke pergelangan dan lengan bawah (lepas jam/gelang ketat)." },
+        { id: "t3", x: 268, y: 145, label: "3", prompt: "Terakhir, sentuh batas AKHIR wajib membasuh tangan!", title: "Urutan 3 — Melewati Tulang Siku", desc: "Sempurna! Dalam Mazhab Syafi'i, basuhan wajib melewati sedikit (2–3 cm) tulang siku." }
       ]
     },
     kepala: {
-      title: "Batas Usap Sebagian Kepala",
-      caption: "Rukun Mazhab Syafi'i cukup mengusap sebagian kulit kepala/rambut di dalam batas kepala; sunnahnya mengusap dari depan ke belakang. Jangan lupa tutup/kecilkan keran!",
+      title: "Batas Usap Sebagian Kepala & Telinga",
+      caption: "Temukan urutan mengusap kepala mulai dari titik rukun di depan, arah usapan ke belakang, lalu sunnah lanjutannya.",
       points: [
-        { id: "k1", x: 180, y: 74, label: "1", title: "Ubun-ubun / Rambut Depan (Rukun)", desc: "Mengusap sebagian rambut atau kulit di area batas kepala sudah memenuhi rukun." },
-        { id: "k2", x: 180, y: 126, label: "2", title: "Arah Usapan ke Belakang (Sunnah)", desc: "Sunnah mengusap dari dahi ke belakang kepala lalu kembali ke depan." },
-        { id: "k3", x: 270, y: 142, label: "3", title: "Daun Telinga (Sunnah Lanjutan)", desc: "Dilanjutkan mengusap lekuk dalam dan belakang daun telinga dengan tenang." }
+        { id: "k1", x: 180, y: 74, label: "1", prompt: "Sentuh titik AWAL (rukun) tempat tangan basah mulai mengusap kepala!", title: "Urutan 1 — Ubun-ubun / Rambut Depan (Rukun)", desc: "Benar! Usapan dimulai dari bagian depan batas rambut kepala (untuk putri: di balik tepi jilbab)." },
+        { id: "k2", x: 180, y: 126, label: "2", prompt: "Ke arah mana sunnah usapan kepala dilanjutkan?", title: "Urutan 2 — Arah Usapan ke Belakang (Sunnah)", desc: "Tepat! Sunnah mengusap dari dahi ke arah belakang kepala lalu kembali ke depan." },
+        { id: "k3", x: 270, y: 142, label: "3", prompt: "Terakhir, bagian sunnah mana yang diusap setelah kepala?", title: "Urutan 3 — Daun & Lubang Telinga (Sunnah Lanjutan)", desc: "Sempurna! Dilanjutkan mengusap lekuk dalam dan belakang daun telinga dengan tenang." }
       ]
     },
     kaki: {
       title: "Batas Wajib Kaki hingga Mata Kaki",
-      caption: "Wajib membasuh seluruh jari kaki, telapak, tumit belakang, hingga sedikit MELEWATI kedua mata kaki.",
+      caption: "Temukan urutan membasuh kaki mulai dari bagian paling depan, ke bagian belakang yang sering terlewat, hingga batas paling atas.",
       points: [
-        { id: "f1", x: 92, y: 192, label: "1", title: "Jari-Jari & Sela Kaki", desc: "Sela-sela jari kaki dibersihkan menggunakan jari kelingking agar tidak terlewat." },
-        { id: "f2", x: 215, y: 196, label: "2", title: "Bagian Belakang Tumit", desc: "Tumit belakang adalah bagian yang paling sering kering saat terburu-buru. Pastikan basah!" },
-        { id: "f3", x: 205, y: 112, label: "3", title: "Melewati Mata Kaki", desc: "Air harus membasuh tonjolan mata kaki bagian dalam dan luar hingga sedikit di atasnya." }
+        { id: "f1", x: 92, y: 192, label: "1", prompt: "Sentuh bagian AWAL kaki yang mulai dibasuh dan disela-sela!", title: "Urutan 1 — Jari-Jari & Sela Kaki", desc: "Benar! Mulai dari jari-jari kaki dan bersihkan sela-selanya dengan jari kelingking." },
+        { id: "f2", x: 215, y: 196, label: "2", prompt: "Sekarang cari titik bagian BELAKANG kaki yang sering terlewat kering!", title: "Urutan 2 — Bagian Belakang Tumit", desc: "Tepat! Tumit belakang paling sering kering saat terburu-buru, pastikan basah rata." },
+        { id: "f3", x: 205, y: 112, label: "3", prompt: "Terakhir, sentuh batas PALING ATAS yang wajib terkena air pada kaki!", title: "Urutan 3 — Melewati Mata Kaki", desc: "Sempurna! Air wajib membasuh kedua tonjolan mata kaki hingga sedikit di atasnya." }
       ]
     }
   },
+
+  tempoExercises: [
+    {
+      title: "1. Membasuh Telapak & Sela Jari (3×)",
+      waterBadge: "💧 Keran: Aliran Kecil (Hemat Air)",
+      isTapClosed: false,
+      prep: "Berdiri tenang, baca Basmalah, lalu gosok telapak, punggung tangan, dan tautkan sela jari mengikuti 3 hitungan.",
+      steps: [
+        "Hitungan 1: Gosok lembut kedua telapak & punggung tangan hingga pergelangan.",
+        "Hitungan 2: Tautkan jari kanan & kiri, bersihkan sela-sela jari secara merata.",
+        "Hitungan 3: Ulangi basuhan telapak & sela jari dengan tenang tanpa tergesa."
+      ],
+      hold: "Tahan sejenak — rasakan ketenangan (thuma'ninah)",
+      done: "Alhamdulillah! Telapak & sela jari sudah dibasuh 3× dengan tenang."
+    },
+    {
+      title: "2. Berkumur & Istinsyaq Hidung (3×)",
+      waterBadge: "💧 Keran: Aliran Kecil (Ambil dengan Tangan Kanan)",
+      isTapClosed: false,
+      prep: "Tadahkan telapak tangan kanan untuk mengambil air secukupnya (jangan menengadahkan mulut langsung ke keran).",
+      steps: [
+        "Hitungan 1: Ambil air dengan tangan kanan, putar di rongga mulut lalu keluarkan sopan.",
+        "Hitungan 2: Hirup sedikit air ke ujung hidung (istinsyaq), lalu keluarkan dengan tangan kiri.",
+        "Hitungan 3: Ulangi kumur dan bersihkan hidung dengan tempo lembut dan tidak tergesa."
+      ],
+      hold: "Keluarkan air dengan sopan & tenang",
+      done: "Bagus! Berkumur & istinsyaq telah dilakukan 3× dengan tertib."
+    },
+    {
+      title: "3. Membasuh Wajah: Dahi–Dagu & Telinga–Telinga (3×)",
+      waterBadge: "💧 Keran: Aliran Kecil (Tampung di Dua Telapak)",
+      isTapClosed: false,
+      prep: "Tampung air di kedua telapak tangan, hadirkan niat wudhu di hati, lalu usapkan lembut (jangan ditepuk keras).",
+      steps: [
+        "Hitungan 1: Sertakan niat di hati! Usap dari batas rambut dahi turun hingga bawah dagu.",
+        "Hitungan 2: Ratakan air ke pipi kanan & kiri hingga pangkal kedua telinga.",
+        "Hitungan 3: Pastikan sudut mata, cuping hidung & bibir ikut basah merata (putri: longgarkan sedikit tepi ciput)."
+      ],
+      hold: "Usap lembut & rata — tidak menepuk wajah",
+      done: "Masya Allah! Seluruh batas wajib wajah telah terbasuh 3× dengan tenang."
+    },
+    {
+      title: "4. Membasuh Tangan Kanan hingga Melewati Siku (3×)",
+      waterBadge: "💧 Keran: Aliran Kecil (Lengan Baju Digulung di Atas Siku)",
+      isTapClosed: false,
+      prep: "Pastikan lengan baju kanan digulung di atas siku & jam/gelang ketat sudah dilepas. Mulai dari ujung jari kanan.",
+      steps: [
+        "Hitungan 1: Alirkan air dari ujung jari kanan, gosok perlahan hingga melewati tulang siku kanan.",
+        "Hitungan 2: Gosok memutar bagian belakang siku kanan agar tidak ada kulit yang kering.",
+        "Hitungan 3: Ulangi aliran dari ujung jari hingga 2–3 cm di atas siku kanan dengan tenang."
+      ],
+      hold: "Cek lipatan belakang siku kanan sudah basah",
+      done: "Hebat! Tangan kanan hingga melewati siku sudah terbasuh 3× sempurna."
+    },
+    {
+      title: "5. Membasuh Tangan Kiri hingga Melewati Siku (3×)",
+      waterBadge: "💧 Keran: Aliran Kecil (Lengan Baju Digulung di Atas Siku)",
+      isTapClosed: false,
+      prep: "Lanjutkan dengan tangan kiri. Pastikan lengan baju kiri tergulung rapi di atas siku, mulai dari ujung jari kiri.",
+      steps: [
+        "Hitungan 1: Alirkan air dari ujung jari kiri menuju pergelangan hingga melewati siku kiri.",
+        "Hitungan 2: Gosok merata bagian belakang siku kiri dan sela-sela jari kiri.",
+        "Hitungan 3: Sempurnakan basuhan ketiga dari ujung jari hingga di atas siku kiri dengan tenang."
+      ],
+      hold: "Cek lipatan belakang siku kiri sudah basah",
+      done: "Alhamdulillah! Kedua tangan hingga melewati siku telah selesai dengan rapi."
+    },
+    {
+      title: "6. Mengusap Sebagian Kepala & Telinga (Keran Ditutup)",
+      waterBadge: "🚫 Keran: TUTUP / KECILKAN DAHULU (Adab Hemat Air!)",
+      isTapClosed: true,
+      prep: "Basahi kedua telapak tangan lalu TUTUP keran terlebih dahulu! Untuk putri: masukkan tangan basah di balik tepi jilbab.",
+      steps: [
+        "Hitungan 1: Pastikan keran tertutup! Usapkan tangan basah ke sebagian rambut/kulit di batas depan kepala.",
+        "Hitungan 2: Sunnah: lanjutkan usapan lembut ke belakang kepala lalu kembali ke depan.",
+        "Hitungan 3: Masukkan telunjuk ke lekuk dalam telinga & ibu jari di belakang daun telinga secara bersamaan."
+      ],
+      hold: "Keran tetap tertutup — bebas pemborosan air (anti-israf)",
+      done: "Luar biasa! Usap kepala & telinga selesai dengan adab hemat air."
+    },
+    {
+      title: "7. Membasuh Kaki Kanan hingga Mata Kaki & Tumit (3×)",
+      waterBadge: "💧 Keran: Buka Kembali Aliran Kecil (Lepas Kaus Kaki)",
+      isTapClosed: false,
+      prep: "Buka keran aliran kecil, lepas kaus kaki, dan posisikan kaki kanan dekat saluran agar tidak memerciki teman.",
+      steps: [
+        "Hitungan 1: Basuh punggung kaki kanan, jari kaki, hingga melewati kedua tonjolan mata kaki kanan.",
+        "Hitungan 2: Sela-sela jari kaki kanan dibersihkan memakai jari kelingking tangan kiri.",
+        "Hitungan 3: Periksa & gosok bagian belakang tumit kaki kanan agar tidak ada yang kering."
+      ],
+      hold: "Pastikan mata kaki & tumit kanan basah merata",
+      done: "Bagus sekali! Kaki kanan hingga melewati mata kaki & tumit sudah sempurna."
+    },
+    {
+      title: "8. Membasuh Kaki Kiri hingga Mata Kaki & Tumit (3×)",
+      waterBadge: "💧 Keran: Aliran Kecil → Lalu Tutup Rapat di Akhir",
+      isTapClosed: false,
+      prep: "Lanjutkan kaki kiri dengan cara yang sama, jaga agar tidak memercik, lalu bersiap menutup keran hingga rapat.",
+      steps: [
+        "Hitungan 1: Basuh merata jari kaki kiri, telapak, hingga melewati kedua mata kaki kiri.",
+        "Hitungan 2: Bersihkan sela-sela jari kaki kiri dengan jari kelingking dan gosok tumit belakang.",
+        "Hitungan 3: Sempurnakan basuhan ketiga, lalu putar keran hingga tertutup rapat tanpa menetes."
+      ],
+      hold: "Tutup keran rapat & tenangkan hati menuju doa",
+      done: "Masya Allah! Seluruh rangkaian gerak wudhu 3× tenang telah tuntas!"
+    }
+  ],
 
   quiz: [
     {

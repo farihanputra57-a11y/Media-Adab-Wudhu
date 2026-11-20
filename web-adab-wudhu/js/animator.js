@@ -869,11 +869,12 @@ window.WudhuAnimator = (function () {
       .map((pt) => {
         const isDone = foundSet.has(pt.id);
         const fill = isDone ? "#16a34a" : "#d97706";
+        const symbol = interactive ? (isDone ? `${pt.label}✓` : "?") : pt.label;
         return `
           <g class="hotspot-dot" data-point-id="${pt.id}" ${interactive ? 'role="button" tabindex="0"' : ""}>
             ${interactive && !isDone ? `<circle cx="${pt.x}" cy="${pt.y}" r="18" fill="${fill}" opacity="0.35" class="hotspot-pulse"/>` : ""}
             <circle cx="${pt.x}" cy="${pt.y}" r="15" fill="${fill}" stroke="#ffffff" stroke-width="3"/>
-            <text x="${pt.x}" y="${pt.y + 5}" text-anchor="middle" font-size="13" font-weight="800" fill="#ffffff">${isDone ? "✓" : pt.label}</text>
+            <text x="${pt.x}" y="${pt.y + 5}" text-anchor="middle" font-size="${interactive && isDone ? 11.5 : 13}" font-weight="800" fill="#ffffff">${symbol}</text>
           </g>
         `;
       })
