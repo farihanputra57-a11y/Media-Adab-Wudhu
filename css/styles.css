@@ -2455,6 +2455,39 @@ button, input, select {
   white-space: nowrap;
 }
 
+/* ==================== LATIHAN MANDIRI INSTANT FEEDBACK ==================== */
+.q-opt.latihan-right {
+  background: #dcfce7 !important;
+  border-color: #16a34a !important;
+  color: #166534 !important;
+}
+
+.q-opt.latihan-wrong {
+  background: #ffe4e6 !important;
+  border-color: #e11d48 !important;
+  color: #9f1239 !important;
+}
+
+.latihan-fb {
+  margin-top: 10px;
+  padding: 10px 13px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.latihan-fb.ok {
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  color: #065f46;
+}
+
+.latihan-fb.err {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #9f1239;
+}
+
 /* ==================== TOAST ==================== */
 .toast {
   position: fixed;
