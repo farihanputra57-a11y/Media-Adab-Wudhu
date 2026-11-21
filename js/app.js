@@ -4,9 +4,11 @@
   const ANIM = window.WudhuAnimator;
 
   const STORAGE_KEY = "adab_wudhu_web_state_v1";
+  const SESSION_PROGRESS_KEY = "adab_wudhu_session_progress_v1";
   const RECORDS_KEY = "adab_wudhu_quiz_records_v1";
   const SHEETS_URL_KEY = "adab_wudhu_sheets_url_v1";
   const PROFILE_KEY = "adab_wudhu_student_profile_v1";
+  const TEACHER_SHEETS_VIEW_URL = "https://docs.google.com/spreadsheets/d/1DoK0WDUYcwFKM1Ly5ol8bTAbn3GOkwP6zWv32aM6oic/edit";
 
   const state = {
     view: "home",
@@ -39,16 +41,53 @@
   };
 
   // ==================== PERSISTENCE ====================
-  // Setiap kali halaman dibuka/direfresh, progres pembelajaran selalu mulai bersih dari 0%
-  // (Data rekap guru di RECORDS_KEY & koneksi Google Sheets tetap tersimpan aman).
+  // Progres disimpan sementara di sessionStorage selama sesi siswa masih aktif (agar tidak hilang jika HP tidak sengaja ter-refresh),
+  // dan otomatis direset bersih ke 0% saat selesai 100% & keluar ke Halaman Awal.
   function loadState() {
     try {
       localStorage.removeItem(STORAGE_KEY);
+      const saved = JSON.parse(sessionStorage.getItem(SESSION_PROGRESS_KEY) || "null");
+      if (saved && saved.level === state.level) {
+        if (Array.isArray(saved.completedSegments)) {
+          state.completedSegments = new Set(saved.completedSegments);
+        }
+        if (saved.foundHotspots) {
+          ["wajah", "tangan", "kepala", "kaki"].forEach((k) => {
+            if (Array.isArray(saved.foundHotspots[k])) {
+              state.foundHotspots[k] = new Set(saved.foundHotspots[k]);
+            }
+          });
+        }
+        if (saved.quizAnswers && typeof saved.quizAnswers === "object") {
+          state.quizAnswers = saved.quizAnswers;
+        }
+        if (typeof saved.quizScore === "number") {
+          state.quizScore = saved.quizScore;
+        }
+        if (typeof saved.quizSubmitted === "boolean") {
+          state.quizSubmitted = saved.quizSubmitted;
+        }
+      }
     } catch (e) {}
   }
 
   function saveState() {
-    // Sengaja hanya disimpan di memori sesi berjalan agar otomatis reset ke 0% saat dibuka ulang
+    try {
+      const payload = {
+        level: state.level,
+        completedSegments: Array.from(state.completedSegments),
+        foundHotspots: {
+          wajah: Array.from(state.foundHotspots.wajah),
+          tangan: Array.from(state.foundHotspots.tangan),
+          kepala: Array.from(state.foundHotspots.kepala),
+          kaki: Array.from(state.foundHotspots.kaki)
+        },
+        quizAnswers: state.quizAnswers,
+        quizScore: state.quizScore,
+        quizSubmitted: state.quizSubmitted
+      };
+      sessionStorage.setItem(SESSION_PROGRESS_KEY, JSON.stringify(payload));
+    } catch (e) {}
   }
 
   function loadQuizRecords() {
@@ -157,6 +196,7 @@
     isExitingToGateway = true;
     try {
       sessionStorage.removeItem(PROFILE_KEY);
+      sessionStorage.removeItem(SESSION_PROGRESS_KEY);
       localStorage.removeItem(STORAGE_KEY);
     } catch (e) {}
     try {
@@ -218,6 +258,9 @@
             <div style="font-size:12px;color:#d1fae5;line-height:1.45;">
               💡 Seluruh 8 segmen animasi, audio narator, panduan wudhu gayung, dan zona kinestetik siap ditayangkan di kelas.
             </div>
+            <a href="${TEACHER_SHEETS_VIEW_URL}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background:#fef3c7;color:#92400e;border:1px solid #fcd34d;font-weight:800;text-align:center;text-decoration:none;border-radius:10px;padding:9px 12px;display:inline-flex;align-items:center;justify-content:center;gap:6px;">
+              📊 Buka Rekap Google Sheets (SD &amp; SMP)
+            </a>
           </div>
         `;
       }
@@ -307,6 +350,37 @@
         ];
 
     sec.innerHTML = `
+      <div class="academic-card academic-fiqh-full">
+        <div class="academic-card-head">
+          <span class="academic-ico">📖</span>
+          <div>
+            <h3>Ringkasan Syarat Sah &amp; Hal yang Membatalkan Wudhu (Mazhab Syafi'i)</h3>
+            <small>Rujukan Fikih <em>Fath al-Qarib al-Mujib</em> — Wajib Dipahami Sebelum &amp; Sesudah Berwudhu</small>
+          </div>
+        </div>
+        <div class="fiqh-two-col">
+          <div class="fiqh-box">
+            <h4>✅ Syarat Sah Wudhu</h4>
+            <ul>
+              <li><strong>Islam &amp; Tamyiz</strong> (sudah dapat membedakan baik dan buruk).</li>
+              <li><strong>Suci dari haid &amp; nifas</strong> (khusus bagi siswi perempuan).</li>
+              <li><strong>Menggunakan air suci menyucikan (<em>air mutlaq</em>)</strong>, bukan air <em>musta'mal</em>.</li>
+              <li><strong>Tidak ada penghalang air ke kulit/kuku</strong> (seperti cat, kuteks, lem, atau lilin).</li>
+              <li><strong>Tidak ada benda yang mengubah sifat air</strong> di atas anggota wudhu.</li>
+            </ul>
+          </div>
+          <div class="fiqh-box fiqh-box-warn">
+            <h4>⚠️ Hal yang Membatalkan Wudhu (<em>Nawaqidh al-Wudhu</em>)</h4>
+            <ul>
+              <li><strong>Keluar sesuatu dari qubul atau dubur</strong> (buang air kecil/besar, kentut).</li>
+              <li><strong>Hilang akal</strong> karena tidur dengan posisi duduk tidak mantap, pingsan, atau gila.</li>
+              <li><strong>Bersentuhan kulit laki-laki &amp; perempuan dewasa bukan mahram</strong> tanpa penghalang.</li>
+              <li><strong>Menyentuh kemaluan manusia</strong> menggunakan telapak tangan bagian dalam tanpa penghalang.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <div class="academic-card">
         <div class="academic-card-head">
           <span class="academic-ico">🎯</span>
@@ -1671,12 +1745,100 @@
     });
   }
 
+  // ==================== PANDUAN PENGGUNAAN & KONTROL BGM TOPBAR ====================
+  function initTopbarUtilities() {
+    const fsBtn = document.getElementById("btn-fullscreen");
+    const container = (fsBtn && fsBtn.parentElement) || document.querySelector(".topbar-actions, .topbar-inner");
+    if (!container) return;
+
+    // 1. Tombol Toggle BGM (🎵/🔇) agar tidak bentrok suara saat dipakai serentak di kelas
+    if (!document.getElementById("btn-toggle-bgm")) {
+      const bgmBtn = document.createElement("button");
+      bgmBtn.id = "btn-toggle-bgm";
+      bgmBtn.type = "button";
+      bgmBtn.className = "btn btn-outline btn-sm topbar-util-btn";
+      bgmBtn.textContent = "🎵 BGM";
+      bgmBtn.title = "Nyalakan / Matikan Musik Latar Islami";
+      bgmBtn.addEventListener("click", () => {
+        const playing = AUDIO.toggleBgm();
+        bgmBtn.textContent = playing ? "🎵 BGM" : "🔇 BGM";
+        bgmBtn.classList.toggle("bgm-muted", !playing);
+        showToast(playing ? "🎵 Musik latar Islami dinyalakan." : "🔇 Musik latar dimatikan (narator tetap aktif).");
+      });
+      if (fsBtn) container.insertBefore(bgmBtn, fsBtn);
+      else container.appendChild(bgmBtn);
+    }
+
+    // 2. Tombol ❓ Panduan Penggunaan (butir penting validasi ahli media & kemudahan pengguna)
+    if (!document.getElementById("btn-open-guide")) {
+      const guideBtn = document.createElement("button");
+      guideBtn.id = "btn-open-guide";
+      guideBtn.type = "button";
+      guideBtn.className = "btn btn-outline btn-sm topbar-util-btn";
+      guideBtn.textContent = "❓ Panduan";
+      guideBtn.title = "Buka Panduan Penggunaan Media";
+      guideBtn.addEventListener("click", openGuideModal);
+      if (fsBtn) container.insertBefore(guideBtn, fsBtn);
+      else container.appendChild(guideBtn);
+    }
+  }
+
+  function openGuideModal() {
+    let modal = document.getElementById("guide-modal-backdrop");
+    if (modal) modal.remove();
+
+    const teacherMode = isTeacherSession();
+    const isSmp = state.level === "smp";
+    modal = document.createElement("div");
+    modal.id = "guide-modal-backdrop";
+    modal.className = "guide-modal-backdrop";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.innerHTML = `
+      <div class="guide-modal-card">
+        <div class="guide-modal-head">
+          <h3>❓ Panduan Penggunaan Media (${teacherMode ? "Mode Guru" : isSmp ? "Siswa SMP/MTs" : "Siswa SD/MI"})</h3>
+          <button type="button" class="btn btn-outline btn-sm" id="btn-close-guide">✕ Tutup</button>
+        </div>
+        <div class="guide-modal-body">
+          ${
+            teacherMode
+              ? `
+                <ol class="guide-step-list">
+                  <li><strong>Presentasi Kelas:</strong> Klik tombol <strong>Proyektor</strong> di pojok kanan atas untuk tampilan layar penuh. Anda dapat mematikan/menyalakan musik latar lewat tombol <strong>🎵/🔇 BGM</strong>.</li>
+                  <li><strong>Tayangkan Materi Inti:</strong> Jelaskan <strong>8 Segmen Animasi Putra &amp; Putri</strong> (lengkap dengan <em>Zoom Batas Wajib</em> &amp; audio narator), <strong>Wudhu Gayung (2 Qullah)</strong>, serta demonstrasikan <strong>Zona Kinestetik 3× Thuma'ninah</strong>.</li>
+                  <li><strong>Penilaian Kognitif &amp; Psikomotorik:</strong> Hasil <em>Cek Pemahaman</em> siswa (ranah kognitif) dapat dipantau langsung lewat tombol <strong>📊 Buka Rekap Google Sheets</strong> di Beranda Mode Guru, lalu dipadukan dengan observasi praktik wudhu nyata di tempat wudhu sekolah (ranah psikomotorik).</li>
+                  <li><strong>Keluar:</strong> Klik tombol <strong>🚪 Keluar</strong> pada menu atas kapan saja untuk kembali ke Halaman Awal.</li>
+                </ol>
+              `
+              : `
+                <ol class="guide-step-list">
+                  <li><strong>Langkah 1 — Pelajari 8 Segmen Materi:</strong> Buka tab <strong>🎬 Animasi 8 Segmen</strong>, dengarkan narator audio, amati batas wajib Putra &amp; Putri, lalu klik <strong>"✓ Tandai Segmen Ini Sudah Dipahami"</strong> pada setiap segmen (8/8).</li>
+                  <li><strong>Langkah 2 — Pahami Wudhu Gayung &amp; Zona Kinestetik:</strong> Pelajari tab <strong>🪣 Wudhu Gayung</strong>, lalu tuntaskan <strong>4 Area Bintang Kinestetik</strong> pada tab <strong>✋ Zona Kinestetik</strong> (4/4).</li>
+                  <li><strong>Langkah 3 — Kerjakan Cek Pemahaman (10 Soal):</strong> Buka tab <strong>✅ Cek Pemahaman</strong>, jawab seluruh 10 soal dengan jujur, lalu klik <strong>📤 Kirim &amp; Simpan Jawaban</strong>.</li>
+                  <li><strong>Syarat Keluar 100%:</strong> Halaman otomatis keluar ke Halaman Awal setelah <strong>Pemahaman Materi mencapai 100%</strong> dan jawaban terkirim ke Google Sheets Guru. Jika terlalu ramai di kelas tanpa <em>headset</em>, gunakan tombol <strong>🎵/🔇 BGM</strong> di pojok atas.</li>
+                </ol>
+              `
+          }
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    const close = () => modal.remove();
+    document.getElementById("btn-close-guide").addEventListener("click", close);
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) close();
+    });
+  }
+
   // ==================== BOOT ====================
   if (!loadStudentProfile()) return;
   loadState();
   syncLevelUI();
   syncStudentProfileUI();
   syncGenderUI();
+  initTopbarUtilities();
   initSplashScreen();
   bindEvents();
   initSavedAudioClips().then(() => {
