@@ -778,6 +778,15 @@
               <input type="text" id="portal-class" class="field-input" placeholder="Kelas 4–7 (misal: 5-A / VII-A)" autocomplete="off" required />
             </div>
           </div>
+
+          <div class="field-group">
+            <label for="portal-session">Sesi Pembelajaran / Penelitian <span class="req">*</span></label>
+            <select id="portal-session" class="field-input">
+              <option value="Pretest">📝 Pretest (Sebelum Pembelajaran)</option>
+              <option value="Posttest" selected>🎓 Posttest (Sesudah Pembelajaran)</option>
+              <option value="Latihan">📖 Latihan Mandiri</option>
+            </select>
+          </div>
         </div>
 
         <!-- KOTAK INPUT KHUSUS GURU (MODE MENGAJAR) -->
@@ -1167,7 +1176,9 @@
         }
 
         const levelLabel = selectedLevel === "smp" ? "SMP/MTs" : "SD/MI";
-        const profile = { name, school, kelas, level: selectedLevel, levelLabel, isTeacher: false };
+        const sessionSel = document.getElementById("portal-session");
+        const sesi = sessionSel ? sessionSel.value : "Posttest";
+        const profile = { name, school, kelas, sesi, level: selectedLevel, levelLabel, isTeacher: false };
 
         try {
           sessionStorage.removeItem("adab_wudhu_session_progress_v1");
@@ -1177,7 +1188,8 @@
         const params = new URLSearchParams({
           nama: name,
           sekolah: school,
-          kelas: kelas
+          kelas: kelas,
+          sesi: sesi
         });
 
         const targetFolder = selectedLevel === "smp" ? "./smp/" : "./sd/";
