@@ -150,6 +150,14 @@
     return Boolean(state.studentProfile && state.studentProfile.isTeacher);
   }
 
+  function getSessionMode() {
+    if (isTeacherSession()) return "teacher";
+    const s = String((state.studentProfile && state.studentProfile.sesi) || "Posttest").toLowerCase();
+    if (s.includes("pre")) return "pretest";
+    if (s.includes("latih")) return "latihan";
+    return "posttest";
+  }
+
   function getOverallProgress() {
     const segDone = state.completedSegments.size;
     const kinDone = getMasteredKinCount();
@@ -197,6 +205,7 @@
     try {
       sessionStorage.removeItem(PROFILE_KEY);
       sessionStorage.removeItem(SESSION_PROGRESS_KEY);
+      sessionStorage.removeItem(SHUFFLED_QUIZ_KEY);
       localStorage.removeItem(STORAGE_KEY);
     } catch (e) {}
     try {
@@ -844,6 +853,24 @@
     return document.getElementById("tempo-beat-bar-fill");
   }
 
+  function speakCountdownWord(text) {
+    if (!window.speechSynthesis) return;
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "id-ID";
+      u.rate = 0.95;
+      u.pitch = 1.0;
+      const voices = AUDIO.getVoices ? AUDIO.getVoices() : [];
+      if (voices && voices.length) u.voice = voices[0];
+      AUDIO.duckBgm(true);
+      u.onend = () => {
+        if (!state.tempoRunning) AUDIO.duckBgm(false);
+      };
+      window.speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+
   function startTempo() {
     stopTempo();
     const ex = getSelectedTempoExercise();
@@ -856,6 +883,9 @@
     const dots = document.querySelectorAll("#tempo-dots .t-dot");
     const barFill = ensureTempoProgressBar();
     dots.forEach((d) => d.classList.remove("active", "done"));
+
+    const ordinals = ["pertama", "kedua", "ketiga"];
+    const numberWords = { 6: "enam", 5: "lima", 4: "empat", 3: "tiga", 2: "dua", 1: "satu" };
 
     let step = 1;
     const runBeat = () => {
@@ -871,6 +901,7 @@
         }
         if (instEl) instEl.textContent = ex.done;
         AUDIO.playChime("win");
+        speakCountdownWord("Selesai. Masya Allah, tenang.");
         state.tempoRunning = false;
         return;
       }
@@ -886,7 +917,7 @@
       if (instEl) instEl.textContent = ex.steps[step - 1] || ex.prep;
       AUDIO.playChime("beat");
 
-      // Animasi progress bar halus 6.5 detik + hitung mundur detik agar anak SD melihat timer berjalan
+      // Animasi progress bar halus 6.5 detik + suara hitung mundur 6, 5, 4, 3, 2, 1
       if (barFill) {
         barFill.style.transition = "none";
         barFill.style.width = "0%";
@@ -899,7 +930,8 @@
       }
 
       let secLeft = 6;
-      cueEl.textContent = `Tenang... (${secLeft} detik)`;
+      cueEl.textContent = `🔊 Hitungan: ${secLeft} detik`;
+      speakCountdownWord(`Hitungan ${ordinals[step - 1] || step}. Enam.`);
       tempoCountdownTimer = setInterval(() => {
         if (!state.tempoRunning) {
           clearInterval(tempoCountdownTimer);
@@ -907,7 +939,8 @@
         }
         secLeft--;
         if (secLeft >= 1) {
-          cueEl.textContent = secLeft <= 3 ? `${ex.hold} (${secLeft} dtk)` : `Gerakkan perlahan... (${secLeft} dtk)`;
+          cueEl.textContent = secLeft <= 3 ? `🔊 ${ex.hold} (${secLeft} dtk)` : `🔊 Gerakkan perlahan... (${secLeft} dtk)`;
+          speakCountdownWord(numberWords[secLeft] || String(secLeft));
         } else {
           clearInterval(tempoCountdownTimer);
         }
@@ -930,6 +963,10 @@
     clearTimeout(state.tempoTimer);
     clearTimeout(state.tempoHoldTimer);
     clearInterval(tempoCountdownTimer);
+    if (window.speechSynthesis) {
+      try { window.speechSynthesis.cancel(); } catch (e) {}
+    }
+    try { AUDIO.duckBgm(false); } catch (e) {}
     const circle = document.getElementById("tempo-circle");
     if (circle) circle.classList.remove("inhale");
     const countEl = document.getElementById("tempo-count");
@@ -945,35 +982,97 @@
     syncTempoPreview();
   }
 
-  // ==================== VIEW 4: CEK PEMAHAMAN (TERDIFERENSIASI SD/MI vs SMP/MTs) ====================
-  function getActiveQuiz() {
-    if (DATA.quizByLevel && DATA.quizByLevel[state.level]) {
-      return DATA.quizByLevel[state.level];
+  // ==================== VIEW 4: CEK PEMAHAMAN (ACAK UNIK PER SISWA + BEDA PRETEST / POSTTEST / LATIHAN) ====================
+  const SHUFFLED_QUIZ_KEY = "adab_wudhu_shuffled_quiz_v1";
+
+  function fisherYatesShuffle(arr) {
+    const copy = arr.slice();
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
     }
-    return DATA.quiz;
+    return copy;
+  }
+
+  function buildShuffledQuiz(baseQuiz) {
+    return fisherYatesShuffle(baseQuiz).map((q, newIdx) => {
+      const cleanQuestion = String(q.question || "").replace(/^\s*\d+\.\s*/, "").trim();
+      const taggedOpts = (q.options || []).map((text, idx) => ({ text, isCorrect: idx === q.correct }));
+      const shuffledOpts = fisherYatesShuffle(taggedOpts);
+      const newCorrect = shuffledOpts.findIndex((o) => o.isCorrect);
+      return {
+        ...q,
+        question: `${newIdx + 1}. ${cleanQuestion}`,
+        options: shuffledOpts.map((o) => o.text),
+        correct: newCorrect >= 0 ? newCorrect : 0
+      };
+    });
+  }
+
+  function getActiveQuiz() {
+    const baseQuiz = (DATA.quizByLevel && DATA.quizByLevel[state.level]) ? DATA.quizByLevel[state.level] : DATA.quiz;
+    if (state.shuffledQuiz && state.shuffledQuizLevel === state.level && state.shuffledQuiz.length === baseQuiz.length) {
+      return state.shuffledQuiz;
+    }
+    try {
+      const cached = JSON.parse(sessionStorage.getItem(SHUFFLED_QUIZ_KEY) || "null");
+      if (cached && cached.level === state.level && Array.isArray(cached.items) && cached.items.length === baseQuiz.length) {
+        state.shuffledQuiz = cached.items;
+        state.shuffledQuizLevel = state.level;
+        return state.shuffledQuiz;
+      }
+    } catch (e) {}
+
+    state.shuffledQuiz = buildShuffledQuiz(baseQuiz);
+    state.shuffledQuizLevel = state.level;
+    try {
+      sessionStorage.setItem(SHUFFLED_QUIZ_KEY, JSON.stringify({ level: state.level, items: state.shuffledQuiz }));
+    } catch (e) {}
+    return state.shuffledQuiz;
   }
 
   function renderQuiz() {
     const activeQuiz = getActiveQuiz();
+    const sessionMode = getSessionMode();
+    const isLatihan = sessionMode === "latihan";
+    const isPretest = sessionMode === "pretest";
+
     const titleEl = document.getElementById("quiz-title");
     if (titleEl) {
+      const modeTag = isPretest ? "PRETEST (Kemampuan Awal)" : isLatihan ? "LATIHAN MANDIRI (Dengan Umpan Balik)" : "POSTTEST (Evaluasi Akhir)";
       titleEl.textContent =
         state.level === "smp"
-          ? `Cek Pemahaman Tingkat SMP / MTs (${activeQuiz.length} Soal Kasus Fikih)`
-          : `Cek Pemahaman Tingkat SD / MI (${activeQuiz.length} Soal Dasar)`;
+          ? `${modeTag} — SMP / MTs (${activeQuiz.length} Soal Acak)`
+          : `${modeTag} — SD / MI (${activeQuiz.length} Soal Acak)`;
     }
+
     const container = document.getElementById("quiz-container");
     container.innerHTML = activeQuiz
       .map((q) => {
         const picked = state.quizAnswers[q.id];
         const answered = typeof picked === "number";
+        const isRight = answered && picked === q.correct;
+        const feedbackHtml =
+          isLatihan && answered
+            ? `<div class="latihan-fb ${isRight ? "ok" : "err"}">${
+                isRight
+                  ? `✅ <strong>Tepat sekali!</strong> ${q.explain || "Pemahaman Anda sudah sesuai tuntunan Mazhab Syafi'i."}`
+                  : `❌ <strong>Belum tepat.</strong> Jawaban benar: <strong>${String.fromCharCode(65 + q.correct)}. ${q.options[q.correct]}</strong>${q.explain ? ` — ${q.explain}` : ""}`
+              }</div>`
+            : "";
+
         return `
           <div class="q-card">
             <h3>${q.question}</h3>
             <div class="q-options">
               ${q.options
                 .map((opt, idx) => {
-                  const cls = answered && idx === picked ? "selected" : "";
+                  let cls = "";
+                  if (answered && idx === picked) {
+                    cls = isLatihan ? (idx === q.correct ? "selected latihan-right" : "selected latihan-wrong") : "selected";
+                  } else if (isLatihan && answered && idx === q.correct) {
+                    cls = "latihan-right";
+                  }
                   return `
                     <button class="q-opt ${cls}" data-qid="${q.id}" data-opt="${idx}" ${state.quizSubmitted ? "disabled" : ""} type="button">
                       ${String.fromCharCode(65 + idx)}. ${opt}${answered && idx === picked ? "  ✓" : ""}
@@ -982,6 +1081,7 @@
                 })
                 .join("")}
             </div>
+            ${feedbackHtml}
           </div>
         `;
       })
@@ -992,8 +1092,13 @@
         const qid = btn.dataset.qid;
         const optIdx = Number(btn.dataset.opt);
         state.quizAnswers[qid] = optIdx;
-        // Bunyi netral agar siswa di sebelahnya tidak tahu benar/salahnya
-        AUDIO.playChime("beat");
+        if (isLatihan) {
+          const targetQ = activeQuiz.find((item) => item.id === qid);
+          AUDIO.playChime(targetQ && optIdx === targetQ.correct ? "ok" : "err");
+        } else {
+          // Bunyi netral pada Pretest & Posttest agar siswa di sebelahnya tidak tahu benar/salahnya
+          AUDIO.playChime("beat");
+        }
         checkQuizComplete(true);
         renderQuiz();
       });
@@ -1020,10 +1125,11 @@
     state.quizScore = score;
     saveState();
 
-    // Tampilkan konfirmasi netral tanpa membocorkan jumlah benar/salah ke siswa
+    // Tampilkan konfirmasi sesuai mode sesi (Pretest / Posttest / Latihan Mandiri)
+    const sessionMode = getSessionMode();
     const prog = getOverallProgress();
-    document.getElementById("result-score-badge").textContent = `${total} / ${total} Soal Terjawab • Pemahaman Materi ${prog.pct}%`;
-    document.getElementById("result-title").textContent = "Seluruh Pertanyaan Sudah Dijawab!";
+    const badgeEl = document.getElementById("result-score-badge");
+    const titleEl = document.getElementById("result-title");
     const descEl = document.getElementById("result-desc");
     const lockedNote = document.getElementById("submit-locked-note");
 
@@ -1039,7 +1145,20 @@
       if (actionsWrap) actionsWrap.appendChild(contBtn);
     }
 
-    if (state.quizSubmitted && !prog.is100) {
+    if (sessionMode === "pretest") {
+      badgeEl.textContent = `${total} / ${total} Soal Pretest Terjawab`;
+      titleEl.textContent = "Seluruh Soal Pretest Sudah Dijawab!";
+      descEl.textContent = "Klik tombol di bawah untuk mengirim hasil Pretest Anda kepada guru dan keluar otomatis ke Halaman Awal.";
+      contBtn.classList.add("hidden");
+    } else if (sessionMode === "latihan") {
+      const pctLat = Math.round((score / total) * 100);
+      badgeEl.textContent = `Skor Latihan Mandiri: ${score} / ${total} (${pctLat}%)`;
+      titleEl.textContent = pctLat >= 80 ? "Masya Allah! Latihan Sangat Baik!" : "Latihan Selesai — Terus Semangat Belajar!";
+      descEl.textContent = "Anda dapat menekan tombol di bawah untuk mencatat hasil latihan ke guru, atau klik '↻ Ulangi Kuis' untuk berlatih lagi dengan urutan soal acak baru.";
+      contBtn.classList.add("hidden");
+    } else if (state.quizSubmitted && !prog.is100) {
+      badgeEl.textContent = `${total} / ${total} Soal Terjawab • Pemahaman Materi ${prog.pct}%`;
+      titleEl.textContent = "Seluruh Pertanyaan Sudah Dijawab!";
       descEl.innerHTML = `⚠️ <strong>Belum Dapat Keluar dari Web!</strong> Pemahaman Materi Anda baru <strong>${prog.pct}%</strong> (Segmen Materi: <strong>${prog.segDone}/8</strong> • Bintang Kinestetik: <strong>${prog.kinDone}/4</strong>). Selesaikan seluruh materi hingga <strong>100%</strong> untuk keluar otomatis.`;
       if (lockedNote) {
         lockedNote.classList.remove("hidden");
@@ -1048,12 +1167,16 @@
       contBtn.textContent = `▶ Lanjutkan Materi hingga 100% (${prog.pct}%)`;
       contBtn.classList.remove("hidden");
     } else if (!prog.is100) {
+      badgeEl.textContent = `${total} / ${total} Soal Terjawab • Pemahaman Materi ${prog.pct}%`;
+      titleEl.textContent = "Seluruh Pertanyaan Sudah Dijawab!";
       descEl.innerHTML = `⚠️ Pemahaman Materi saat ini baru <strong>${prog.pct}%</strong> (Segmen Materi: <strong>${prog.segDone}/8</strong> • Bintang Kinestetik: <strong>${prog.kinDone}/4</strong>). Anda dapat mengirim jawaban sekarang, namun <strong>tidak dapat keluar dari web sebelum Pemahaman Materi mencapai 100%</strong>.`;
       contBtn.textContent = `▶ Lengkapi Materi 100% (${prog.pct}%)`;
       contBtn.classList.remove("hidden");
     } else {
+      badgeEl.textContent = `${total} / ${total} Soal Terjawab • Pemahaman Materi 100%`;
+      titleEl.textContent = "Seluruh Pertanyaan Sudah Dijawab!";
       descEl.textContent =
-        "Alhamdulillah, Pemahaman Materi sudah 100%! Klik tombol di bawah untuk mengirim hasil kepada guru dan keluar otomatis.";
+        "Alhamdulillah, Pemahaman Materi sudah 100%! Klik tombol di bawah untuk mengirim hasil Posttest kepada guru dan keluar otomatis.";
       contBtn.classList.add("hidden");
     }
 
@@ -1562,11 +1685,13 @@
       saveQuizRecords(records);
 
       state.quizSubmitted = true;
+      const sessionModeNow = getSessionMode();
       const progAfter = getOverallProgress();
 
-      if (!progAfter.is100) {
+      // Pada Pretest & Latihan Mandiri, tidak dikunci oleh syarat 100% materi
+      if (sessionModeNow === "posttest" && !progAfter.is100) {
         saveBtn.textContent = `🔒 Jawaban Tersimpan (Pemahaman Materi ${progAfter.pct}% — Wajib 100% untuk Keluar)`;
-        checkQuizComplete();
+        checkQuizComplete(false);
         renderQuiz();
         showToast(
           `⚠️ Jawaban tersimpan, tetapi Anda belum dapat keluar sebelum Pemahaman Materi 100% (saat ini ${progAfter.pct}%: Segmen ${progAfter.segDone}/8, Kinestetik ${progAfter.kinDone}/4)!`
@@ -1574,16 +1699,21 @@
         return;
       }
 
-      saveBtn.textContent = "✅ Terkirim (Pemahaman Materi 100%)! Kembali ke Halaman Awal...";
+      saveBtn.textContent =
+        sessionModeNow === "pretest"
+          ? "✅ Pretest Terkirim! Kembali ke Halaman Awal..."
+          : sessionModeNow === "latihan"
+          ? "✅ Latihan Tercatat! Kembali ke Halaman Awal..."
+          : "✅ Terkirim (Pemahaman Materi 100%)! Kembali ke Halaman Awal...";
       document.getElementById("submit-locked-note").classList.remove("hidden");
       renderQuiz();
-      showToast("✅ Pemahaman Materi 100% & Jawaban Terkirim! Otomatis kembali ke Halaman Awal...");
+      showToast("✅ Jawaban berhasil terkirim ke Google Sheets Guru! Otomatis kembali ke Halaman Awal...");
       performFinalExit();
     });
 
-    // Cegah siswa menutup/meninggalkan halaman secara paksa sebelum Pemahaman Materi mencapai 100%
+    // Cegah siswa menutup/meninggalkan halaman secara paksa khusus pada sesi Posttest sebelum 100%
     window.addEventListener("beforeunload", (e) => {
-      if (!isTeacherSession() && !isExitingToGateway && !getOverallProgress().is100) {
+      if (getSessionMode() === "posttest" && !isExitingToGateway && !getOverallProgress().is100) {
         e.preventDefault();
         e.returnValue = "Pemahaman Materi Anda belum mencapai 100%. Selesaikan seluruh materi terlebih dahulu sebelum keluar.";
         return e.returnValue;
@@ -1641,7 +1771,16 @@
     } catch (e) {}
 
     window.addEventListener("popstate", () => {
-      if (isExitingToGateway || isTeacherSession()) return;
+      if (isExitingToGateway) return;
+      const modeNow = getSessionMode();
+      if (modeNow === "teacher" || modeNow === "latihan") return;
+      if (modeNow === "pretest" && !state.quizSubmitted) {
+        try {
+          window.history.pushState({ adabWudhuGuard: true }, document.title, cleanUrl);
+        } catch (e) {}
+        showToast("🔒 Selesaikan dan kirim seluruh soal Pretest terlebih dahulu!");
+        return;
+      }
       const prog = getOverallProgress();
       if (!prog.is100 || !state.quizSubmitted) {
         try {
@@ -1745,15 +1884,15 @@
       lockedHdr.innerHTML = `<span>🔒 <strong>Identitas Siswa Terkunci</strong> • Sesi: <strong>${sesiTag}</strong> (diambil otomatis dari halaman awal).</span>`;
     }
 
-    // Jika masuk dalam Mode Guru: sembunyikan tab & halaman Cek Pemahaman sepenuhnya, dan tampilkan menu "🚪 Keluar"
+    // Atur navigasi tab berdasarkan Mode (Guru / Pretest / Latihan Mandiri / Posttest)
+    const sessionMode = getSessionMode();
     const quizTabBtn = document.querySelector('.nav-tab[data-view="quiz"]');
     const quizViewSec = document.getElementById("view-quiz");
+    const materialTabs = document.querySelectorAll('.nav-tab:not([data-view="quiz"]):not(#btn-teacher-exit-menu)');
     const mainNav = (quizTabBtn && quizTabBtn.parentElement) || document.querySelector(".nav-tabs, .main-nav, nav");
     let teacherExitBtn = document.getElementById("btn-teacher-exit-menu");
 
-    if (prof.isTeacher) {
-      if (quizTabBtn) quizTabBtn.style.display = "none";
-      if (quizViewSec) quizViewSec.style.display = "none";
+    const ensureExitBtn = (labelText) => {
       if (mainNav && !teacherExitBtn) {
         teacherExitBtn = document.createElement("button");
         teacherExitBtn.id = "btn-teacher-exit-menu";
@@ -1763,15 +1902,44 @@
         teacherExitBtn.style.color = "#991b1b";
         teacherExitBtn.style.border = "1px solid #fca5a5";
         teacherExitBtn.style.fontWeight = "800";
-        teacherExitBtn.innerHTML = `<span class="tab-ico">🚪</span><span>Keluar</span>`;
         teacherExitBtn.addEventListener("click", () => {
-          showToast("🚪 Keluar dari Mode Mengajar Guru ke Halaman Awal...");
+          showToast("🚪 Keluar kembali ke Halaman Awal...");
           performFinalExit();
         });
         mainNav.appendChild(teacherExitBtn);
       }
-      if (teacherExitBtn) teacherExitBtn.style.display = "";
+      if (teacherExitBtn) {
+        teacherExitBtn.innerHTML = `<span class="tab-ico">🚪</span><span>${labelText}</span>`;
+        teacherExitBtn.style.display = "";
+      }
+    };
+
+    if (sessionMode === "teacher") {
+      materialTabs.forEach((t) => (t.style.display = ""));
+      if (quizTabBtn) quizTabBtn.style.display = "none";
+      if (quizViewSec) quizViewSec.style.display = "none";
+      ensureExitBtn("Keluar");
+    } else if (sessionMode === "pretest") {
+      // Pada PRETEST: sembunyikan seluruh tab materi agar siswa tidak mengintip materi sebelum tes awal!
+      materialTabs.forEach((t) => (t.style.display = "none"));
+      if (quizTabBtn) {
+        quizTabBtn.style.display = "";
+        quizTabBtn.innerHTML = `<span class="tab-ico">📝</span><span>Soal Pretest</span>`;
+      }
+      if (quizViewSec) quizViewSec.style.display = "";
+      if (teacherExitBtn) teacherExitBtn.style.display = "none";
+    } else if (sessionMode === "latihan") {
+      // Pada LATIHAN MANDIRI: semua tab terbuka bebas + tombol Keluar bebas kapan saja
+      materialTabs.forEach((t) => (t.style.display = ""));
+      if (quizTabBtn) {
+        quizTabBtn.style.display = "";
+        quizTabBtn.innerHTML = `<span class="tab-ico">📖</span><span>Latihan Soal</span>`;
+      }
+      if (quizViewSec) quizViewSec.style.display = "";
+      ensureExitBtn("Keluar");
     } else {
+      // Pada POSTTEST: semua 5 tab aktif + wajib tuntas 100% sebelum keluar
+      materialTabs.forEach((t) => (t.style.display = ""));
       if (quizTabBtn) quizTabBtn.style.display = "";
       if (quizViewSec) quizViewSec.style.display = "";
       if (teacherExitBtn) teacherExitBtn.style.display = "none";
@@ -2020,7 +2188,11 @@
   initSplashScreen();
   bindEvents();
   initSavedAudioClips().then(() => {
-    renderHome();
-    try { AUDIO.startBgm("home"); } catch (e) {}
+    if (getSessionMode() === "pretest") {
+      switchView("quiz");
+    } else {
+      renderHome();
+    }
+    try { AUDIO.startBgm(state.view); } catch (e) {}
   });
 })();
