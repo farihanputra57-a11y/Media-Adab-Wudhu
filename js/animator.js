@@ -998,20 +998,30 @@ window.WudhuAnimator = (function () {
       case "doa_read":
         return renderCloseUpCard(
           pose === "doa_hands" ? "Menghadap Kiblat & Angkat Tangan" : "Doa Setelah Wudhu",
-          pose === "doa_hands" ? "DETAIL ADAB 8A" : "DETAIL ADAB 8B",
+          pose === "doa_hands" ? "DETAIL ADAB 8A • URUTAN DOA" : "DETAIL ADAB 8B • URUTAN DOA",
           `
-            <circle cx="176" cy="126" r="82" fill="#fef3c7" opacity="0.85" class="anim-splash"/>
+            <circle cx="176" cy="120" r="76" fill="#fef3c7" opacity="0.85" class="anim-splash"/>
+
+            <!-- Sequential Adab Path: 1 (Menghadap Kiblat) -> 2 (Angkat Kedua Tangan) -> 3 (Baca Doa Khusyuk) -->
+            <path d="M88 156 Q132 114 176 124 Q220 114 264 156" fill="none" stroke="#d97706" stroke-width="3.2" class="anim-trail" marker-end="url(#arrowAmber)" pointer-events="none"/>
+
             <g class="anim-raise">
-              <g transform="translate(136, 152) rotate(-18) scale(0.85)">
+              <g transform="translate(136, 148) rotate(-18) scale(0.82)">
                 ${renderRealisticHand(1, "url(#skinGrad)", "#c4845d")}
               </g>
-              <g transform="translate(216, 152) rotate(18) scale(0.85)">
+              <g transform="translate(216, 148) rotate(18) scale(0.82)">
                 ${renderRealisticHand(-1, "url(#skinGrad)", "#c4845d")}
               </g>
             </g>
-            <rect x="34" y="204" width="284" height="72" rx="14" fill="#ffffff" stroke="#d97706" stroke-width="2"/>
-            <text x="176" y="234" text-anchor="middle" font-size="17" font-weight="700" fill="#92400e">أَشْهَدُ أَنْ لَا إِلٰهَ إِلَّا اللّٰهُ...</text>
-            <text x="176" y="258" text-anchor="middle" font-size="12" font-weight="700" fill="#78350f">Baca doa lengkap pada kotak di bawah panggung</text>
+
+            ${renderStepBadge(74, 158, "1", "#0f6b56")}
+            ${renderStepBadge(176, 86, "2", "#0284c7")}
+            ${renderStepBadge(278, 158, "3", "#d97706")}
+
+            <rect x="24" y="198" width="304" height="78" rx="14" fill="#ffffff" stroke="#d97706" stroke-width="2"/>
+            <text x="176" y="223" text-anchor="middle" font-size="15.5" font-weight="700" fill="#92400e">أَشْهَدُ أَنْ لَا إِلٰهَ إِلَّا اللّٰهُ وَحْدَهُ لَا شَرِيْكَ لَهُ...</text>
+            <text x="176" y="245" text-anchor="middle" font-size="11.2" font-weight="800" fill="#065f46">① Menghadap Kiblat → ② Angkat Tangan → ③ Berdoa</text>
+            <text x="176" y="264" text-anchor="middle" font-size="10.8" font-weight="700" fill="#78350f">Lafal Arab, Latin &amp; Arti lengkap di bawah panggung</text>
           `,
           "Berdoa di tempat kering & bersih sambil menghadap kiblat"
         );
@@ -1214,9 +1224,11 @@ window.WudhuAnimator = (function () {
         </g>
         ${renderWaterDrops(182, 68)}
 
-        <rect x="64" y="12" width="232" height="26" rx="10" fill="#0284c7"/>
-        <text x="180" y="29" text-anchor="middle" font-size="11.5" font-weight="800" fill="#ffffff">Urutan 1→2→3: Usap Sebagian Kepala</text>
-        <text x="180" y="232" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">① Rambut depan (dahi) → ② Ubun-ubun → ③ Belakang kepala</text>
+        <rect x="14" y="10" width="154" height="24" rx="8" fill="#0f6b56"/>
+        <text x="91" y="26" text-anchor="middle" font-size="10" font-weight="800" fill="#ffffff">RUKUN: Sebagian Kepala (①)</text>
+        <rect x="174" y="10" width="172" height="24" rx="8" fill="#0284c7"/>
+        <text x="260" y="26" text-anchor="middle" font-size="9.8" font-weight="800" fill="#ffffff">SUNNAH: Ratakan (②–③) &amp; Telinga</text>
+        <text x="180" y="233" text-anchor="middle" font-size="10.8" font-weight="700" fill="#0369a1">① Rambut depan (rukun) → ② Ubun-ubun → ③ Belakang (sunnah)</text>
       `;
     } else if (areaKey === "kaki") {
       baseGraphic = `
@@ -1506,88 +1518,156 @@ window.WudhuAnimator = (function () {
     if (pose === "gayung_rule") {
       rightPanel = renderCloseUpCard(
         "Aturan Bak Kecil (< 2 Qullah)",
-        "ANTI AIR MUSTA'MAL (SYAFI'I)",
+        "DETAIL GAYUNG 1 • ANTI MUSTA'MAL",
         `
           <!-- TOP: SALAH -->
-          <rect x="14" y="10" width="324" height="132" rx="14" fill="#fff1f2" stroke="#e11d48" stroke-width="2"/>
-          <text x="176" y="32" text-anchor="middle" font-size="12" font-weight="800" fill="#be123c">❌ SALAH — Celup Tangan ke Bak Kecil</text>
-          <rect x="64" y="54" width="110" height="72" rx="10" fill="#bae6fd" stroke="#0284c7" stroke-width="2.5"/>
-          <path d="M118 42 L118 82" stroke="#fbd6b9" stroke-width="18" stroke-linecap="round"/>
-          <line x1="100" y1="54" x2="136" y2="90" stroke="#e11d48" stroke-width="4"/>
-          <text x="255" y="78" text-anchor="middle" font-size="11" font-weight="800" fill="#9f1239">Air bak &lt; 216 L</text>
-          <text x="255" y="96" text-anchor="middle" font-size="10.5" fill="#881337">jadi MUSTA'MAL</text>
-          <text x="255" y="112" text-anchor="middle" font-size="10" fill="#881337">(tidak suci mensucikan)</text>
+          <rect x="14" y="8" width="324" height="122" rx="14" fill="#fff1f2" stroke="#e11d48" stroke-width="2"/>
+          <text x="176" y="28" text-anchor="middle" font-size="11.5" font-weight="800" fill="#be123c">❌ SALAH — Celup Tangan / Percik ke Bak Kecil</text>
+          <rect x="52" y="46" width="104" height="68" rx="10" fill="#bae6fd" stroke="#0284c7" stroke-width="2.4"/>
+          <g transform="translate(104, 48) scale(0.42)">
+            ${renderRealisticHand(1, "url(#skinGrad)", "#e11d48")}
+          </g>
+          <line x1="86" y1="48" x2="122" y2="84" stroke="#e11d48" stroke-width="4"/>
+          <text x="248" y="68" text-anchor="middle" font-size="11" font-weight="800" fill="#9f1239">Air bak &lt; 216 L (2 Qullah)</text>
+          <text x="248" y="86" text-anchor="middle" font-size="10.5" fill="#881337">berubah jadi MUSTA'MAL</text>
+          <text x="248" y="102" text-anchor="middle" font-size="10" fill="#881337">&amp; tidak sah untuk basuhan</text>
 
-          <!-- BOTTOM: BENAR -->
-          <rect x="14" y="156" width="324" height="136" rx="14" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
-          <text x="176" y="178" text-anchor="middle" font-size="12" font-weight="800" fill="#065f46">✅ BENAR — Sendok Gayung &amp; Tuang di Luar Bak</text>
-          <rect x="44" y="204" width="90" height="70" rx="10" fill="#bae6fd" stroke="#0284c7" stroke-width="2.5"/>
-          <text x="89" y="244" text-anchor="middle" font-size="10.5" font-weight="800" fill="#0369a1">Air Bak Suci ✓</text>
+          <!-- BOTTOM: BENAR (Urutan 1 -> 2 -> 3) -->
+          <rect x="14" y="142" width="324" height="148" rx="14" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+          <text x="176" y="162" text-anchor="middle" font-size="11.5" font-weight="800" fill="#065f46">✅ BENAR — Urutan 1→2→3 Ciduk &amp; Tuang di Luar Bak</text>
+          <rect x="34" y="196" width="86" height="72" rx="10" fill="#bae6fd" stroke="#0284c7" stroke-width="2.4"/>
+          <text x="77" y="238" text-anchor="middle" font-size="10.2" font-weight="800" fill="#0369a1">Air Suci ✓</text>
+
+          <!-- Sequential Path 1 (Bak) -> 2 (Angkat Gayung) -> 3 (Tuang di Luar Bak) -->
+          <path d="M77 204 Q134 172 182 198 L226 244" fill="none" stroke="#0284c7" stroke-width="3.2" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+          ${renderStepBadge(77, 204, "1", "#0f6b56")}
+          ${renderStepBadge(178, 188, "2", "#0284c7")}
+          ${renderStepBadge(234, 250, "3", "#d97706")}
+
           <!-- Gayung pouring outside bak -->
-          <g transform="translate(158, 198)"><g class="anim-bob">
+          <g transform="translate(164, 194)"><g class="anim-bob">
             <rect x="0" y="12" width="44" height="28" rx="6" fill="#0f6b56" transform="rotate(24 22 26)"/>
             <rect x="-26" y="16" width="30" height="7" rx="3.5" fill="#0a4f3f" transform="rotate(24 22 26)"/>
-            <line x1="46" y1="34" x2="54" y2="74" stroke="#38bdf8" stroke-width="5" stroke-linecap="round" class="anim-water"/>
+            <line x1="46" y1="34" x2="56" y2="72" stroke="url(#waterGrad)" stroke-width="5.5" stroke-linecap="round" class="anim-water"/>
           </g></g>
-          <text x="275" y="236" text-anchor="middle" font-size="11" font-weight="800" fill="#065f46">Tuang di atas</text>
-          <text x="275" y="253" text-anchor="middle" font-size="10.5" fill="#047857">saluran luar bak</text>
+          <text x="284" y="222" text-anchor="middle" font-size="10.5" font-weight="800" fill="#065f46">Tuang di luar</text>
+          <text x="284" y="238" text-anchor="middle" font-size="10" fill="#047857">agar tak memercik</text>
+          <text x="284" y="254" text-anchor="middle" font-size="10" fill="#047857">kembali ke bak</text>
         `,
-        "Selalu tuang air gayung di luar bak agar air bak tetap suci!"
+        "① Ciduk gayung → ② Angkat keluar → ③ Tuang di luar bibir bak"
       );
     } else if (pose === "gayung_palms") {
       rightPanel = renderCloseUpCard(
         "Telapak, Kumur & Hidung",
-        "DETAIL GAYUNG LANGKAH 2",
+        "DETAIL GAYUNG 2 • URUTAN 1→2→3",
         `
-          <!-- Gayung tilted gently pouring into cupped hand -->
-          <g transform="translate(76, 42)"><g class="anim-bob">
-            <rect x="20" y="16" width="66" height="44" rx="10" fill="#0f6b56" transform="rotate(28 53 38)"/>
-            <rect x="-24" y="22" width="48" height="10" rx="5" fill="#0a4f3f" transform="rotate(28 53 38)"/>
-            <line x1="88" y1="48" x2="104" y2="128" stroke="#38bdf8" stroke-width="6" stroke-linecap="round" class="anim-water"/>
+          <!-- Gayung tilted gently pouring into cupped 5-finger hand -->
+          <g transform="translate(64, 24)"><g class="anim-bob">
+            <rect x="20" y="16" width="60" height="40" rx="10" fill="#0f6b56" transform="rotate(28 50 36)"/>
+            <rect x="-22" y="22" width="44" height="9" rx="4.5" fill="#0a4f3f" transform="rotate(28 50 36)"/>
+            <line x1="82" y1="46" x2="108" y2="142" stroke="url(#waterGrad)" stroke-width="8" stroke-linecap="round" class="anim-water"/>
           </g></g>
-          <ellipse cx="186" cy="186" rx="48" ry="20" fill="#fbd6b9" stroke="#c88d67" stroke-width="2.5" class="anim-rub-h"/>
-          <circle cx="184" cy="172" r="9" fill="#38bdf8" class="anim-splash"/>
-          <text x="176" y="242" text-anchor="middle" font-size="13" font-weight="800" fill="#065f46">Pindahkan Air ke Telapak Tangan Kanan</text>
-          <text x="176" y="264" text-anchor="middle" font-size="11.5" fill="#475569">Jangan menempelkan mulut langsung ke bibir gayung</text>
+
+          <!-- Realistic Left & Right 5-Finger Hands Receiving Water Outside Bak -->
+          <g transform="translate(148, 174) rotate(-14) scale(0.84)">
+            ${renderRealisticHand(1, "url(#skinGrad)", "#c4845d")}
+          </g>
+          <g transform="translate(212, 178) rotate(16) scale(0.84)">
+            ${renderRealisticHand(-1, "url(#skinShade)", "#c4845d")}
+          </g>
+
+          <!-- Sequential Trajectory 1 (Tuang Gayung) -> 2 (Tampung Telapak) -> 3 (Gosok/Kumur) -->
+          <path d="M176 134 L222 158 L176 210" fill="none" stroke="#0284c7" stroke-width="3.2" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+          ${renderStepBadge(146, 102, "1", "#0f6b56")}
+          ${renderStepBadge(176, 156, "2", "#0284c7")}
+          ${renderStepBadge(228, 184, "3", "#d97706")}
+
+          <g transform="translate(176, 134)" pointer-events="none">
+            <g class="anim-seg-palms">
+              ${renderSeqCursorHand(0.46, "#0284c7", -12)}
+            </g>
+          </g>
+          ${renderWaterDrops(176, 132)}
+
+          <text x="176" y="250" text-anchor="middle" font-size="12.8" font-weight="800" fill="#065f46">Urutan 1→2→3: Tuang, Tampung &amp; Kumur/Hidung</text>
+          <text x="176" y="272" text-anchor="middle" font-size="11.5" fill="#475569">Jangan menempelkan mulut langsung ke bibir gayung</text>
         `,
-        "Miringkan gayung sedikit demi sedikit (3× tenang & higienis)"
+        "① Tuang gayung di luar bak → ② Tampung telapak → ③ Kumur/hidung"
       );
     } else if (pose === "gayung_face") {
       rightPanel = renderCloseUpCard(
         "Membasuh Wajah + Niat",
-        "DETAIL GAYUNG LANGKAH 3",
+        "DETAIL GAYUNG 3 • URUTAN 1→2→3",
         `
-          ${renderFaceBaseLarge()}
-          <line x1="176" y1="54" x2="176" y2="216" stroke="#0f6b56" stroke-width="4" marker-start="url(#arrowGreen)" marker-end="url(#arrowGreen)"/>
-          <line x1="98" y1="136" x2="254" y2="136" stroke="#d97706" stroke-width="4" marker-start="url(#arrowAmber)" marker-end="url(#arrowAmber)"/>
-          <text x="176" y="256" text-anchor="middle" font-size="13" font-weight="800" fill="#065f46">Tuang ke Telapak → Usap Wajah + Niat</text>
-          <text x="176" y="276" text-anchor="middle" font-size="11.5" fill="#475569">Batas dahi–dagu &amp; telinga–telinga (di luar bak)</text>
+          ${renderFaceBaseLarge(false, true, false)}
+          <line x1="176" y1="54" x2="176" y2="216" stroke="#0f6b56" stroke-width="4" class="anim-trail" marker-end="url(#arrowGreen)" pointer-events="none"/>
+          <line x1="98" y1="136" x2="254" y2="136" stroke="#d97706" stroke-width="3" stroke-dasharray="5 4" pointer-events="none"/>
+          ${renderStepBadge(176, 68, "1", "#0f6b56")}
+          ${renderStepBadge(176, 136, "2", "#0284c7")}
+          ${renderStepBadge(176, 206, "3", "#d97706")}
+
+          <g transform="translate(176, 68)" pointer-events="none">
+            <g class="anim-seg-face-v">
+              <g transform="translate(-44, 0) rotate(-10) scale(0.62)">
+                ${renderRealisticHand(1, "url(#skinGrad)", "#b8744d")}
+              </g>
+              <g transform="translate(44, 0) rotate(10) scale(0.62)">
+                ${renderRealisticHand(-1, "url(#skinGrad)", "#b8744d")}
+              </g>
+              <ellipse cx="0" cy="0" rx="50" ry="24" fill="url(#waterGrad)" opacity="0.28"/>
+            </g>
+          </g>
+          ${renderWaterDrops(176, 86)}
+
+          <text x="176" y="256" text-anchor="middle" font-size="12.8" font-weight="800" fill="#065f46">Urutan 1→2→3: Dahi → Pipi/Telinga → Dagu</text>
+          <text x="176" y="276" text-anchor="middle" font-size="11.5" fill="#475569">Basuh di luar bak agar tetesan tak jatuh ke dalam bak</text>
         `,
         "Hadirkan niat wudhu di hati tepat saat air pertama menyentuh wajah"
       );
     } else if (pose === "gayung_arms") {
       rightPanel = renderCloseUpCard(
         "Tuang Bergantian ke Siku",
-        "DETAIL GAYUNG LANGKAH 4",
+        "DETAIL GAYUNG 4 • URUTAN 1→2→3",
         `
-          <!-- Gayung pouring over forearm to elbow -->
-          <g transform="translate(52, 22)"><g class="anim-rub-h">
-            <rect x="20" y="14" width="56" height="36" rx="8" fill="#0f6b56" transform="rotate(26 48 32)"/>
-            <rect x="-18" y="18" width="40" height="9" rx="4.5" fill="#0a4f3f" transform="rotate(26 48 32)"/>
-            <line x1="78" y1="44" x2="90" y2="122" stroke="#38bdf8" stroke-width="5.5" stroke-linecap="round" class="anim-water"/>
+          <!-- Gayung pouring over anatomical 5-finger forearm to elbow -->
+          <g transform="translate(48, 12)"><g class="anim-bob">
+            <rect x="20" y="12" width="52" height="32" rx="8" fill="#0f6b56" transform="rotate(26 46 28)"/>
+            <rect x="-16" y="16" width="36" height="8" rx="4" fill="#0a4f3f" transform="rotate(26 46 28)"/>
+            <line x1="74" y1="38" x2="88" y2="128" stroke="url(#waterGrad)" stroke-width="7" stroke-linecap="round" class="anim-water"/>
           </g></g>
-          <rect x="64" y="146" width="212" height="46" rx="22" fill="#fbd6b9" stroke="#c88d67" stroke-width="2.5"/>
-          <line x1="252" y1="122" x2="252" y2="210" stroke="#d97706" stroke-width="3.5" stroke-dasharray="5 3"/>
-          <text x="252" y="114" text-anchor="middle" font-size="11" font-weight="800" fill="#b45309">Melewati Siku ✓</text>
-          <text x="176" y="242" text-anchor="middle" font-size="12.5" font-weight="800" fill="#065f46">Gayung di Kiri → Basuh Tangan Kanan (3×)</text>
-          <text x="176" y="264" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0369a1">Gayung di Kanan → Basuh Tangan Kiri (3×)</text>
+
+          <!-- Anatomical Forearm + 5 Fingers + Rolled Sleeve -->
+          <path d="M68 122 C110 116 196 112 272 114 L272 164 C196 168 110 162 68 158 C56 156 54 124 68 122 Z" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2.4"/>
+          <ellipse cx="250" cy="156" rx="16" ry="12" fill="url(#skinShade)" stroke="#c4845d" stroke-width="1.6"/>
+          <rect x="28" y="116" width="42" height="9.5" rx="4.8" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="1.8"/>
+          <rect x="20" y="126.5" width="48" height="10" rx="5" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="1.8"/>
+          <rect x="22" y="137.5" width="46" height="9.5" rx="4.8" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="1.8"/>
+          <rect x="30" y="148" width="38" height="9" rx="4.5" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="1.8"/>
+          <path d="M270 104 L334 104 Q342 104 342 114 L342 166 Q342 176 334 176 L270 176 Q262 140 270 104 Z" fill="url(#sleeveGrad)" stroke="#94a3b8" stroke-width="2.4"/>
+          <rect x="16" y="102" width="256" height="76" rx="30" fill="rgba(20,184,166,0.12)" stroke="#0f6b56" stroke-width="2.6" stroke-dasharray="7 5"/>
+          <line x1="258" y1="74" x2="258" y2="202" stroke="#d97706" stroke-width="3.5" stroke-dasharray="5 4"/>
+
+          <!-- Sequential Trajectory 1 (Jari) -> 2 (Lengan) -> 3 (Melewati Siku) -->
+          <path d="M58 138 L156 138 L256 138" fill="none" stroke="#0284c7" stroke-width="3.4" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+          ${renderStepBadge(58, 194, "1", "#0f6b56")}
+          ${renderStepBadge(156, 194, "2", "#0284c7")}
+          ${renderStepBadge(256, 194, "3", "#d97706")}
+
+          <g transform="translate(58, 138)" pointer-events="none">
+            <g class="anim-seg-arm">
+              ${renderSeqCursorHand(0.58, "#0284c7", -90, "url(#skinShade)")}
+            </g>
+          </g>
+
+          <text x="176" y="242" text-anchor="middle" font-size="12.5" font-weight="800" fill="#065f46">Urutan 1→2→3: Jari → Lengan → Melewati Siku</text>
+          <text x="176" y="264" text-anchor="middle" font-size="12" font-weight="700" fill="#0369a1">Tuang perlahan di luar bak (kanan 3× lalu kiri 3×)</text>
         `,
-        "Alirkan perlahan dari ujung jari hingga 2–3 cm melewati siku"
+        "① Ujung jari → ② Lengan bawah → ③ Melewati tulang siku (+2–3 cm)"
       );
     } else if (pose === "gayung_head") {
       rightPanel = renderCloseUpCard(
         "Usap Kepala (Jangan Disiram!)",
-        "DETAIL GAYUNG LANGKAH 5",
+        "DETAIL GAYUNG 5 • URUTAN 1→2→3",
         `
           <circle cx="176" cy="150" r="74" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2.5"/>
           <path d="M108 126 Q130 62 200 70 Q250 78 252 142 Q228 112 174 104 Q136 102 108 126 Z" fill="#1e293b"/>
@@ -1612,20 +1692,39 @@ window.WudhuAnimator = (function () {
     } else {
       rightPanel = renderCloseUpCard(
         "Basuh Kaki di Luar Bak + Doa",
-        "DETAIL GAYUNG LANGKAH 6",
+        "DETAIL GAYUNG 6 • URUTAN 1→2→3",
         `
-          <g transform="translate(56, 18)"><g class="anim-bob">
+          <g transform="translate(46, 12)"><g class="anim-bob">
             <rect x="18" y="12" width="52" height="32" rx="8" fill="#0f6b56" transform="rotate(26 44 28)"/>
             <rect x="-16" y="16" width="36" height="8" rx="4" fill="#0a4f3f" transform="rotate(26 44 28)"/>
-            <line x1="72" y1="40" x2="88" y2="140" stroke="#38bdf8" stroke-width="5.5" stroke-linecap="round" class="anim-water"/>
+            <line x1="72" y1="40" x2="88" y2="180" stroke="url(#waterGrad)" stroke-width="7" stroke-linecap="round" class="anim-water"/>
           </g></g>
-          <path d="M168 88 L224 88 L224 196 Q224 224 194 224 L82 224 Q62 224 62 206 Q62 188 100 184 L168 166 Z" fill="#fbd6b9" stroke="#c88d67" stroke-width="2.5"/>
-          <line x1="146" y1="130" x2="250" y2="130" stroke="#d97706" stroke-width="3.5" stroke-dasharray="5 3"/>
-          <text x="256" y="134" text-anchor="start" font-size="10.5" font-weight="800" fill="#b45309">Mata Kaki ✓</text>
-          <text x="176" y="256" text-anchor="middle" font-size="12.5" font-weight="800" fill="#065f46">Lepas Kaus Kaki → Basuh Kanan &amp; Kiri (3×)</text>
-          <text x="176" y="276" text-anchor="middle" font-size="11.5" fill="#475569">Rapikan gayung di tempatnya lalu baca doa wudhu</text>
+
+          <!-- Detailed Lower Leg, Prominent Ankle Bone, Heel & 5-Toe Foot -->
+          <path d="M168 48 L232 48 L232 190 Q232 224 198 224 L82 224 Q54 224 54 204 Q54 186 96 178 L168 156 Z" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2.5"/>
+          <ellipse cx="64" cy="206" rx="10" ry="7.5" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="1.8"/>
+          <ellipse cx="76" cy="214" rx="7.5" ry="6" fill="url(#skinShade)" stroke="#c4845d" stroke-width="1.6"/>
+          <ellipse cx="88" cy="217" rx="6.5" ry="5.5" fill="url(#skinShade)" stroke="#c4845d" stroke-width="1.5"/>
+          <circle cx="200" cy="142" r="15" fill="url(#skinShade)" stroke="#d97706" stroke-width="2.5"/>
+          <rect x="44" y="114" width="198" height="118" rx="22" fill="rgba(20,184,166,0.13)" stroke="#0f6b56" stroke-width="2.8" stroke-dasharray="7 5"/>
+          <line x1="146" y1="116" x2="256" y2="116" stroke="#d97706" stroke-width="3.5" stroke-dasharray="5 4"/>
+
+          <!-- Sequential Trajectory 1 (Jari & Sela Kaki) -> 2 (Tumit Belakang) -> 3 (Atas Mata Kaki) -->
+          <path d="M76 202 L196 196 L200 116" fill="none" stroke="#0284c7" stroke-width="3.2" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+          ${renderStepBadge(76, 178, "1", "#0f6b56")}
+          ${renderStepBadge(196, 198, "2", "#0284c7")}
+          ${renderStepBadge(200, 96, "3", "#d97706")}
+
+          <g transform="translate(76, 202)" pointer-events="none">
+            <g class="anim-seg-foot">
+              ${renderSeqCursorHand(0.52, "#0284c7", -24, "url(#skinShade)")}
+            </g>
+          </g>
+
+          <text x="176" y="256" text-anchor="middle" font-size="12.5" font-weight="800" fill="#065f46">Urutan 1→2→3: Jari &amp; Sela → Tumit → Mata Kaki</text>
+          <text x="176" y="276" text-anchor="middle" font-size="11.5" fill="#475569">Basuh di saluran luar bak lalu baca doa setelah wudhu</text>
         `,
-        "Pastikan sela jari kaki, tumit belakang & kedua mata kaki basah"
+        "① Jari & sela kaki → ② Tumit belakang → ③ Melewati mata kaki"
       );
     }
 
@@ -1773,6 +1872,15 @@ window.WudhuAnimator = (function () {
           <linearGradient id="skinShade" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stop-color="#f7ceb0"/>
             <stop offset="100%" stop-color="#e8b28d"/>
+          </linearGradient>
+          <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#bae6fd"/>
+            <stop offset="50%" stop-color="#38bdf8"/>
+            <stop offset="100%" stop-color="#0ea5e9"/>
+          </linearGradient>
+          <linearGradient id="sleeveGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#e2e8f0"/>
           </linearGradient>
           <marker id="arrowGreen" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f6b56"/>

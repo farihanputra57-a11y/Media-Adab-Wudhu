@@ -766,6 +766,7 @@
         saveState();
         const isAllDone = foundSet.size >= areaData.points.length;
         AUDIO.playChime(isAllDone ? "win" : "ok");
+        speakKinestheticPoint(pt, isAllDone);
         renderKinesthetic();
         const fbNow = document.getElementById("hotspot-feedback");
         fbNow.className = isAllDone ? "hotspot-feedback complete" : "hotspot-feedback";
@@ -851,6 +852,23 @@
       dotsWrap.parentElement.insertBefore(wrap, dotsWrap);
     }
     return document.getElementById("tempo-beat-bar-fill");
+  }
+
+  function speakKinestheticPoint(pt, isAllDone) {
+    if (!window.speechSynthesis || !pt) return;
+    if (AUDIO && typeof AUDIO.isSpeaking === "function" && AUDIO.isSpeaking()) return;
+    try {
+      window.speechSynthesis.cancel();
+      const cleanTitle = String(pt.title || "").replace(/—/g, ",");
+      const msg = isAllDone
+        ? `${cleanTitle}. Alhamdulillah, seluruh batas wajib selesai!`
+        : `${cleanTitle}.`;
+      const u = new SpeechSynthesisUtterance(msg);
+      u.lang = "id-ID";
+      u.rate = 1.05;
+      u.pitch = 1.02;
+      window.speechSynthesis.speak(u);
+    } catch (e) {}
   }
 
   function speakCountdownWord(text) {
