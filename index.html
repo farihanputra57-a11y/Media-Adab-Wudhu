@@ -618,8 +618,9 @@
       margin-bottom: 16px;
     }
     .teacher-box.hidden,
-    .student-box.hidden {
-      display: none;
+    .student-box.hidden,
+    .field-group.hidden {
+      display: none !important;
     }
     .teacher-note {
       font-size: 0.79rem;
@@ -761,38 +762,66 @@
       </div>
 
       <form id="portal-form" autocomplete="off" novalidate>
-        <!-- KOTAK INPUT KHUSUS SISWA -->
+        <!-- KOTAK INPUT KHUSUS SISWA (URUTAN: 1. SEKOLAH -> 2. KELAS & LOKAL -> 3. SESI -> 4. NAMA) -->
         <div class="form-grid student-box" id="student-fields-box">
           <div class="field-group">
-            <label for="portal-name">Nama Lengkap Siswa <span class="req">*</span></label>
-            <input type="text" id="portal-name" class="field-input" placeholder="Contoh: Ahmad Fauzan / Siti Aisyah" autocomplete="off" required />
+            <label for="portal-school">1. Pilih Sekolah / Madrasah Mitra Resmi <span class="req">*</span></label>
+            <select id="portal-school" class="field-input" required>
+              <option value="">-- Pilih Sekolah Resmi --</option>
+              <optgroup label="🎒 Sekolah Dasar (SD)">
+                <option value="SDN 1" data-lvl="sd">SDN 1 (SD Negeri 1)</option>
+                <option value="SDN 2" data-lvl="sd">SDN 2 (SD Negeri 2)</option>
+              </optgroup>
+              <optgroup label="🕌 Madrasah Ibtidaiyah (MI)">
+                <option value="MI 1" data-lvl="sd">MI 1 (Madrasah Ibtidaiyah 1)</option>
+                <option value="MI 2" data-lvl="sd">MI 2 (Madrasah Ibtidaiyah 2)</option>
+              </optgroup>
+              <optgroup label="🎓 Sekolah Menengah Pertama (SMP)">
+                <option value="SMPN 1" data-lvl="smp">SMPN 1 (SMP Negeri 1)</option>
+                <option value="SMPN 2" data-lvl="smp">SMPN 2 (SMP Negeri 2)</option>
+              </optgroup>
+              <optgroup label="📖 Madrasah Tsanawiyah (MTs)">
+                <option value="MTs 1" data-lvl="smp">MTs 1 (Madrasah Tsanawiyah 1)</option>
+                <option value="MTs 2" data-lvl="smp">MTs 2 (Madrasah Tsanawiyah 2)</option>
+              </optgroup>
+            </select>
           </div>
 
           <div class="form-row-2">
             <div class="field-group">
-              <label for="portal-school">Asal Sekolah / Madrasah <span class="req">*</span></label>
-              <input type="text" id="portal-school" class="field-input" placeholder="Contoh: SDN 01 / SMPN 1" autocomplete="off" required />
+              <label for="portal-class">2. Kelas &amp; Lokal <span class="req">*</span></label>
+              <select id="portal-class" class="field-input" required>
+                <option value="">-- Pilih Sekolah Dulu --</option>
+              </select>
             </div>
             <div class="field-group">
-              <label for="portal-class">Kelas (Khusus 4–7) <span class="req">*</span></label>
-              <input type="text" id="portal-class" class="field-input" placeholder="Kelas 4–7 (misal: 5-A / VII-A)" autocomplete="off" required />
+              <label for="portal-session">3. Pilih Sesi <span class="req">*</span></label>
+              <select id="portal-session" class="field-input">
+                <option value="Pretest">📝 Pretest (Tes Awal)</option>
+                <option value="Posttest" selected>🎓 Posttest (Tes Akhir)</option>
+                <option value="Latihan">📖 Latihan Mandiri</option>
+              </select>
             </div>
           </div>
 
-          <div class="field-group">
-            <label for="portal-session">Sesi Pembelajaran / Penelitian <span class="req">*</span></label>
-            <select id="portal-session" class="field-input">
-              <option value="Pretest">📝 Pretest (Sebelum Pembelajaran)</option>
-              <option value="Posttest" selected>🎓 Posttest (Sesudah Pembelajaran)</option>
-              <option value="Latihan">📖 Latihan Mandiri</option>
+          <!-- Daftar Nama Terdaftar dari Pretest (muncul otomatis saat Posttest / Latihan Mandiri) -->
+          <div class="field-group hidden" id="roster-select-group">
+            <label for="portal-name-select">4. Pilih Nama Anda (Terdaftar dari Pretest) <span class="req">*</span></label>
+            <select id="portal-name-select" class="field-input">
+              <option value="">-- Memuat daftar nama kelas... --</option>
             </select>
+          </div>
+
+          <div class="field-group" id="name-manual-group">
+            <label for="portal-name" id="portal-name-label">4. Nama Lengkap Siswa <span class="req">*</span></label>
+            <input type="text" id="portal-name" class="field-input" placeholder="Ketik Nama Lengkap Anda (misal: Ahmad Fauzan)" autocomplete="off" required />
           </div>
         </div>
 
         <!-- KOTAK INPUT KHUSUS GURU (MODE MENGAJAR) -->
         <div class="teacher-box hidden" id="teacher-fields-box">
           <p class="teacher-note">
-            👨‍🏫 <strong>Mode Mengajar Guru:</strong> Menampilkan <strong>seluruh materi pembelajaran (Beranda, Animasi 8 Segmen, Wudhu Gayung, dan Zona Kinestetik)</strong> menggunakan identitas Guru <strong>tanpa tab Cek Pemahaman</strong>.
+            👨‍🏫 <strong>Mode Mengajar Guru:</strong> Khusus guru dari <strong>sekolah mitra resmi</strong> (tanpa tab Cek Pemahaman).
           </p>
           <div class="form-grid" style="margin-bottom:0">
             <div class="form-row-2">
@@ -805,14 +834,44 @@
                 <input type="password" id="portal-teacher-pass" class="field-input" placeholder="Masukkan sandi guru" autocomplete="off" />
               </div>
             </div>
+            <div class="field-group">
+              <label for="portal-teacher-school">Pilih Sekolah / Madrasah Mitra Resmi <span class="req">*</span></label>
+              <select id="portal-teacher-school" class="field-input">
+                <option value="">-- Pilih Sekolah Resmi --</option>
+                <optgroup label="🎒 Sekolah Dasar (SD)">
+                  <option value="SDN 1" data-lvl="sd">SDN 1 (SD Negeri 1)</option>
+                  <option value="SDN 2" data-lvl="sd">SDN 2 (SD Negeri 2)</option>
+                </optgroup>
+                <optgroup label="🕌 Madrasah Ibtidaiyah (MI)">
+                  <option value="MI 1" data-lvl="sd">MI 1 (Madrasah Ibtidaiyah 1)</option>
+                  <option value="MI 2" data-lvl="sd">MI 2 (Madrasah Ibtidaiyah 2)</option>
+                </optgroup>
+                <optgroup label="🎓 Sekolah Menengah Pertama (SMP)">
+                  <option value="SMPN 1" data-lvl="smp">SMPN 1 (SMP Negeri 1)</option>
+                  <option value="SMPN 2" data-lvl="smp">SMPN 2 (SMP Negeri 2)</option>
+                </optgroup>
+                <optgroup label="📖 Madrasah Tsanawiyah (MTs)">
+                  <option value="MTs 1" data-lvl="smp">MTs 1 (Madrasah Tsanawiyah 1)</option>
+                  <option value="MTs 2" data-lvl="smp">MTs 2 (Madrasah Tsanawiyah 2)</option>
+                </optgroup>
+              </select>
+            </div>
             <div class="form-row-2">
               <div class="field-group">
-                <label for="portal-teacher-school">Nama Sekolah / Madrasah <span class="req">*</span></label>
-                <input type="text" id="portal-teacher-school" class="field-input" placeholder="Contoh: SDN 01 / SMPN 1" autocomplete="off" />
+                <label for="portal-teacher-class">Kelas Diajar (4–7) <span class="req">*</span></label>
+                <select id="portal-teacher-class" class="field-input">
+                  <option value="">-- Pilih Sekolah Dulu --</option>
+                </select>
               </div>
               <div class="field-group">
-                <label for="portal-teacher-class">Kelas Diajar (Khusus 4–7) <span class="req">*</span></label>
-                <input type="text" id="portal-teacher-class" class="field-input" placeholder="Kelas 4–7 (misal: 5-A / VII-A)" autocomplete="off" />
+                <label for="portal-teacher-lokal">Lokal (A–D) <span class="req">*</span></label>
+                <select id="portal-teacher-lokal" class="field-input">
+                  <option value="">-- Pilih Lokal --</option>
+                  <option value="A">Lokal A</option>
+                  <option value="B">Lokal B</option>
+                  <option value="C">Lokal C</option>
+                  <option value="D">Lokal D</option>
+                </select>
               </div>
             </div>
           </div>
@@ -1074,31 +1133,196 @@
         });
       });
 
-      function parseGrade4to7(rawClass) {
-        const cleaned = String(rawClass || "").trim().replace(/^kelas\s+/i, "").replace(/^kls\.?\s*/i, "").trim();
-        const m = cleaned.match(/^(?:(4|5|6|7)(?:\s*[-./]\s*[a-z0-9]{1,3}|\s*[a-z]{1,2})?|(IV|V|VI|VII)(?:\s*[-./]\s*[a-z0-9]{1,3}|\s+[a-z]{1,2})?)$/i);
-        if (!m) return null;
-        if (m[1]) return Number(m[1]);
-        const rom = m[2].toUpperCase();
-        if (rom === "IV") return 4;
-        if (rom === "V") return 5;
-        if (rom === "VI") return 6;
-        if (rom === "VII") return 7;
-        return null;
+      const AUTHORIZED_SCHOOLS = {
+        "SDN 1": "sd",
+        "SDN 2": "sd",
+        "MI 1": "sd",
+        "MI 2": "sd",
+        "SMPN 1": "smp",
+        "SMPN 2": "smp",
+        "MTs 1": "smp",
+        "MTs 2": "smp"
+      };
+
+      const ROSTER_LOCAL_KEY = "adab_wudhu_pretest_roster_v1";
+      const sessionSel = document.getElementById("portal-session");
+      const rosterGroup = document.getElementById("roster-select-group");
+      const rosterSelect = document.getElementById("portal-name-select");
+      const nameManualGroup = document.getElementById("name-manual-group");
+      const teacherLokalInp = document.getElementById("portal-teacher-lokal");
+
+      function populateCombinedClassOptions(schoolSelect, classSelect) {
+        if (!schoolSelect || !classSelect) return;
+        const sch = schoolSelect.value;
+        const lvl = AUTHORIZED_SCHOOLS[sch] || "";
+        if (!lvl) {
+          classSelect.innerHTML = `<option value="">-- Pilih Sekolah Dulu --</option>`;
+          return;
+        }
+        const grades = lvl === "sd" ? [4, 5, 6] : [7];
+        const lokals = ["A", "B", "C", "D"];
+        let html = `<option value="">-- Pilih Kelas &amp; Lokal --</option>`;
+        grades.forEach((g) => {
+          html += `<optgroup label="Kelas ${g}">`;
+          lokals.forEach((l) => {
+            html += `<option value="${g}${l}">Kelas ${g}${l}</option>`;
+          });
+          html += `</optgroup>`;
+        });
+        classSelect.innerHTML = html;
+        selectLevel(lvl);
       }
 
-      function autoSyncLevelFromClass(rawClass) {
-        const g = parseGrade4to7(rawClass);
-        if (g >= 4 && g <= 6) selectLevel("sd");
-        else if (g === 7) selectLevel("smp");
+      function populateTeacherGradeOptions(schoolSelect, classSelect) {
+        if (!schoolSelect || !classSelect) return;
+        const sch = schoolSelect.value;
+        const lvl = AUTHORIZED_SCHOOLS[sch] || "";
+        if (!lvl) {
+          classSelect.innerHTML = `<option value="">-- Pilih Sekolah Dulu --</option>`;
+          return;
+        }
+        if (lvl === "sd") {
+          classSelect.innerHTML = `
+            <option value="">-- Pilih Kelas --</option>
+            <option value="4">Kelas 4</option>
+            <option value="5">Kelas 5</option>
+            <option value="6">Kelas 6</option>
+          `;
+        } else {
+          classSelect.innerHTML = `
+            <option value="">-- Pilih Kelas --</option>
+            <option value="7" selected>Kelas 7</option>
+          `;
+        }
+        selectLevel(lvl);
       }
 
+      function getLocalRosterNames(school, kelas) {
+        try {
+          const all = JSON.parse(localStorage.getItem(ROSTER_LOCAL_KEY) || "{}");
+          const key = `${school}|${kelas}`;
+          return Array.isArray(all[key]) ? all[key] : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function saveLocalRosterName(school, kelas, studentName) {
+        try {
+          const all = JSON.parse(localStorage.getItem(ROSTER_LOCAL_KEY) || "{}");
+          const key = `${school}|${kelas}`;
+          const list = Array.isArray(all[key]) ? all[key] : [];
+          if (!list.some((n) => n.toLowerCase() === studentName.toLowerCase())) {
+            list.push(studentName);
+            list.sort();
+          }
+          all[key] = list;
+          localStorage.setItem(ROSTER_LOCAL_KEY, JSON.stringify(all));
+        } catch (e) {}
+      }
+
+      async function refreshStudentRosterUI() {
+        if (!rosterGroup || !rosterSelect || !nameManualGroup) return;
+        const sesi = sessionSel ? sessionSel.value : "Posttest";
+        const school = schoolInp ? schoolInp.value : "";
+        const kelas = classInp ? classInp.value : "";
+
+        // Pada sesi PRETEST: tampilkan input ketik nama baru
+        if (sesi === "Pretest" || !school || !kelas) {
+          rosterGroup.classList.add("hidden");
+          nameManualGroup.classList.remove("hidden");
+          return;
+        }
+
+        // Pada sesi POSTTEST atau LATIHAN MANDIRI: muat daftar nama yang sudah terinput di kelas tersebut!
+        rosterGroup.classList.remove("hidden");
+        rosterSelect.innerHTML = `<option value="">⏳ Memuat daftar nama kelas ${kelas}...</option>`;
+        nameManualGroup.classList.add("hidden");
+
+        let merged = getLocalRosterNames(school, kelas).slice();
+        const webhookUrl = (window.WUDHU_DATA && window.WUDHU_DATA.googleSheetWebhookUrl) || "";
+        if (webhookUrl) {
+          try {
+            const url = `${webhookUrl}?school=${encodeURIComponent(school)}&kelas=${encodeURIComponent(kelas)}`;
+            const resp = await fetch(url, { method: "GET" });
+            if (resp.ok) {
+              const json = await resp.json();
+              if (json && Array.isArray(json.names)) {
+                json.names.forEach((n) => {
+                  if (n && !merged.some((x) => x.toLowerCase() === n.toLowerCase())) {
+                    merged.push(n);
+                  }
+                });
+                merged.sort();
+              }
+            }
+          } catch (e) {}
+        }
+
+        if (merged.length > 0) {
+          let opts = `<option value="">-- Pilih Nama Anda (${merged.length} siswa terdaftar di ${kelas}) --</option>`;
+          merged.forEach((n) => {
+            opts += `<option value="${n.replace(/"/g, "&quot;")}">${n}</option>`;
+          });
+          opts += `<option value="__NEW__">➕ Nama saya belum ada di daftar (Ketik Nama Baru)</option>`;
+          rosterSelect.innerHTML = opts;
+          nameManualGroup.classList.add("hidden");
+        } else {
+          rosterSelect.innerHTML = `<option value="__NEW__" selected>Belum ada data Pretest di ${school} (${kelas}) — Silakan ketik nama Anda di bawah</option>`;
+          nameManualGroup.classList.remove("hidden");
+        }
+      }
+
+      if (rosterSelect) {
+        rosterSelect.addEventListener("change", () => {
+          rosterSelect.classList.remove("error");
+          errorBox.classList.remove("show");
+          if (rosterSelect.value === "__NEW__") {
+            nameManualGroup.classList.remove("hidden");
+            nameInp.value = "";
+            nameInp.focus();
+          } else if (rosterSelect.value) {
+            nameManualGroup.classList.add("hidden");
+            nameInp.value = rosterSelect.value;
+          }
+        });
+      }
+
+      if (schoolInp) {
+        schoolInp.addEventListener("change", () => {
+          schoolInp.classList.remove("error");
+          errorBox.classList.remove("show");
+          populateCombinedClassOptions(schoolInp, classInp);
+          refreshStudentRosterUI();
+        });
+      }
       if (classInp) {
-        classInp.addEventListener("input", () => autoSyncLevelFromClass(classInp.value));
+        classInp.addEventListener("change", () => {
+          classInp.classList.remove("error");
+          errorBox.classList.remove("show");
+          refreshStudentRosterUI();
+        });
       }
-      if (teacherClassInp) {
-        teacherClassInp.addEventListener("input", () => autoSyncLevelFromClass(teacherClassInp.value));
+      if (sessionSel) {
+        sessionSel.addEventListener("change", () => {
+          errorBox.classList.remove("show");
+          refreshStudentRosterUI();
+        });
       }
+      if (teacherSchoolInp) {
+        teacherSchoolInp.addEventListener("change", () => {
+          teacherSchoolInp.classList.remove("error");
+          errorBox.classList.remove("show");
+          populateTeacherGradeOptions(teacherSchoolInp, teacherClassInp);
+        });
+      }
+      [teacherClassInp, teacherLokalInp].forEach((el) => {
+        if (!el) return;
+        el.addEventListener("change", () => {
+          el.classList.remove("error");
+          errorBox.classList.remove("show");
+        });
+      });
 
       form.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -1107,32 +1331,31 @@
           const tName = (teacherNameInp.value || "").trim();
           const tPass = (teacherPassInp ? teacherPassInp.value : "").trim();
           const tSchool = (teacherSchoolInp.value || "").trim();
-          const tClass = (teacherClassInp.value || "").trim();
+          const tGrade = (teacherClassInp.value || "").trim();
+          const tLokal = (teacherLokalInp ? teacherLokalInp.value : "").trim();
           if (!tName) return showError("Mohon isi Nama Lengkap Guru terlebih dahulu.", teacherNameInp);
           if (!tPass) return showError("Mohon masukkan Kata Sandi Mode Guru terlebih dahulu.", teacherPassInp);
           if (tPass !== "guruhebat" && tPass !== "guru hebat") {
             return showError("Kata Sandi Mode Guru salah! Hanya guru yang dapat mengakses mode ini.", teacherPassInp);
           }
-          if (!tSchool) return showError("Mohon isi Nama Sekolah / Madrasah terlebih dahulu.", teacherSchoolInp);
-          if (!tClass) return showError("Mohon isi Kelas yang Diajar terlebih dahulu.", teacherClassInp);
-          const tGrade = parseGrade4to7(tClass);
-          if (!tGrade) {
-            return showError("Kelas dibatasi hanya untuk Kelas 4 sampai Kelas 7 (contoh: 4-A, 5-A, 6-A, atau VII-A). Data di luar kelas 4–7 tidak dapat diinput.", teacherClassInp);
+          if (!tSchool || !AUTHORIZED_SCHOOLS[tSchool]) {
+            return showError("Akses ditolak! Hanya guru dari sekolah mitra resmi yang terdaftar yang dapat masuk.", teacherSchoolInp);
           }
-          if (!selectedLevel) return showError("Mohon pilih Tingkatan Materi (SD / MI atau SMP / MTs) yang ingin diajarkan.");
-          if (tGrade <= 6 && selectedLevel !== "sd") {
-            return showError("Kelas 4–6 khusus untuk jenjang SD / MI. Silakan pilih kartu SD / MI.");
-          }
-          if (tGrade === 7 && selectedLevel !== "smp") {
-            return showError("Kelas 7 khusus untuk jenjang SMP / MTs. Silakan pilih kartu SMP / MTs.");
+          const requiredLvl = AUTHORIZED_SCHOOLS[tSchool];
+          if (!tGrade) return showError("Mohon pilih Kelas yang Diajar (4–7) terlebih dahulu.", teacherClassInp);
+          if (!tLokal) return showError("Mohon pilih Lokal (A, B, C, atau D) terlebih dahulu.", teacherLokalInp);
+          if (!selectedLevel) selectLevel(requiredLvl);
+          if (selectedLevel !== requiredLvl) {
+            return showError(`Sekolah ${tSchool} khusus untuk jenjang ${requiredLvl === "smp" ? "SMP / MTs" : "SD / MI"}.`);
           }
 
-          const levelLabel = selectedLevel === "smp" ? "SMP/MTs" : "SD/MI";
+          const tClassFull = `${tGrade}${tLokal}`;
+          const levelLabel = requiredLvl === "smp" ? "SMP/MTs" : "SD/MI";
           const profile = {
             name: tName,
             school: tSchool,
-            kelas: tClass,
-            level: selectedLevel,
+            kelas: tClassFull,
+            level: requiredLvl,
             levelLabel,
             isTeacher: true
           };
@@ -1145,43 +1368,54 @@
           const params = new URLSearchParams({
             nama: tName,
             sekolah: tSchool,
-            kelas: tClass,
+            kelas: tClassFull,
             guru: "1"
           });
 
-          const targetFolder = selectedLevel === "smp" ? "./smp/" : "./sd/";
+          const targetFolder = requiredLvl === "smp" ? "./smp/" : "./sd/";
           const targetUrl = targetFolder + "?" + params.toString();
           resetPortalForm();
           window.location.replace(targetUrl);
           return;
         }
 
-        const name = nameInp.value.trim();
         const school = schoolInp.value.trim();
         const kelas = classInp.value.trim();
-
-        if (!name) return showError("Mohon isi Nama Lengkap Siswa terlebih dahulu.", nameInp);
-        if (!school) return showError("Mohon isi Asal Sekolah / Madrasah terlebih dahulu.", schoolInp);
-        if (!kelas) return showError("Mohon isi Kelas terlebih dahulu.", classInp);
-        const sGrade = parseGrade4to7(kelas);
-        if (!sGrade) {
-          return showError("Kelas dibatasi hanya untuk Kelas 4 sampai Kelas 7 (contoh: 4-A, 5-A, 6-A, atau VII-A). Data di luar kelas 4–7 tidak dapat diinput.", classInp);
-        }
-        if (!selectedLevel) return showError("Mohon pilih Tingkatan (SD / MI atau SMP / MTs) terlebih dahulu.");
-        if (sGrade <= 6 && selectedLevel !== "sd") {
-          return showError("Kelas 4–6 khusus untuk jenjang SD / MI. Silakan pilih kartu SD / MI.");
-        }
-        if (sGrade === 7 && selectedLevel !== "smp") {
-          return showError("Kelas 7 khusus untuk jenjang SMP / MTs. Silakan pilih kartu SMP / MTs.");
-        }
-
-        const levelLabel = selectedLevel === "smp" ? "SMP/MTs" : "SD/MI";
-        const sessionSel = document.getElementById("portal-session");
         const sesi = sessionSel ? sessionSel.value : "Posttest";
-        const profile = { name, school, kelas, sesi, level: selectedLevel, levelLabel, isTeacher: false };
+        let name = "";
+        if (sesi !== "Pretest" && rosterSelect && rosterSelect.value && rosterSelect.value !== "__NEW__") {
+          name = rosterSelect.value.trim();
+        } else {
+          name = nameInp.value.trim();
+        }
+
+        if (!school || !AUTHORIZED_SCHOOLS[school]) {
+          return showError("Akses ditolak! Hanya siswa dari sekolah mitra resmi yang terdaftar yang dapat mengisi data.", schoolInp);
+        }
+        const requiredLvl = AUTHORIZED_SCHOOLS[school];
+        if (!kelas) return showError("Mohon pilih Kelas & Lokal (contoh: 4A, 5B, 6C, atau 7A) terlebih dahulu.", classInp);
+        if (!name) {
+          return showError(
+            sesi !== "Pretest" && !rosterGroup.classList.contains("hidden")
+              ? "Mohon pilih Nama Anda dari daftar kelas atau ketik Nama Lengkap."
+              : "Mohon isi Nama Lengkap Siswa terlebih dahulu.",
+            nameManualGroup.classList.contains("hidden") ? rosterSelect : nameInp
+          );
+        }
+        if (!selectedLevel) selectLevel(requiredLvl);
+        if (selectedLevel !== requiredLvl) {
+          return showError(`Sekolah ${school} khusus untuk jenjang ${requiredLvl === "smp" ? "SMP / MTs" : "SD / MI"}.`);
+        }
+
+        // Simpan nama ke roster lokal kelas agar langsung tersedia saat Posttest / Latihan Mandiri
+        saveLocalRosterName(school, kelas, name);
+
+        const levelLabel = requiredLvl === "smp" ? "SMP/MTs" : "SD/MI";
+        const profile = { name, school, kelas, sesi, level: requiredLvl, levelLabel, isTeacher: false };
 
         try {
           sessionStorage.removeItem("adab_wudhu_session_progress_v1");
+          sessionStorage.removeItem("adab_wudhu_shuffled_quiz_v1");
           sessionStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
         } catch (err) {}
 
@@ -1192,7 +1426,7 @@
           sesi: sesi
         });
 
-        const targetFolder = selectedLevel === "smp" ? "./smp/" : "./sd/";
+        const targetFolder = requiredLvl === "smp" ? "./smp/" : "./sd/";
         const targetUrl = targetFolder + "?" + params.toString();
         resetPortalForm();
         window.location.replace(targetUrl);
