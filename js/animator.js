@@ -355,6 +355,26 @@ window.WudhuAnimator = (function () {
     `;
   }
 
+  function renderStepBadge(x, y, num, fill = "#0284c7") {
+    return `
+      <g transform="translate(${x}, ${y})" pointer-events="none">
+        <circle cx="0" cy="0" r="11" fill="${fill}" stroke="#ffffff" stroke-width="2.2"/>
+        <text x="0" y="4" text-anchor="middle" font-size="11.5" font-weight="800" fill="#ffffff">${num}</text>
+      </g>
+    `;
+  }
+
+  function renderSeqCursorHand(scale = 0.52, strokeColor = "#0284c7", rot = 0, skinFill = "url(#skinGrad)", flipX = 1) {
+    return `
+      <g pointer-events="none">
+        <circle cx="0" cy="0" r="17" fill="rgba(56,189,248,0.28)" stroke="${strokeColor}" stroke-width="2"/>
+        <g transform="rotate(${rot}) scale(${scale * flipX}, ${scale}) translate(0, 14)">
+          ${renderRealisticHand(1, skinFill, strokeColor)}
+        </g>
+      </g>
+    `;
+  }
+
   function renderWaterDrops(cx, cy) {
     return `
       <g class="anim-drop-fall">
@@ -400,29 +420,37 @@ window.WudhuAnimator = (function () {
 
             <!-- Left Realistic 5-Finger Hand -->
             <g transform="translate(132, 174) rotate(-14)">
-              <g class="anim-rub-h">
-                <rect x="-18" y="18" width="36" height="44" rx="12" fill="url(#skinShade)" stroke="#c4845d" stroke-width="2"/>
-                ${renderRealisticHand(1, "url(#skinGrad)", "#c4845d")}
-              </g>
+              <rect x="-18" y="18" width="36" height="44" rx="12" fill="url(#skinShade)" stroke="#c4845d" stroke-width="2"/>
+              ${renderRealisticHand(1, "url(#skinGrad)", "#c4845d")}
             </g>
 
-            <!-- Right Realistic 5-Finger Hand rubbing over palm -->
+            <!-- Right Realistic 5-Finger Hand -->
             <g transform="translate(216, 178) rotate(16)">
-              <g class="anim-rub-v">
-                <rect x="-18" y="18" width="36" height="44" rx="12" fill="url(#skinShade)" stroke="#c4845d" stroke-width="2"/>
-                ${renderRealisticHand(-1, "url(#skinShade)", "#c4845d")}
+              <rect x="-18" y="18" width="36" height="44" rx="12" fill="url(#skinShade)" stroke="#c4845d" stroke-width="2"/>
+              ${renderRealisticHand(-1, "url(#skinShade)", "#c4845d")}
+            </g>
+
+            <!-- Sequential Path 1 (Telapak) -> 2 (Punggung) -> 3 (Pergelangan) -->
+            <path d="M176 134 L222 158 L176 210" fill="none" stroke="#0284c7" stroke-width="3.2" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+            ${renderStepBadge(152, 128, "1", "#0f6b56")}
+            ${renderStepBadge(242, 158, "2", "#0284c7")}
+            ${renderStepBadge(176, 224, "3", "#d97706")}
+
+            <!-- Moving Washing Hand Cursor (1 -> 2 -> 3) -->
+            <g transform="translate(176, 134)" pointer-events="none">
+              <g class="anim-seg-palms">
+                ${renderSeqCursorHand(0.48, "#0284c7", -12)}
               </g>
             </g>
 
-            <!-- Sparkling Water Splashes & Droplets -->
-            <ellipse cx="176" cy="148" rx="44" ry="16" fill="#bae6fd" opacity="0.5" class="anim-splash"/>
+            <ellipse cx="176" cy="148" rx="44" ry="16" fill="#bae6fd" opacity="0.45" class="anim-splash"/>
             ${renderWaterDrops(176, 118)}
 
             <!-- Wrist Boundary -->
-            <path d="M56 244 L296 244" stroke="#0f6b56" stroke-width="3" stroke-dasharray="6 4"/>
-            <text x="176" y="270" text-anchor="middle" font-size="13" font-weight="800" fill="#0f6b56">Batas: Hingga Pergelangan Tangan (3×)</text>
+            <path d="M56 246 L296 246" stroke="#0f6b56" stroke-width="3" stroke-dasharray="6 4"/>
+            <text x="176" y="272" text-anchor="middle" font-size="13" font-weight="800" fill="#0f6b56">Urutan 1→2→3: Telapak, Punggung &amp; Pergelangan</text>
           `,
-          "Gosok lembut telapak, punggung tangan & pergelangan kanan–kiri"
+          "Gosok berurutan: ① Telapak → ② Punggung → ③ Pergelangan"
         );
 
       case "fingers":
@@ -430,38 +458,46 @@ window.WudhuAnimator = (function () {
           "Menyela-nyela Jari Tangan",
           "DETAIL GERAKAN 1C • FOKUS JARI",
           `
-            <!-- Gentle Water Stream -->
             <line x1="176" y1="8" x2="176" y2="120" stroke="url(#waterGrad)" stroke-width="10" stroke-linecap="round" class="anim-water"/>
 
             <!-- Back Hand Base (Static) -->
             <path d="M92 152 C92 134 114 128 176 128 C238 128 260 134 260 152 L254 218 C252 232 232 238 176 238 C120 238 100 232 98 218 Z" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2.4"/>
-            <!-- Back Hand Fingers -->
             <rect x="98" y="64" width="22" height="84" rx="11" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2"/>
             <rect x="144" y="50" width="22" height="96" rx="11" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2"/>
             <rect x="190" y="54" width="22" height="92" rx="11" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2"/>
             <rect x="236" y="70" width="20" height="78" rx="10" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2"/>
 
-            <!-- Front Interlaced Fingers sliding smoothly up & down -->
-            <g class="anim-finger-rub">
-              <rect x="121" y="58" width="22" height="92" rx="11" fill="url(#skinShade)" stroke="#b5744e" stroke-width="2.2"/>
-              <rect x="167" y="48" width="22" height="100" rx="11" fill="url(#skinShade)" stroke="#b5744e" stroke-width="2.2"/>
-              <rect x="213" y="62" width="22" height="88" rx="11" fill="url(#skinShade)" stroke="#b5744e" stroke-width="2.2"/>
-              <!-- Fingernails on interlaced fingers -->
-              <rect x="126" y="62" width="12" height="10" rx="4" fill="#fde8d8" opacity="0.85"/>
-              <rect x="172" y="52" width="12" height="11" rx="4" fill="#fde8d8" opacity="0.85"/>
-              <rect x="218" y="66" width="12" height="10" rx="4" fill="#fde8d8" opacity="0.85"/>
-              <!-- Emerald Clean-Gap Indicators -->
-              <line x1="120" y1="78" x2="120" y2="146" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
-              <line x1="143" y1="70" x2="143" y2="146" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
-              <line x1="166" y1="68" x2="166" y2="146" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
-              <line x1="189" y1="70" x2="189" y2="146" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
-              <line x1="212" y1="76" x2="212" y2="146" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
+            <!-- Front Interlaced Fingers + Clean Gap Indicators -->
+            <rect x="121" y="58" width="22" height="92" rx="11" fill="url(#skinShade)" stroke="#b5744e" stroke-width="2.2"/>
+            <rect x="167" y="48" width="22" height="100" rx="11" fill="url(#skinShade)" stroke="#b5744e" stroke-width="2.2"/>
+            <rect x="213" y="62" width="22" height="88" rx="11" fill="url(#skinShade)" stroke="#b5744e" stroke-width="2.2"/>
+            <rect x="126" y="62" width="12" height="10" rx="4" fill="#fde8d8" opacity="0.85"/>
+            <rect x="172" y="52" width="12" height="11" rx="4" fill="#fde8d8" opacity="0.85"/>
+            <rect x="218" y="66" width="12" height="10" rx="4" fill="#fde8d8" opacity="0.85"/>
+            <line x1="120" y1="78" x2="120" y2="146" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
+            <line x1="143" y1="70" x2="143" y2="146" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
+            <line x1="166" y1="68" x2="166" y2="146" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
+            <line x1="189" y1="70" x2="189" y2="146" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
+            <line x1="212" y1="76" x2="212" y2="146" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
+
+            <!-- Sequential Path 1 -> 2 -> 3 Across Finger Gaps -->
+            <path d="M120 100 L166 96 L212 102" fill="none" stroke="#0284c7" stroke-width="3" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+            ${renderStepBadge(120, 42, "1", "#0f6b56")}
+            ${renderStepBadge(166, 36, "2", "#0284c7")}
+            ${renderStepBadge(212, 46, "3", "#d97706")}
+
+            <!-- Moving Finger-Weave Cursor (1 -> 2 -> 3) -->
+            <g transform="translate(120, 100)" pointer-events="none">
+              <g class="anim-seg-fingers">
+                ${renderSeqCursorHand(0.45, "#0284c7", 0)}
+              </g>
             </g>
+
             ${renderWaterDrops(176, 98)}
-            <text x="176" y="266" text-anchor="middle" font-size="13.5" font-weight="800" fill="#065f46">Tautkan Jari &amp; Gosok Naik–Turun</text>
+            <text x="176" y="266" text-anchor="middle" font-size="13.5" font-weight="800" fill="#065f46">Sela Jari Berurutan 1 → 2 → 3</text>
             <text x="176" y="286" text-anchor="middle" font-size="12" fill="#475569">Pastikan keempat sela jari bersih terkena air</text>
           `,
-          "Garis hijau: sela-sela jari yang dibersihkan menyeluruh"
+          "Tautkan jari & sela berurutan dari sisi kiri ke kanan"
         );
 
       case "mouth":
@@ -475,19 +511,24 @@ window.WudhuAnimator = (function () {
             <ellipse cx="208" cy="156" rx="18" ry="13" fill="#7dd3fc" stroke="#0284c7" stroke-width="2" opacity="0.72" class="anim-cheek-puff"/>
             <ellipse cx="176" cy="168" rx="14" ry="9" fill="#38bdf8" stroke="#0369a1" stroke-width="2"/>
 
-            <!-- Cupped 5-Finger Right Hand Bringing Water to Mouth -->
-            <g transform="translate(106, 206) rotate(32)">
-              <g class="anim-rub-v">
-                ${renderRealisticHand(1, "url(#skinGrad)", "#c4845d")}
-                <ellipse cx="6" cy="-22" rx="22" ry="11" fill="url(#waterGrad)" stroke="#0284c7" stroke-width="1.6"/>
+            <!-- Sequential Path 1 (Cekup Air) -> 2 (Putar di Mulut) -> 3 (Buang Sopan) -->
+            <path d="M102 198 Q138 172 176 168 Q214 176 244 202" fill="none" stroke="#0284c7" stroke-width="3.2" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+            ${renderStepBadge(78, 204, "1", "#0f6b56")}
+            ${renderStepBadge(176, 134, "2", "#0284c7")}
+            ${renderStepBadge(272, 206, "3", "#d97706")}
+
+            <!-- Cupped 5-Finger Hand Traveling 1 -> 2 -> 3 -->
+            <g transform="translate(102, 198)" pointer-events="none">
+              <g class="anim-seg-mouth">
+                ${renderSeqCursorHand(0.54, "#0284c7", 24)}
               </g>
             </g>
             ${renderWaterDrops(132, 168)}
 
-            <text x="176" y="256" text-anchor="middle" font-size="13.5" font-weight="800" fill="#0369a1">Putar Air di Rongga Mulut (3×)</text>
-            <text x="176" y="276" text-anchor="middle" font-size="12" fill="#475569">Cekup air dengan tangan kanan, buang dengan sopan</text>
+            <text x="176" y="256" text-anchor="middle" font-size="13.5" font-weight="800" fill="#0369a1">Urutan 1→2→3: Cekup, Putar &amp; Keluarkan</text>
+            <text x="176" y="276" text-anchor="middle" font-size="12" fill="#475569">Ambil air dengan tangan kanan, buang dengan sopan</text>
           `,
-          "Tidak menengadahkan mulut langsung ke keran deras"
+          "① Cekup kanan → ② Putar di rongga mulut → ③ Buang sopan"
         );
 
       case "nose":
@@ -496,28 +537,29 @@ window.WudhuAnimator = (function () {
           "DETAIL GERAKAN 2B • FOKUS HIDUNG",
           `
             ${renderFaceBaseLarge(isFemale, false, false)}
-            <!-- Highlighted Nose Zone -->
-            <circle cx="176" cy="142" r="24" fill="rgba(56,189,248,0.22)" stroke="#0284c7" stroke-width="2.5" stroke-dasharray="5 4" class="anim-splash"/>
+            <circle cx="176" cy="142" r="22" fill="rgba(56,189,248,0.22)" stroke="#0284c7" stroke-width="2.5" stroke-dasharray="5 4" class="anim-splash"/>
 
-            <!-- Right Cupped Hand Lifting Water to Nose (Istinsyaq) -->
-            <g transform="translate(114, 198) rotate(24) scale(0.76)">
-              <g class="anim-rub-v">
-                ${renderRealisticHand(1, "url(#skinGrad)", "#c4845d")}
-                <ellipse cx="4" cy="-22" rx="18" ry="10" fill="url(#waterGrad)" stroke="#0284c7" stroke-width="1.6"/>
+            <!-- Sequential Path 1 (Cekup Kanan) -> 2 (Hirup Hidung) -> 3 (Keluarkan Kiri) -->
+            <path d="M102 196 L176 144 L246 184" fill="none" stroke="#0284c7" stroke-width="3.4" class="anim-trail" marker-end="url(#arrowAmber)" pointer-events="none"/>
+            ${renderStepBadge(72, 202, "1", "#0f6b56")}
+            ${renderStepBadge(176, 114, "2", "#0284c7")}
+            ${renderStepBadge(276, 188, "3", "#d97706")}
+
+            <!-- Moving Hand Following 1 -> 2 -> 3 -->
+            <g transform="translate(102, 196)" pointer-events="none">
+              <g class="anim-seg-nose">
+                ${renderSeqCursorHand(0.52, "#0284c7", 18)}
               </g>
             </g>
-            <!-- Directional Arrows -->
-            <line x1="126" y1="168" x2="158" y2="148" stroke="#0f6b56" stroke-width="3.8" marker-end="url(#arrowGreen)"/>
-            <rect x="16" y="204" width="114" height="24" rx="8" fill="#0f6b56"/>
-            <text x="73" y="220" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">1. Hirup (Kanan)</text>
 
-            <line x1="194" y1="148" x2="232" y2="174" stroke="#d97706" stroke-width="3.8" marker-end="url(#arrowAmber)"/>
-            <rect x="218" y="204" width="122" height="24" rx="8" fill="#d97706"/>
-            <text x="279" y="220" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">2. Keluarkan (Kiri)</text>
+            <rect x="16" y="220" width="114" height="22" rx="8" fill="#0f6b56"/>
+            <text x="73" y="235" text-anchor="middle" font-size="10.2" font-weight="800" fill="#ffffff">1–2. Hirup (Kanan)</text>
+            <rect x="218" y="220" width="122" height="22" rx="8" fill="#d97706"/>
+            <text x="279" y="235" text-anchor="middle" font-size="10.2" font-weight="800" fill="#ffffff">3. Keluarkan (Kiri)</text>
 
-            <text x="176" y="268" text-anchor="middle" font-size="13" font-weight="800" fill="#065f46">Hirup Lembut lalu Keluarkan (3×)</text>
+            <text x="176" y="272" text-anchor="middle" font-size="13" font-weight="800" fill="#065f46">Urutan 1→2→3: Cekup, Hirup &amp; Keluarkan</text>
           `,
-          "Tangan kanan mengambil air, tangan kiri membantu membersihkan"
+          "① Cekup kanan → ② Hirup lembut → ③ Keluarkan dengan kiri"
         );
 
       case "face_v":
@@ -527,33 +569,34 @@ window.WudhuAnimator = (function () {
           `
             ${renderFaceBaseLarge(isFemale, true, false)}
 
-            <!-- Animated Left & Right 5-Finger Hands Washing Smoothly Forehead -> Chin -->
-            <g class="anim-wash-down">
-              <g transform="translate(132, 134) rotate(-10) scale(0.72)">
-                ${renderRealisticHand(1, "url(#skinGrad)", "#b8744d")}
+            <!-- Sequential Path 1 (Dahi) -> 2 (Tengah Wajah) -> 3 (Bawah Dagu) -->
+            <line x1="176" y1="54" x2="176" y2="216" stroke="#0f6b56" stroke-width="4" class="anim-trail" marker-end="url(#arrowGreen)" pointer-events="none"/>
+            ${renderStepBadge(176, 68, "1", "#0f6b56")}
+            ${renderStepBadge(176, 136, "2", "#0284c7")}
+            ${renderStepBadge(176, 206, "3", "#d97706")}
+
+            <!-- Dual 5-Finger Hands Gliding Top (1) -> Mid (2) -> Chin (3) -->
+            <g transform="translate(176, 68)" pointer-events="none">
+              <g class="anim-seg-face-v">
+                <g transform="translate(-44, 0) rotate(-10) scale(0.64)">
+                  ${renderRealisticHand(1, "url(#skinGrad)", "#b8744d")}
+                </g>
+                <g transform="translate(44, 0) rotate(10) scale(0.64)">
+                  ${renderRealisticHand(-1, "url(#skinGrad)", "#b8744d")}
+                </g>
+                <ellipse cx="0" cy="0" rx="52" ry="26" fill="url(#waterGrad)" opacity="0.3"/>
               </g>
-              <g transform="translate(220, 134) rotate(10) scale(0.72)">
-                ${renderRealisticHand(-1, "url(#skinGrad)", "#b8744d")}
-              </g>
-              <!-- Shimmering Water Sheet on Face -->
-              <ellipse cx="176" cy="134" rx="56" ry="38" fill="url(#waterGrad)" opacity="0.32"/>
             </g>
             ${renderWaterDrops(176, 86)}
 
-            <!-- Vertical Shafi'i Boundary Arrow -->
-            <line x1="176" y1="48" x2="176" y2="218" stroke="#0f6b56" stroke-width="4.5" marker-start="url(#arrowGreen)" marker-end="url(#arrowGreen)"/>
-            <!-- Top Label -->
             <rect x="12" y="26" width="124" height="26" rx="8" fill="#0f6b56"/>
-            <text x="74" y="43" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">Batas Rambut Dahi</text>
-            <line x1="136" y1="40" x2="170" y2="48" stroke="#0f6b56" stroke-width="2"/>
-            <!-- Bottom Label -->
+            <text x="74" y="43" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">1. Batas Rambut Dahi</text>
             <rect x="216" y="204" width="126" height="26" rx="8" fill="#0f6b56"/>
-            <text x="279" y="221" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">Bawah Ujung Dagu</text>
-            <line x1="184" y1="216" x2="216" y2="216" stroke="#0f6b56" stroke-width="2"/>
+            <text x="279" y="221" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">3. Bawah Ujung Dagu</text>
 
-            <text x="176" y="274" text-anchor="middle" font-size="13" font-weight="800" fill="#065f46">Basuh Merata + Niat di Hati (Basuhan Ke-1)</text>
+            <text x="176" y="274" text-anchor="middle" font-size="13" font-weight="800" fill="#065f46">Urutan 1→2→3: Dahi, Pipi hingga Ujung Dagu</text>
           `,
-          "Wajib merata dari batas tumbuh rambut dahi hingga bawah dagu"
+          "① Batas rambut dahi → ② Tengah wajah → ③ Bawah dagu"
         );
 
       case "face_h":
@@ -563,29 +606,28 @@ window.WudhuAnimator = (function () {
           `
             ${renderFaceBaseLarge(isFemale, true, false)}
 
-            <!-- Animated Left & Right 5-Finger Hands Sweeping Outward Ear-to-Ear -->
-            <g transform="translate(132, 138) rotate(-18) scale(0.72)">
-              <g class="anim-wash-wide-l">
-                ${renderRealisticHand(1, "url(#skinGrad)", "#b8744d")}
-              </g>
-            </g>
-            <g transform="translate(220, 138) rotate(18) scale(0.72)">
-              <g class="anim-wash-wide-r">
-                ${renderRealisticHand(-1, "url(#skinGrad)", "#b8744d")}
+            <!-- Sequential Path 1 (Tengah) -> 2 (Telinga Kanan) -> 3 (Telinga Kiri) -->
+            <path d="M176 134 L104 138 L248 138" fill="none" stroke="#d97706" stroke-width="3.8" class="anim-trail" marker-end="url(#arrowAmber)" pointer-events="none"/>
+            ${renderStepBadge(176, 110, "1", "#0f6b56")}
+            ${renderStepBadge(92, 138, "2", "#0284c7")}
+            ${renderStepBadge(260, 138, "3", "#d97706")}
+
+            <!-- Moving Hand Sweeping 1 -> 2 -> 3 -->
+            <g transform="translate(176, 134)" pointer-events="none">
+              <g class="anim-seg-face-h">
+                ${renderSeqCursorHand(0.56, "#0284c7", 0)}
               </g>
             </g>
             ${renderWaterDrops(176, 100)}
 
-            <!-- Horizontal Shafi'i Arrow -->
-            <line x1="94" y1="138" x2="258" y2="138" stroke="#d97706" stroke-width="4.5" marker-start="url(#arrowAmber)" marker-end="url(#arrowAmber)"/>
-            <rect x="8" y="182" width="104" height="26" rx="8" fill="#d97706"/>
-            <text x="60" y="199" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">Telinga Kanan</text>
-            <rect x="240" y="182" width="104" height="26" rx="8" fill="#d97706"/>
-            <text x="292" y="199" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">Telinga Kiri</text>
+            <rect x="8" y="182" width="108" height="26" rx="8" fill="#0284c7"/>
+            <text x="62" y="199" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">2. Telinga Kanan</text>
+            <rect x="236" y="182" width="108" height="26" rx="8" fill="#d97706"/>
+            <text x="290" y="199" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">3. Telinga Kiri</text>
 
-            <text x="176" y="274" text-anchor="middle" font-size="13" font-weight="800" fill="#92400e">Ratakan hingga Pangkal Kedua Telinga</text>
+            <text x="176" y="274" text-anchor="middle" font-size="13" font-weight="800" fill="#92400e">Urutan 1→2→3: Tengah ke Pangkal Telinga</text>
           `,
-          "Jangan hanya membasuh tengah wajah — ratakan sampai pangkal telinga"
+          "① Tengah wajah → ② Pangkal telinga kanan → ③ Telinga kiri"
         );
 
       case "face_detail":
@@ -594,76 +636,78 @@ window.WudhuAnimator = (function () {
           "DETAIL RUKUN 3C • FOKUS WAJAH",
           `
             ${renderFaceBaseLarge(isFemale, true, false)}
-            <!-- 4 Glowing Target Rings -->
-            <circle cx="152" cy="118" r="13" fill="rgba(2,132,199,0.28)" stroke="#0284c7" stroke-width="2.8" class="anim-splash"/>
-            <circle cx="200" cy="118" r="13" fill="rgba(2,132,199,0.28)" stroke="#0284c7" stroke-width="2.8" class="anim-splash"/>
-            <circle cx="176" cy="146" r="13" fill="rgba(2,132,199,0.28)" stroke="#0284c7" stroke-width="2.8" class="anim-splash"/>
-            <circle cx="176" cy="176" r="15" fill="rgba(16,185,129,0.28)" stroke="#0f6b56" stroke-width="2.8" class="anim-splash"/>
+            <circle cx="152" cy="118" r="13" fill="rgba(2,132,199,0.22)" stroke="#0284c7" stroke-width="2.4" class="anim-splash"/>
+            <circle cx="200" cy="118" r="13" fill="rgba(2,132,199,0.22)" stroke="#0284c7" stroke-width="2.4" class="anim-splash"/>
+            <circle cx="176" cy="146" r="13" fill="rgba(2,132,199,0.22)" stroke="#0284c7" stroke-width="2.4" class="anim-splash"/>
+            <circle cx="176" cy="178" r="15" fill="rgba(16,185,129,0.22)" stroke="#0f6b56" stroke-width="2.4" class="anim-splash"/>
 
-            <!-- Animated Wet Hand Gently Tracing Detail Points -->
-            <g transform="translate(230, 174) rotate(-25) scale(0.65)">
-              <g class="anim-rub-c">
-                ${renderRealisticHand(-1, "url(#skinGrad)", "#b8744d")}
+            <!-- Sequential Path 1 (Sudut Mata) -> 2 (Cuping Hidung) -> 3 (Bibir & Dagu) -->
+            <path d="M152 118 L176 146 L176 178" fill="none" stroke="#0284c7" stroke-width="3" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+            ${renderStepBadge(130, 112, "1", "#0f6b56")}
+            ${renderStepBadge(204, 146, "2", "#0284c7")}
+            ${renderStepBadge(204, 180, "3", "#d97706")}
+
+            <!-- Moving Wet Hand Tracking 1 -> 2 -> 3 -->
+            <g transform="translate(152, 118)" pointer-events="none">
+              <g class="anim-seg-face-detail">
+                ${renderSeqCursorHand(0.46, "#0284c7", -18, "url(#skinGrad)", -1)}
               </g>
             </g>
             ${renderWaterDrops(176, 114)}
 
-            <text x="176" y="262" text-anchor="middle" font-size="13" font-weight="800" fill="#0369a1">Cek Sudut Mata, Cuping Hidung &amp; Bibir</text>
-            <text x="176" y="282" text-anchor="middle" font-size="12" fill="#475569">Usap lembut 3× tanpa menepukkan air keras</text>
+            <text x="176" y="262" text-anchor="middle" font-size="13" font-weight="800" fill="#0369a1">Urutan 1→2→3: Mata, Hidung &amp; Bibir</text>
+            <text x="176" y="282" text-anchor="middle" font-size="12" fill="#475569">Usap lembut berurutan agar lipatan tak kering</text>
           `,
-          "Pastikan tidak ada lipatan kulit wajah yang terlewat kering"
+          "① Sudut mata → ② Cuping hidung → ③ Lipatan bibir"
         );
 
       case "arm_r":
       case "arm_l":
         const isL = pose === "arm_l";
+        const bx1 = isL ? 352 - 58 : 58;
+        const bx2 = isL ? 352 - 156 : 156;
+        const bx3 = isL ? 352 - 256 : 256;
         return renderCloseUpCard(
           isL ? "Lengan Kiri hingga Melewati Siku" : "Lengan Kanan hingga Melewati Siku",
           isL ? "DETAIL RUKUN 4B • FOKUS LENGAN" : "DETAIL RUKUN 4A • FOKUS LENGAN",
           `
             <g transform="${isL ? 'translate(352,0) scale(-1,1)' : ''}">
-              <!-- Overhead Water Stream -->
               <line x1="94" y1="48" x2="94" y2="152" stroke="url(#waterGrad)" stroke-width="11" stroke-linecap="round" class="anim-water"/>
-
-              <!-- Anatomical Forearm + Wrist + 5 Fingers -->
               <path d="M68 122 C110 116 196 112 272 114 L272 164 C196 168 110 162 68 158 C56 156 54 124 68 122 Z" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2.4"/>
-              <!-- Elbow Joint Bone Contour -->
               <ellipse cx="250" cy="156" rx="16" ry="12" fill="url(#skinShade)" stroke="#c4845d" stroke-width="1.6"/>
-              <!-- 5 Realistic Fingers Extending Left -->
               <rect x="28" y="116" width="42" height="9.5" rx="4.8" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="1.8"/>
               <rect x="20" y="126.5" width="48" height="10" rx="5" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="1.8"/>
               <rect x="22" y="137.5" width="46" height="9.5" rx="4.8" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="1.8"/>
               <rect x="30" y="148" width="38" height="9" rx="4.5" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="1.8"/>
               <path d="M56 118 Q44 102 64 102 Q74 106 72 120 Z" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="1.8"/>
-
-              <!-- Rolled-Up Sleeve Above Elbow -->
               <path d="M270 104 L334 104 Q342 104 342 114 L342 166 Q342 176 334 176 L270 176 Q262 140 270 104 Z" fill="url(#sleeveGrad)" stroke="#94a3b8" stroke-width="2.4"/>
               <path d="M278 106 Q270 140 278 174" fill="none" stroke="#cbd5e1" stroke-width="2"/>
-
-              <!-- Shafi'i Mandatory Wash Zone -->
               <rect x="16" y="102" width="256" height="76" rx="30" fill="rgba(20,184,166,0.12)" stroke="#0f6b56" stroke-width="2.6" stroke-dasharray="7 5"/>
+              <line x1="258" y1="68" x2="258" y2="206" stroke="#d97706" stroke-width="3.5" stroke-dasharray="5 4"/>
 
-              <!-- Animated Washing Hand Gliding Smoothly from Fingertips Past Elbow -->
-              <g transform="translate(152, 134) rotate(-90) scale(0.74)">
-                <g class="anim-arm-glide">
-                  ${renderRealisticHand(1, "url(#skinShade)", "#b5744e")}
-                  <ellipse cx="0" cy="-10" rx="30" ry="12" fill="url(#waterGrad)" opacity="0.45"/>
+              <!-- Sequential Trajectory 1 (Jari) -> 2 (Lengan) -> 3 (Siku) -->
+              <path d="M58 138 L156 138 L256 138" fill="none" stroke="#0284c7" stroke-width="3.4" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+
+              <!-- Moving 5-Finger Hand Traveling 1 -> 2 -> 3 Along Local Unrotated Axis -->
+              <g transform="translate(58, 138)" pointer-events="none">
+                <g class="anim-seg-arm">
+                  ${renderSeqCursorHand(0.62, "#0284c7", -90, "url(#skinShade)")}
                 </g>
               </g>
-
-              <!-- Elbow Boundary Line -->
-              <line x1="258" y1="68" x2="258" y2="206" stroke="#d97706" stroke-width="3.5" stroke-dasharray="5 4"/>
-              <!-- Flow Direction Arrow -->
-              <line x1="56" y1="196" x2="246" y2="196" stroke="#0284c7" stroke-width="4" marker-end="url(#arrowBlue)"/>
             </g>
+
+            <!-- Unmirrored Upright Numbered Badges Outside Flip Group -->
+            ${renderStepBadge(bx1, 194, "1", "#0f6b56")}
+            ${renderStepBadge(bx2, 194, "2", "#0284c7")}
+            ${renderStepBadge(bx3, 194, "3", "#d97706")}
             ${renderWaterDrops(176, 146)}
 
             <rect x="112" y="18" width="128" height="28" rx="14" fill="${isL ? '#0284c7' : '#0f6b56'}"/>
             <text x="176" y="36" text-anchor="middle" font-size="12" font-weight="800" fill="#ffffff">${isL ? 'TANGAN KIRI (3×)' : 'TANGAN KANAN (3×)'}</text>
-            <text x="176" y="244" text-anchor="middle" font-size="13" font-weight="800" fill="#065f46">Usap Merata: Ujung Jari → Melewati Siku</text>
+            <text x="176" y="244" text-anchor="middle" font-size="13" font-weight="800" fill="#065f46">Urutan 1→2→3: Jari, Lengan → Lewat Siku</text>
             <text x="176" y="266" text-anchor="middle" font-size="12" fill="#b45309">Garis Oranye: Lebihkan 2–3 cm di atas tulang siku</text>
           `,
-          "Gulung lengan baju di atas siku & lepas jam tangan ketat"
+          "① Ujung jari → ② Lengan bawah → ③ Melewati siku"
         );
 
       case "arm_elbow":
@@ -671,25 +715,29 @@ window.WudhuAnimator = (function () {
           "Cek Belakang Siku & Lipatan",
           "DETAIL RUKUN 4C • FOKUS SIKU",
           `
-            <!-- Detailed Bent Arm & Elbow Back View -->
             <path d="M78 214 L176 118 L274 214" stroke="url(#skinGrad)" stroke-width="50" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
             <path d="M78 214 L176 118 L274 214" stroke="#c4845d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.5"/>
-            <!-- Highlighted Elbow Joint -->
             <circle cx="176" cy="116" r="34" fill="rgba(16,185,129,0.2)" stroke="#059669" stroke-width="3.2" stroke-dasharray="6 4" class="anim-splash"/>
 
-            <!-- Animated Realistic Hand Scrubbing Back of Elbow in Circular Motion -->
-            <g transform="translate(176, 128) scale(0.75)">
-              <g class="anim-rub-c">
-                ${renderRealisticHand(1, "url(#skinShade)", "#b5744e")}
+            <!-- Sequential Trajectory 1 (Lengan) -> 2 (Belakang Siku) -> 3 (Atas Siku) -->
+            <path d="M118 174 L176 116 L234 174" fill="none" stroke="#0284c7" stroke-width="3.2" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+            ${renderStepBadge(102, 184, "1", "#0f6b56")}
+            ${renderStepBadge(176, 86, "2", "#0284c7")}
+            ${renderStepBadge(250, 184, "3", "#d97706")}
+
+            <!-- Moving Washing Hand Traveling 1 -> 2 -> 3 Around Elbow -->
+            <g transform="translate(118, 174)" pointer-events="none">
+              <g class="anim-seg-elbow">
+                ${renderSeqCursorHand(0.56, "#0284c7", 0, "url(#skinShade)")}
               </g>
             </g>
             ${renderWaterDrops(176, 86)}
 
             <rect x="74" y="26" width="204" height="32" rx="10" fill="#065f46"/>
-            <text x="176" y="47" text-anchor="middle" font-size="12.5" font-weight="800" fill="#ffffff">Area Belakang Siku Wajib Basah</text>
-            <text x="176" y="268" text-anchor="middle" font-size="12.5" font-weight="700" fill="#475569">Sering terlewat kering saat siswa terburu-buru</text>
+            <text x="176" y="47" text-anchor="middle" font-size="12.5" font-weight="800" fill="#ffffff">Urutan 1→2→3: Belakang Siku</text>
+            <text x="176" y="268" text-anchor="middle" font-size="12.5" font-weight="700" fill="#475569">Pastikan lipatan &amp; belakang siku basah merata</text>
           `,
-          "Gosok memutar bagian belakang siku agar basah sempurna"
+          "① Lengan bawah → ② Puncak belakang siku → ③ Atas siku"
         );
 
       case "tap_off":
@@ -721,30 +769,32 @@ window.WudhuAnimator = (function () {
             "Usap Kepala di Balik Jilbab (Putri)",
             "DETAIL RUKUN 5B • FOKUS KEPALA PUTRI",
             `
-              <!-- Side Profile Head with Natural Hairline -->
               <circle cx="176" cy="154" r="76" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2.5"/>
               <path d="M108 130 Q130 72 198 78 Q242 84 248 148 Q220 116 172 110 Q132 108 108 130 Z" fill="#1e293b"/>
-              <!-- Hijab Draping Neatly Behind Forehead Edge -->
               <path d="M134 84 Q196 54 258 108 Q274 180 250 236 L196 236 Q226 176 218 118 Q186 92 134 84 Z" fill="#0f6b56" stroke="#094a3b" stroke-width="2.5"/>
               <path d="M132 148 Q140 153 148 148" fill="none" stroke="#1e293b" stroke-width="2.6" stroke-linecap="round"/>
+              <circle cx="148" cy="94" r="24" fill="rgba(2,132,199,0.22)" stroke="#0284c7" stroke-width="2.8" stroke-dasharray="5 3" class="anim-splash"/>
 
-              <!-- Highlight Zone: Touching Actual Hair/Scalp Under Hijab Edge -->
-              <circle cx="144" cy="98" r="24" fill="rgba(2,132,199,0.24)" stroke="#0284c7" stroke-width="3" stroke-dasharray="5 3" class="anim-splash"/>
+              <!-- Sequential Path 1 (Tepi Jilbab) -> 2 (Masuk Balik Jilbab) -> 3 (Usap Rambut Batas Kepala) -->
+              <path d="M124 110 L148 94 L182 88" fill="none" stroke="#0284c7" stroke-width="3.2" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+              ${renderStepBadge(102, 114, "1", "#0f6b56")}
+              ${renderStepBadge(146, 68, "2", "#0284c7")}
+              ${renderStepBadge(196, 70, "3", "#d97706")}
 
-              <!-- Realistic Wet Hand Slipping Gently Under Front Hijab Edge -->
-              <g transform="translate(136, 102) rotate(56) scale(0.62)">
-                <g class="anim-head-sweep">
-                  ${renderRealisticHand(1, "url(#skinGrad)", "#0284c7")}
+              <!-- Moving Wet Hand Entering Under Hijab Edge (1 -> 2 -> 3) -->
+              <g transform="translate(124, 110)" pointer-events="none">
+                <g class="anim-seg-head-f">
+                  ${renderSeqCursorHand(0.5, "#0284c7", 52)}
                 </g>
               </g>
               ${renderWaterDrops(146, 86)}
 
               <rect x="22" y="16" width="308" height="30" rx="10" fill="#be185d"/>
               <text x="176" y="36" text-anchor="middle" font-size="11.2" font-weight="800" fill="#ffffff">WAJIB SENTUH RAMBUT/KULIT (BUKAN KAIN JILBAB)</text>
-              <text x="176" y="262" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0369a1">Masukkan Tangan Basah di Balik Tepi Jilbab</text>
-              <text x="176" y="282" text-anchor="middle" font-size="11.5" fill="#475569">Usap rambut di batas kepala (bukan ujung rambut panjang)</text>
+              <text x="176" y="262" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0369a1">Urutan 1→2→3: Balik Tepi Jilbab → Rambut</text>
+              <text x="176" y="282" text-anchor="middle" font-size="11.5" fill="#475569">Usap rambut di batas kepala (bukan ujung panjang)</text>
             `,
-            "Mazhab Syafi'i: Tidak sah jika hanya mengusap luar kain jilbab"
+            "① Tepi jilbab → ② Masuk balik tepi → ③ Usap kulit/rambut"
           );
         }
         return renderCloseUpCard(
@@ -755,20 +805,25 @@ window.WudhuAnimator = (function () {
             <path d="M104 134 Q124 68 198 76 Q250 84 252 152 Q228 122 174 114 Q134 112 104 134 Z" fill="#1e293b"/>
             <path d="M128 150 Q136 155 144 150" fill="none" stroke="#1e293b" stroke-width="2.6" stroke-linecap="round"/>
             <ellipse cx="254" cy="160" rx="11" ry="18" fill="url(#skinShade)" stroke="#c4845d" stroke-width="2"/>
-            <!-- Sweeping Arc -->
-            <path d="M114 98 Q176 42 244 102" fill="none" stroke="#0284c7" stroke-width="5" stroke-dasharray="8 5"/>
-            <!-- Realistic Wet Hand Sweeping Smoothly Over Head -->
-            <g transform="translate(174, 78) rotate(82) scale(0.68)">
-              <g class="anim-head-sweep">
-                ${renderRealisticHand(1, "url(#skinGrad)", "#0284c7")}
+
+            <!-- Sequential Arc Path 1 (Dahi) -> 2 (Ubun-ubun) -> 3 (Belakang) -->
+            <path d="M126 94 Q178 60 232 98" fill="none" stroke="#0284c7" stroke-width="4" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+            ${renderStepBadge(104, 94, "1", "#0f6b56")}
+            ${renderStepBadge(178, 42, "2", "#0284c7")}
+            ${renderStepBadge(252, 98, "3", "#d97706")}
+
+            <!-- Moving Wet Hand Sweeping 1 -> 2 -> 3 Over Scalp -->
+            <g transform="translate(126, 94)" pointer-events="none">
+              <g class="anim-seg-head-m">
+                ${renderSeqCursorHand(0.54, "#0284c7", 80)}
               </g>
             </g>
             ${renderWaterDrops(176, 68)}
 
-            <text x="176" y="262" text-anchor="middle" font-size="13" font-weight="800" fill="#0369a1">Rukun: Usap Sebagian Kulit/Rambut Kepala</text>
+            <text x="176" y="262" text-anchor="middle" font-size="13" font-weight="800" fill="#0369a1">Urutan 1→2→3: Depan, Ubun-ubun &amp; Belakang</text>
             <text x="176" y="282" text-anchor="middle" font-size="12" fill="#475569">Sunnah: Usap dari depan ke belakang lalu kembali</text>
           `,
-          "Cukup dengan tangan basah — keran tetap tertutup/kecil"
+          "① Batas rambut depan → ② Ubun-ubun → ③ Belakang kepala"
         );
 
       case "ears":
@@ -776,75 +831,78 @@ window.WudhuAnimator = (function () {
           "Usap Daun & Lubang Telinga",
           "DETAIL SUNNAH 5C • FOKUS TELINGA",
           `
-            <!-- Detailed Anatomical Ear -->
             <path d="M176 50 C238 50 258 114 234 176 C216 220 176 236 150 214 C130 198 144 166 154 148 C164 130 146 88 176 50 Z" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="3"/>
             <path d="M180 80 C218 86 222 138 200 172 C186 192 166 186 164 164" fill="none" stroke="#c4845d" stroke-width="3" stroke-linecap="round"/>
             <path d="M174 112 C194 114 196 144 180 156" fill="none" stroke="#b5744e" stroke-width="2.4" stroke-linecap="round"/>
 
-            <!-- Animated Wet Index Finger Tracing Inner Ear Folds -->
-            <g class="anim-ear-trace">
-              <circle cx="182" cy="136" r="15" fill="rgba(2,132,199,0.26)" stroke="#0284c7" stroke-width="2.5"/>
-              <rect x="130" y="130" width="54" height="14" rx="7" fill="url(#skinGrad)" stroke="#0284c7" stroke-width="2"/>
-              <rect x="172" y="133" width="9" height="8" rx="3" fill="#fde8d8"/>
-            </g>
+            <!-- Sequential Path 1 (Lubang Telinga) -> 2 (Lekuk Daun Dalam) -> 3 (Belakang Daun) -->
+            <path d="M180 140 L194 96 L242 146" fill="none" stroke="#0284c7" stroke-width="3.2" class="anim-trail" marker-end="url(#arrowGreen)" pointer-events="none"/>
+            ${renderStepBadge(152, 140, "1", "#0f6b56")}
+            ${renderStepBadge(194, 68, "2", "#0284c7")}
+            ${renderStepBadge(266, 146, "3", "#d97706")}
 
-            <!-- Animated Wet Thumb Gliding Behind Ear -->
-            <g class="anim-rub-v">
-              <circle cx="242" cy="146" r="14" fill="rgba(16,185,129,0.26)" stroke="#059669" stroke-width="2.5"/>
-              <rect x="234" y="134" width="16" height="44" rx="8" fill="url(#skinShade)" stroke="#059669" stroke-width="2"/>
+            <!-- Moving Finger Cursor 1 -> 2 -> 3 -->
+            <g transform="translate(180, 140)" pointer-events="none">
+              <g class="anim-seg-ears">
+                <circle cx="0" cy="0" r="14" fill="rgba(2,132,199,0.28)" stroke="#0284c7" stroke-width="2.5"/>
+                <circle cx="0" cy="0" r="5" fill="#0284c7"/>
+              </g>
             </g>
 
             <rect x="16" y="76" width="112" height="42" rx="10" fill="#0284c7"/>
-            <text x="72" y="94" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff">Jari Telunjuk</text>
-            <text x="72" y="110" text-anchor="middle" font-size="10.2" fill="#e0f2fe">Usap Lekuk Dalam</text>
+            <text x="72" y="94" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff">1–2. Telunjuk</text>
+            <text x="72" y="110" text-anchor="middle" font-size="10.2" fill="#e0f2fe">Lubang &amp; Lekuk</text>
 
             <rect x="234" y="218" width="108" height="42" rx="10" fill="#0f6b56"/>
-            <text x="288" y="236" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff">Ibu Jari</text>
-            <text x="288" y="252" text-anchor="middle" font-size="10.2" fill="#d1fae5">Usap Belakang</text>
+            <text x="288" y="236" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff">3. Ibu Jari</text>
+            <text x="288" y="252" text-anchor="middle" font-size="10.2" fill="#d1fae5">Belakang Daun</text>
           `,
-          "Usap telinga kanan & kiri secara bersamaan (1–3×)"
+          "① Lubang telinga → ② Lekuk dalam → ③ Belakang daun telinga"
         );
 
       case "foot_r":
       case "foot_l":
         const isFL = pose === "foot_l";
+        const fbx1 = isFL ? 352 - 76 : 76;
+        const fbx2 = isFL ? 352 - 196 : 196;
+        const fbx3 = isFL ? 352 - 200 : 200;
         return renderCloseUpCard(
           isFL ? "Kaki Kiri hingga Mata Kaki" : "Kaki Kanan hingga Mata Kaki",
           isFL ? "DETAIL RUKUN 6B • FOKUS KAKI" : "DETAIL RUKUN 6A • FOKUS KAKI",
           `
             <g transform="${isFL ? 'translate(352,0) scale(-1,1)' : ''}">
-              <!-- Flowing Water Stream Onto Foot -->
               <line x1="112" y1="48" x2="112" y2="188" stroke="url(#waterGrad)" stroke-width="11" stroke-linecap="round" class="anim-water"/>
-
-              <!-- Detailed Lower Leg, Ankle, Heel & 5-Toe Foot -->
               <path d="M168 48 L232 48 L232 190 Q232 224 198 224 L82 224 Q54 224 54 204 Q54 186 96 178 L168 156 Z" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2.5"/>
-              <!-- Distinct Toe Contours -->
               <ellipse cx="64" cy="206" rx="10" ry="7.5" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="1.8"/>
               <ellipse cx="76" cy="214" rx="7.5" ry="6" fill="url(#skinShade)" stroke="#c4845d" stroke-width="1.6"/>
               <ellipse cx="88" cy="217" rx="6.5" ry="5.5" fill="url(#skinShade)" stroke="#c4845d" stroke-width="1.5"/>
-              <!-- Prominent Ankle Bone (Ka'bain) -->
               <circle cx="200" cy="142" r="15" fill="url(#skinShade)" stroke="#d97706" stroke-width="2.5"/>
-
-              <!-- Mandatory Shafi'i Zone -->
               <rect x="44" y="114" width="198" height="118" rx="22" fill="rgba(20,184,166,0.13)" stroke="#0f6b56" stroke-width="2.8" stroke-dasharray="7 5"/>
-              <!-- Above Ankle Line -->
               <line x1="146" y1="116" x2="256" y2="116" stroke="#d97706" stroke-width="3.5" stroke-dasharray="5 4"/>
 
-              <!-- Animated Washing Hand Gliding Along Foot & Ankle -->
-              <g transform="translate(142, 184) rotate(-28) scale(0.68)">
-                <g class="anim-arm-glide">
-                  ${renderRealisticHand(1, "url(#skinShade)", "#b5744e")}
+              <!-- Sequential Trajectory 1 (Jari Kaki) -> 2 (Tumit) -> 3 (Atas Mata Kaki) -->
+              <path d="M76 202 L196 196 L200 116" fill="none" stroke="#0284c7" stroke-width="3.2" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+
+              <!-- Moving 5-Finger Hand Traveling 1 -> 2 -> 3 Along Local Coordinates -->
+              <g transform="translate(76, 202)" pointer-events="none">
+                <g class="anim-seg-foot">
+                  ${renderSeqCursorHand(0.54, "#0284c7", -24, "url(#skinShade)")}
                 </g>
               </g>
             </g>
+
+            <!-- Upright Unmirrored Numbered Badges -->
+            ${renderStepBadge(fbx1, 178, "1", "#0f6b56")}
+            ${renderStepBadge(fbx2, 198, "2", "#0284c7")}
+            ${renderStepBadge(fbx3, 96, "3", "#d97706")}
             ${renderWaterDrops(132, 148)}
 
             <rect x="116" y="16" width="120" height="28" rx="14" fill="${isFL ? '#0284c7' : '#0f6b56'}"/>
             <text x="176" y="34" text-anchor="middle" font-size="12" font-weight="800" fill="#ffffff">${isFL ? 'KAKI KIRI (3×)' : 'KAKI KANAN (3×)'}</text>
-            <text x="176" y="262" text-anchor="middle" font-size="13" font-weight="800" fill="#065f46">Wajib Melewati Tonjolan Mata Kaki</text>
+            <text x="176" y="262" text-anchor="middle" font-size="13" font-weight="800" fill="#065f46">Urutan 1→2→3: Jari, Tumit → Mata Kaki</text>
             <text x="176" y="282" text-anchor="middle" font-size="12" fill="#b45309">Pastikan mata kaki dalam, luar &amp; tumit basah</text>
           `,
-          "Dahulukan kaki kanan (3×), lalu kaki kiri (3×) dengan tenang"
+          "① Jari kaki → ② Tumit belakang → ③ Melewati mata kaki"
         );
 
       case "foot_heel":
@@ -853,30 +911,34 @@ window.WudhuAnimator = (function () {
           "DETAIL RUKUN 6C • FOKUS JARI & TUMIT",
           `
             <path d="M168 58 L230 58 L230 192 Q230 222 198 222 L80 222 Q56 222 56 202 Q56 184 98 178 L168 158 Z" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2.5"/>
-            <!-- Animated Pinky Finger Cleaning Between Toes -->
-            <circle cx="80" cy="202" r="24" fill="rgba(2,132,199,0.22)" stroke="#0284c7" stroke-width="2.8" class="anim-splash"/>
-            <g class="anim-toe-scrub">
-              <rect x="52" y="182" width="38" height="12" rx="6" fill="url(#skinShade)" stroke="#0284c7" stroke-width="2" transform="rotate(24 70 188)"/>
-            </g>
-            <rect x="18" y="114" width="122" height="40" rx="10" fill="#0284c7"/>
-            <text x="79" y="131" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff">1. Sela Jari Kaki</text>
-            <text x="79" y="147" text-anchor="middle" font-size="10" fill="#e0f2fe">Pakai kelingking kiri</text>
+            <circle cx="80" cy="202" r="22" fill="rgba(2,132,199,0.2)" stroke="#0284c7" stroke-width="2.4" class="anim-splash"/>
+            <circle cx="222" cy="198" r="22" fill="rgba(16,185,129,0.22)" stroke="#059669" stroke-width="2.4" class="anim-splash"/>
 
-            <!-- Animated Hand Scrubbing Back Heel -->
-            <circle cx="222" cy="200" r="24" fill="rgba(16,185,129,0.24)" stroke="#059669" stroke-width="2.8" class="anim-splash"/>
-            <g transform="translate(248, 198) rotate(-32) scale(0.58)">
-              <g class="anim-rub-v">
-                ${renderRealisticHand(-1, "url(#skinShade)", "#059669")}
+            <!-- Sequential Trajectory 1 (Sela Jari) -> 2 (Telapak/Pinggir) -> 3 (Tumit) -->
+            <path d="M80 202 Q152 222 222 198" fill="none" stroke="#0284c7" stroke-width="3.2" class="anim-trail" marker-end="url(#arrowGreen)" pointer-events="none"/>
+            ${renderStepBadge(78, 170, "1", "#0f6b56")}
+            ${renderStepBadge(152, 232, "2", "#0284c7")}
+            ${renderStepBadge(248, 184, "3", "#d97706")}
+
+            <!-- Moving Hand Cursor 1 -> 2 -> 3 -->
+            <g transform="translate(80, 202)" pointer-events="none">
+              <g class="anim-seg-foot-heel">
+                ${renderSeqCursorHand(0.48, "#0284c7", -16, "url(#skinShade)", -1)}
               </g>
             </g>
-            <rect x="216" y="114" width="122" height="40" rx="10" fill="#0f6b56"/>
-            <text x="277" y="131" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff">2. Tumit Belakang</text>
-            <text x="277" y="147" text-anchor="middle" font-size="10" fill="#d1fae5">Jangan sampai kering!</text>
+
+            <rect x="18" y="106" width="122" height="40" rx="10" fill="#0284c7"/>
+            <text x="79" y="123" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff">1. Sela Jari Kaki</text>
+            <text x="79" y="139" text-anchor="middle" font-size="10" fill="#e0f2fe">Pakai kelingking kiri</text>
+
+            <rect x="216" y="106" width="122" height="40" rx="10" fill="#0f6b56"/>
+            <text x="277" y="123" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff">3. Tumit Belakang</text>
+            <text x="277" y="139" text-anchor="middle" font-size="10" fill="#d1fae5">Jangan sampai kering!</text>
 
             ${renderWaterDrops(156, 174)}
-            <text x="176" y="268" text-anchor="middle" font-size="12.5" font-weight="800" fill="#065f46">Dua titik kaki yang paling sering terlewat</text>
+            <text x="176" y="268" text-anchor="middle" font-size="12.5" font-weight="800" fill="#065f46">Urutan 1→2→3: Sela Jari hingga Tumit</text>
           `,
-          "Periksa tumit belakang & sela jari sebelum menutup keran"
+          "① Sela jari kaki → ② Telapak & sisi → ③ Tumit belakang"
         );
 
       case "tertib":
@@ -1058,7 +1120,6 @@ window.WudhuAnimator = (function () {
     if (areaKey === "wajah") {
       baseGraphic = `
         <rect x="0" y="0" width="360" height="245" rx="16" fill="url(#kinBg)"/>
-        <!-- Soft Ears -->
         <ellipse cx="102" cy="136" rx="14" ry="24" fill="url(#kinShade)" stroke="#c4845d" stroke-width="2.2"/>
         <path d="M100 124 Q94 136 100 148" fill="none" stroke="#b5744e" stroke-width="1.6" stroke-linecap="round"/>
         <ellipse cx="258" cy="136" rx="14" ry="24" fill="url(#kinShade)" stroke="#c4845d" stroke-width="2.2"/>
@@ -1066,69 +1127,61 @@ window.WudhuAnimator = (function () {
 
         <!-- Cel-Shaded Anatomical Child Face -->
         <path d="M108 128 C108 68 140 48 180 48 C220 48 252 68 252 128 C252 184 220 216 180 216 C140 216 108 184 108 128 Z" fill="url(#kinSkin)" stroke="#c4845d" stroke-width="2.6"/>
-        <!-- Hairline -->
         <path d="M110 104 Q180 48 250 104 Q244 48 180 44 Q116 48 110 104 Z" fill="#1e293b"/>
-        <!-- Eyebrows & Serene Closed Eyes -->
         <path d="M138 106 Q152 99 166 105" fill="none" stroke="#334155" stroke-width="2.6" stroke-linecap="round"/>
         <path d="M194 105 Q208 99 222 106" fill="none" stroke="#334155" stroke-width="2.6" stroke-linecap="round"/>
         <path d="M140 124 Q152 132 164 124" fill="none" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
         <path d="M196 124 Q208 132 220 124" fill="none" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
-        <!-- Soft Cheeks, Nose & Smile -->
         <ellipse cx="136" cy="148" rx="11" ry="5.5" fill="#fda4af" opacity="0.45"/>
         <ellipse cx="224" cy="148" rx="11" ry="5.5" fill="#fda4af" opacity="0.45"/>
         <path d="M180 126 L175 150 Q180 155 185 150" fill="none" stroke="#b8744d" stroke-width="2.3" stroke-linecap="round"/>
         <path d="M162 174 Q180 185 198 174" fill="none" stroke="#9a3412" stroke-width="2.8" stroke-linecap="round"/>
 
-        <!-- Animated Washing Hands Sweeping Over Face -->
-        <g class="anim-wash-down" opacity="0.58">
-          <g transform="translate(140, 134) rotate(-10) scale(0.58)">
-            ${renderRealisticHand(1, "url(#kinSkin)", "#0284c7")}
-          </g>
-          <g transform="translate(220, 134) rotate(10) scale(0.58)">
-            ${renderRealisticHand(-1, "url(#kinSkin)", "#0284c7")}
+        <!-- Shafi'i Mandatory Boundary Oval & Sequential Trail 1 (180,66) -> 2 (180,205) -> 3 (108,136) -> 4 (252,136) -->
+        <ellipse cx="180" cy="136" rx="73" ry="74" fill="rgba(20,184,166,0.12)" stroke="#0f6b56" stroke-width="3" stroke-dasharray="7 5"/>
+        <path d="M180 66 L180 205 Q134 190 108 136 L252 136" fill="none" stroke="#0284c7" stroke-width="3.2" class="anim-trail" marker-end="url(#kinArrow)" pointer-events="none"/>
+
+        <!-- Sequential Moving Hand Cursor Following Exact Order 1 -> 2 -> 3 -> 4 -->
+        <g transform="translate(180, 66)" pointer-events="none" opacity="0.78">
+          <g class="anim-kin-wajah">
+            ${renderSeqCursorHand(0.5, "#0284c7", 0, "url(#kinSkin)")}
           </g>
         </g>
         ${renderWaterDrops(180, 92)}
 
-        <!-- Shafi'i Mandatory Boundary Oval & Axis Guides -->
-        <ellipse cx="180" cy="136" rx="73" ry="74" fill="rgba(20,184,166,0.12)" stroke="#0f6b56" stroke-width="3" stroke-dasharray="7 5"/>
-        <line x1="180" y1="54" x2="180" y2="212" stroke="#0f6b56" stroke-width="1.8" stroke-dasharray="4 4" opacity="0.6"/>
-        <line x1="106" y1="136" x2="254" y2="136" stroke="#d97706" stroke-width="1.8" stroke-dasharray="4 4" opacity="0.6"/>
-        <text x="180" y="24" text-anchor="middle" font-size="11.5" font-weight="800" fill="#065f46">Batas Wajib Wajah (Dahi–Dagu &amp; Telinga–Telinga)</text>
+        <text x="180" y="24" text-anchor="middle" font-size="11.5" font-weight="800" fill="#065f46">Urutan 1→2→3→4: Dahi, Dagu, Kanan hingga Kiri</text>
       `;
     } else if (areaKey === "tangan") {
       baseGraphic = `
         <rect x="0" y="0" width="360" height="245" rx="16" fill="url(#kinBg)"/>
-        <!-- Overhead Water Stream -->
         <line x1="92" y1="36" x2="92" y2="152" stroke="url(#kinWater)" stroke-width="10" stroke-linecap="round" class="anim-water"/>
 
         <!-- Anatomical Forearm + Elbow Bone + 5 Fingers -->
         <path d="M74 124 C118 118 198 116 280 118 L280 164 C198 168 118 164 74 158 C62 156 60 126 74 124 Z" fill="url(#kinSkin)" stroke="#c4845d" stroke-width="2.4"/>
         <ellipse cx="258" cy="156" rx="15" ry="11" fill="url(#kinShade)" stroke="#c4845d" stroke-width="1.6"/>
-        <!-- 5 Distinct Fingers -->
         <rect x="36" y="118" width="40" height="9" rx="4.5" fill="url(#kinSkin)" stroke="#c4845d" stroke-width="1.8"/>
         <rect x="28" y="128" width="46" height="9.5" rx="4.8" fill="url(#kinSkin)" stroke="#c4845d" stroke-width="1.8"/>
         <rect x="30" y="138.5" width="44" height="9" rx="4.5" fill="url(#kinSkin)" stroke="#c4845d" stroke-width="1.8"/>
         <rect x="38" y="148.5" width="36" height="8.5" rx="4.2" fill="url(#kinSkin)" stroke="#c4845d" stroke-width="1.8"/>
         <path d="M62 120 Q50 104 68 104 Q78 108 76 122 Z" fill="url(#kinSkin)" stroke="#c4845d" stroke-width="1.8"/>
-
-        <!-- Rolled-up Sleeve -->
         <path d="M278 108 L340 108 Q348 108 348 118 L348 166 Q348 176 340 176 L278 176 Q270 142 278 108 Z" fill="url(#kinSleeve)" stroke="#94a3b8" stroke-width="2.4"/>
 
-        <!-- Animated Washing Hand Gliding Past Elbow -->
-        <g transform="translate(158, 138) rotate(-90) scale(0.62)" opacity="0.65">
-          <g class="anim-arm-glide">
-            ${renderRealisticHand(1, "url(#kinShade)", "#0284c7")}
+        <!-- Shafi'i Mandatory Wash Zone, Elbow Line & Sequential Trail 1 (75,145) -> 2 (165,145) -> 3 (268,145) -->
+        <rect x="24" y="108" width="256" height="68" rx="28" fill="rgba(20,184,166,0.13)" stroke="#0f6b56" stroke-width="2.8" stroke-dasharray="7 5"/>
+        <line x1="268" y1="84" x2="268" y2="200" stroke="#d97706" stroke-width="3.2" stroke-dasharray="5 4"/>
+        <path d="M75 145 L165 145 L268 145" fill="none" stroke="#0284c7" stroke-width="3.4" class="anim-trail" marker-end="url(#kinArrow)" pointer-events="none"/>
+
+        <!-- Sequential Moving Hand Cursor 1 -> 2 -> 3 -->
+        <g transform="translate(75, 145)" pointer-events="none" opacity="0.78">
+          <g class="anim-kin-tangan">
+            ${renderSeqCursorHand(0.54, "#0284c7", -90, "url(#kinShade)")}
           </g>
         </g>
         ${renderWaterDrops(168, 152)}
 
-        <!-- Shafi'i Mandatory Wash Zone & Elbow Line -->
-        <rect x="24" y="108" width="256" height="68" rx="28" fill="rgba(20,184,166,0.13)" stroke="#0f6b56" stroke-width="2.8" stroke-dasharray="7 5"/>
-        <line x1="268" y1="84" x2="268" y2="200" stroke="#d97706" stroke-width="3.2" stroke-dasharray="5 4"/>
         <rect x="196" y="56" width="144" height="24" rx="8" fill="#d97706"/>
         <text x="268" y="72" text-anchor="middle" font-size="11" font-weight="800" fill="#ffffff">Batas Melewati Siku</text>
-        <text x="180" y="226" text-anchor="middle" font-size="11.5" font-weight="800" fill="#065f46">Basuh Merata dari Ujung Jari hingga Melewati Tulang Siku</text>
+        <text x="180" y="226" text-anchor="middle" font-size="11.5" font-weight="800" fill="#065f46">Urutan 1→2→3: Ujung Jari, Lengan → Lewat Siku</text>
       `;
     } else if (areaKey === "kepala") {
       baseGraphic = `
@@ -1139,48 +1192,50 @@ window.WudhuAnimator = (function () {
         <path d="M138 140 Q146 145 154 140" fill="none" stroke="#1e293b" stroke-width="2.6" stroke-linecap="round"/>
         <ellipse cx="260" cy="148" rx="11" ry="18" fill="url(#kinShade)" stroke="#c4845d" stroke-width="2"/>
 
-        <!-- Sweeping Water Arc & Animated Wet Hand -->
-        <path d="M124 94 Q185 44 248 98" fill="none" stroke="#0284c7" stroke-width="5.5" stroke-dasharray="8 5"/>
-        <g transform="translate(182, 78) rotate(82) scale(0.58)" opacity="0.72">
-          <g class="anim-head-sweep">
-            ${renderRealisticHand(1, "url(#kinSkin)", "#0284c7")}
+        <!-- Sweeping Guide & Sequential Trail 1 (180,74) -> 2 (180,126) -> 3 (270,142) -->
+        <path d="M124 94 Q185 44 248 98" fill="none" stroke="#0284c7" stroke-width="4" stroke-dasharray="8 5" opacity="0.45"/>
+        <path d="M180 74 Q212 96 180 126 Q230 132 270 142" fill="none" stroke="#0284c7" stroke-width="3.2" class="anim-trail" marker-end="url(#kinArrow)" pointer-events="none"/>
+
+        <!-- Sequential Moving Hand Cursor 1 -> 2 -> 3 -->
+        <g transform="translate(180, 74)" pointer-events="none" opacity="0.78">
+          <g class="anim-kin-kepala">
+            ${renderSeqCursorHand(0.5, "#0284c7", 70, "url(#kinSkin)")}
           </g>
         </g>
         ${renderWaterDrops(185, 68)}
 
         <rect x="74" y="14" width="212" height="26" rx="10" fill="#0284c7"/>
-        <text x="180" y="31" text-anchor="middle" font-size="11.5" font-weight="800" fill="#ffffff">Area Usap Sebagian Kepala (Rukun)</text>
-        <text x="180" y="232" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">Air wajib menyentuh sebagian kulit/rambut di batas kepala</text>
+        <text x="180" y="31" text-anchor="middle" font-size="11.5" font-weight="800" fill="#ffffff">Urutan 1→2→3: Kepala &amp; Telinga</text>
+        <text x="180" y="232" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">① Rambut depan → ② Arah belakang → ③ Daun telinga</text>
       `;
     } else if (areaKey === "kaki") {
       baseGraphic = `
         <rect x="0" y="0" width="360" height="245" rx="16" fill="url(#kinBg)"/>
-        <!-- Flowing Water Stream Onto Foot -->
         <line x1="114" y1="36" x2="114" y2="180" stroke="url(#kinWater)" stroke-width="10" stroke-linecap="round" class="anim-water"/>
 
         <!-- Detailed Lower Leg, Prominent Ankle Bone, Heel & 5 Toes -->
         <path d="M174 44 L232 44 L232 178 Q232 208 202 208 L84 208 Q62 208 62 190 Q62 172 106 168 L174 150 Z" fill="url(#kinSkin)" stroke="#c4845d" stroke-width="2.5"/>
-        <!-- Distinct Toes -->
         <ellipse cx="70" cy="192" rx="9" ry="6.5" fill="url(#kinSkin)" stroke="#c4845d" stroke-width="1.6"/>
         <ellipse cx="82" cy="199" rx="7" ry="5.5" fill="url(#kinShade)" stroke="#c4845d" stroke-width="1.5"/>
         <ellipse cx="94" cy="202" rx="6" ry="5" fill="url(#kinShade)" stroke="#c4845d" stroke-width="1.4"/>
-        <!-- Ankle Bone (Ka'bain) -->
         <circle cx="204" cy="132" r="14" fill="url(#kinShade)" stroke="#d97706" stroke-width="2.4"/>
 
-        <!-- Animated Washing Hand Gliding Along Foot & Ankle -->
-        <g transform="translate(146, 174) rotate(-26) scale(0.58)" opacity="0.65">
-          <g class="anim-arm-glide">
-            ${renderRealisticHand(1, "url(#kinShade)", "#0284c7")}
+        <!-- Shafi'i Mandatory Wash Zone, Above-Ankle Line & Sequential Trail 1 (92,192) -> 2 (215,196) -> 3 (205,112) -->
+        <rect x="56" y="106" width="186" height="110" rx="22" fill="rgba(20,184,166,0.13)" stroke="#0f6b56" stroke-width="2.8" stroke-dasharray="7 5"/>
+        <line x1="154" y1="108" x2="256" y2="108" stroke="#d97706" stroke-width="3.2" stroke-dasharray="5 4"/>
+        <path d="M92 192 L215 196 L205 112" fill="none" stroke="#0284c7" stroke-width="3.4" class="anim-trail" marker-end="url(#kinArrow)" pointer-events="none"/>
+
+        <!-- Sequential Moving Hand Cursor 1 -> 2 -> 3 -->
+        <g transform="translate(92, 192)" pointer-events="none" opacity="0.78">
+          <g class="anim-kin-kaki">
+            ${renderSeqCursorHand(0.5, "#0284c7", -22, "url(#kinShade)")}
           </g>
         </g>
         ${renderWaterDrops(132, 146)}
 
-        <!-- Shafi'i Mandatory Wash Zone & Above-Ankle Line -->
-        <rect x="56" y="106" width="186" height="110" rx="22" fill="rgba(20,184,166,0.13)" stroke="#0f6b56" stroke-width="2.8" stroke-dasharray="7 5"/>
-        <line x1="154" y1="108" x2="256" y2="108" stroke="#d97706" stroke-width="3.2" stroke-dasharray="5 4"/>
         <rect x="256" y="95" width="96" height="24" rx="8" fill="#d97706"/>
         <text x="304" y="111" text-anchor="middle" font-size="10.2" font-weight="800" fill="#ffffff">Atas Mata Kaki</text>
-        <text x="180" y="234" text-anchor="middle" font-size="11.2" font-weight="800" fill="#065f46">Basuh Ujung Jari, Sela Jari, Tumit hingga Atas Mata Kaki</text>
+        <text x="180" y="234" text-anchor="middle" font-size="11.2" font-weight="800" fill="#065f46">Urutan 1→2→3: Jari Kaki, Tumit → Mata Kaki</text>
       `;
     }
 
@@ -1223,6 +1278,9 @@ window.WudhuAnimator = (function () {
             <stop offset="0%" stop-color="#ffffff"/>
             <stop offset="100%" stop-color="#e2e8f0"/>
           </linearGradient>
+          <marker id="kinArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#0284c7"/>
+          </marker>
         </defs>
         ${baseGraphic}
         ${hotspots}
