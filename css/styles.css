@@ -2249,6 +2249,119 @@ button, input, select {
   color: var(--text);
 }
 
+.academic-fiqh-full {
+  grid-column: 1 / -1;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.fiqh-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 780px) {
+  .fiqh-two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fiqh-box {
+  background: #f0fdf9;
+  border: 1px solid #a7f3d0;
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.fiqh-box-warn {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.fiqh-box h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--emerald-dark);
+}
+
+.fiqh-box-warn h4 {
+  color: #92400e;
+}
+
+.fiqh-box ul {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+/* ==================== TOPBAR UTILITIES & GUIDE MODAL ==================== */
+.topbar-util-btn {
+  white-space: nowrap;
+}
+
+.topbar-util-btn.bgm-muted {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.guide-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(15, 23, 42, 0.56);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeUp 0.2s ease;
+}
+
+.guide-modal-card {
+  width: 100%;
+  max-width: 580px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 20px 22px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--border);
+  max-height: 86vh;
+  overflow-y: auto;
+}
+
+.guide-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.guide-modal-head h3 {
+  margin: 0;
+  font-size: 16.5px;
+  color: var(--emerald-dark);
+}
+
+.guide-step-list {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13.8px;
+  line-height: 1.55;
+  color: var(--text);
+}
+
 /* ==================== TOAST ==================== */
 .toast {
   position: fixed;
