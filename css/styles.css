@@ -2362,6 +2362,99 @@ button, input, select {
   color: var(--text);
 }
 
+/* ==================== STAGE GENDER FILTER (MOBILE-FRIENDLY FOCUS) ==================== */
+.stage-gender-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.sgf-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-right: 4px;
+}
+
+.sgf-btn {
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.sgf-btn.active {
+  background: var(--emerald);
+  color: #ffffff;
+  border-color: var(--emerald);
+}
+
+.dual-stage-grid.single-gender-mode {
+  grid-template-columns: minmax(280px, 520px) !important;
+  justify-content: center;
+}
+
+/* ==================== TEMPO 6.5s PROGRESS BAR ==================== */
+.tempo-beat-bar-wrap {
+  width: 240px;
+  max-width: 85%;
+  height: 7px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+  margin: 4px auto 12px;
+}
+
+.tempo-beat-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0ea5e9, #10b981);
+}
+
+/* ==================== RUBRIC MODAL TABLE ==================== */
+.rubric-modal-card {
+  max-width: 760px;
+}
+
+.rubric-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.8px;
+}
+
+.rubric-table th,
+.rubric-table td {
+  border: 1px solid #cbd5e1;
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.rubric-table th {
+  background: #065f46;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.rubric-table td:first-child,
+.rubric-table td:last-child {
+  text-align: center;
+  white-space: nowrap;
+}
+
 /* ==================== TOAST ==================== */
 .toast {
   position: fixed;
