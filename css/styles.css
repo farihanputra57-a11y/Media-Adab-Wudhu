@@ -1107,10 +1107,10 @@ button, input, select {
 }
 
 @keyframes kinSeqKepala {
-  0%, 10%  { transform: translate(0px, 0px); }
-  38%, 48% { transform: translate(0px, 52px); }
-  78%, 90% { transform: translate(90px, 68px); }
-  100%     { transform: translate(0px, 0px); }
+  0%, 12%  { transform: translate(0px, 0px) rotate(-18deg); }
+  42%, 52% { transform: translate(56px, -28px) rotate(10deg); }
+  80%, 90% { transform: translate(112px, 2px) rotate(36deg); }
+  100%     { transform: translate(0px, 0px) rotate(-18deg); }
 }
 
 @keyframes kinSeqKaki {
@@ -1192,17 +1192,17 @@ button, input, select {
 }
 
 @keyframes segSeqHeadM {
-  0%, 12%  { transform: translate(0px, 0px); }
-  42%, 52% { transform: translate(52px, -28px); }
-  80%, 90% { transform: translate(106px, 4px); }
-  100%     { transform: translate(0px, 0px); }
+  0%, 12%  { transform: translate(0px, 0px) rotate(-18deg); }
+  42%, 52% { transform: translate(56px, -28px) rotate(10deg); }
+  80%, 90% { transform: translate(112px, 2px) rotate(36deg); }
+  100%     { transform: translate(0px, 0px) rotate(-18deg); }
 }
 
 @keyframes segSeqHeadF {
-  0%, 12%  { transform: translate(0px, 0px); }
-  42%, 52% { transform: translate(24px, -16px); }
-  80%, 90% { transform: translate(58px, -22px); }
-  100%     { transform: translate(0px, 0px); }
+  0%, 12%  { transform: translate(0px, 0px) rotate(-12deg); }
+  42%, 52% { transform: translate(30px, -26px) rotate(6deg); }
+  80%, 90% { transform: translate(72px, -36px) rotate(22deg); }
+  100%     { transform: translate(0px, 0px) rotate(-12deg); }
 }
 
 @keyframes segSeqEars {
