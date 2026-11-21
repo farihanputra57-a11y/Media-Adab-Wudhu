@@ -258,11 +258,18 @@
             <div style="font-size:12px;color:#d1fae5;line-height:1.45;">
               💡 Seluruh 8 segmen animasi, audio narator, panduan wudhu gayung, dan zona kinestetik siap ditayangkan di kelas.
             </div>
-            <a href="${TEACHER_SHEETS_VIEW_URL}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background:#fef3c7;color:#92400e;border:1px solid #fcd34d;font-weight:800;text-align:center;text-decoration:none;border-radius:10px;padding:9px 12px;display:inline-flex;align-items:center;justify-content:center;gap:6px;">
-              📊 Buka Rekap Google Sheets (SD &amp; SMP)
-            </a>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+              <a href="${TEACHER_SHEETS_VIEW_URL}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="flex:1;min-width:170px;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;font-weight:800;text-align:center;text-decoration:none;border-radius:10px;padding:9px 12px;display:inline-flex;align-items:center;justify-content:center;gap:6px;">
+                📊 Buka Rekap Google Sheets
+              </a>
+              <button type="button" id="btn-open-rubric" class="btn btn-sm" style="flex:1;min-width:170px;background:#e0f2fe;color:#0369a1;border:1px solid #7dd3fc;font-weight:800;border-radius:10px;padding:9px 12px;cursor:pointer;">
+                📋 Rubrik Observasi Praktik
+              </button>
+            </div>
           </div>
         `;
+        const rubBtn = document.getElementById("btn-open-rubric");
+        if (rubBtn) rubBtn.addEventListener("click", openPsychomotorRubricModal);
       }
     } else {
       const prog = getOverallProgress();
@@ -516,9 +523,32 @@
       });
     });
 
-    // Dual Side-by-Side Cartoon Stages (Putra & Putri sekaligus)
+    // Dual Side-by-Side Cartoon Stages + Filter Tampilan (Putra & Putri | Khusus Putra | Khusus Putri)
     const stageMale = document.getElementById("cartoon-stage-male");
     const stageFemale = document.getElementById("cartoon-stage-female");
+    const dualGrid = stageMale && stageMale.closest(".dual-stage-grid");
+    if (dualGrid) {
+      let filterBar = document.getElementById("stage-gender-filter");
+      if (!filterBar) {
+        filterBar = document.createElement("div");
+        filterBar.id = "stage-gender-filter";
+        filterBar.className = "stage-gender-filter";
+        filterBar.innerHTML = `
+          <span class="sgf-label">Tampilan Peraga:</span>
+          <button type="button" class="sgf-btn active" data-sgf="both">👦👧 Putra &amp; Putri</button>
+          <button type="button" class="sgf-btn" data-sgf="male">👦 Khusus Putra</button>
+          <button type="button" class="sgf-btn" data-sgf="female">🧕 Khusus Putri</button>
+        `;
+        dualGrid.parentElement.insertBefore(filterBar, dualGrid);
+        filterBar.querySelectorAll(".sgf-btn").forEach((b) => {
+          b.addEventListener("click", () => {
+            state.stageFilter = b.dataset.sgf || "both";
+            applyStageGenderFilter();
+          });
+        });
+      }
+      applyStageGenderFilter();
+    }
     if (stageMale) {
       stageMale.innerHTML = ANIM.renderScene(sub, "male");
       stageMale.classList.toggle("paused", state.animPaused);
@@ -798,6 +828,22 @@
     if (cnt2) cnt2.textContent = `Gerakan ${idx + 1} / ${total}`;
   }
 
+  let tempoCountdownTimer = null;
+
+  function ensureTempoProgressBar() {
+    const dotsWrap = document.getElementById("tempo-dots");
+    if (!dotsWrap) return null;
+    let wrap = document.getElementById("tempo-beat-bar-wrap");
+    if (!wrap) {
+      wrap = document.createElement("div");
+      wrap.id = "tempo-beat-bar-wrap";
+      wrap.className = "tempo-beat-bar-wrap";
+      wrap.innerHTML = `<div class="tempo-beat-bar-fill" id="tempo-beat-bar-fill"></div>`;
+      dotsWrap.parentElement.insertBefore(wrap, dotsWrap);
+    }
+    return document.getElementById("tempo-beat-bar-fill");
+  }
+
   function startTempo() {
     stopTempo();
     const ex = getSelectedTempoExercise();
@@ -808,15 +854,21 @@
     const cueEl = document.getElementById("tempo-cue");
     const instEl = document.getElementById("tempo-instruction");
     const dots = document.querySelectorAll("#tempo-dots .t-dot");
+    const barFill = ensureTempoProgressBar();
     dots.forEach((d) => d.classList.remove("active", "done"));
 
     let step = 1;
     const runBeat = () => {
       if (!state.tempoRunning) return;
+      clearInterval(tempoCountdownTimer);
       if (step > 3) {
         circle.classList.remove("inhale");
         countEl.textContent = "Selesai ✓";
         cueEl.textContent = "Masya Allah, tenang!";
+        if (barFill) {
+          barFill.style.transition = "none";
+          barFill.style.width = "100%";
+        }
         if (instEl) instEl.textContent = ex.done;
         AUDIO.playChime("win");
         state.tempoRunning = false;
@@ -830,15 +882,40 @@
       });
 
       circle.classList.add("inhale");
-      countEl.textContent = `Hitungan ${step}`;
-      cueEl.textContent = "Baca panduan & gerakkan perlahan...";
+      countEl.textContent = `Hitungan ${step} / 3`;
       if (instEl) instEl.textContent = ex.steps[step - 1] || ex.prep;
       AUDIO.playChime("beat");
+
+      // Animasi progress bar halus 6.5 detik + hitung mundur detik agar anak SD melihat timer berjalan
+      if (barFill) {
+        barFill.style.transition = "none";
+        barFill.style.width = "0%";
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            barFill.style.transition = "width 6.5s linear";
+            barFill.style.width = "100%";
+          });
+        });
+      }
+
+      let secLeft = 6;
+      cueEl.textContent = `Tenang... (${secLeft} detik)`;
+      tempoCountdownTimer = setInterval(() => {
+        if (!state.tempoRunning) {
+          clearInterval(tempoCountdownTimer);
+          return;
+        }
+        secLeft--;
+        if (secLeft >= 1) {
+          cueEl.textContent = secLeft <= 3 ? `${ex.hold} (${secLeft} dtk)` : `Gerakkan perlahan... (${secLeft} dtk)`;
+        } else {
+          clearInterval(tempoCountdownTimer);
+        }
+      }, 1000);
 
       state.tempoHoldTimer = setTimeout(() => {
         if (!state.tempoRunning) return;
         circle.classList.remove("inhale");
-        cueEl.textContent = ex.hold;
       }, 3500);
 
       step++;
@@ -852,12 +929,18 @@
     state.tempoRunning = false;
     clearTimeout(state.tempoTimer);
     clearTimeout(state.tempoHoldTimer);
+    clearInterval(tempoCountdownTimer);
     const circle = document.getElementById("tempo-circle");
     if (circle) circle.classList.remove("inhale");
     const countEl = document.getElementById("tempo-count");
     const cueEl = document.getElementById("tempo-cue");
     if (countEl) countEl.textContent = "Siap";
     if (cueEl) cueEl.textContent = "Tekan Mulai";
+    const barFill = document.getElementById("tempo-beat-bar-fill");
+    if (barFill) {
+      barFill.style.transition = "none";
+      barFill.style.width = "0%";
+    }
     document.querySelectorAll("#tempo-dots .t-dot").forEach((d) => d.classList.remove("active", "done"));
     syncTempoPreview();
   }
@@ -1284,6 +1367,15 @@
       }
     });
 
+    if (typeof AUDIO.onLoadingChange === "function") {
+      AUDIO.onLoadingChange((loading) => {
+        const speakBtn = document.getElementById("btn-ai-speak");
+        if (speakBtn && loading) {
+          speakBtn.textContent = "⏳ Memuat Audio Narator...";
+        }
+      });
+    }
+
     AUDIO.onProgressChange((pct) => {
       const fill = document.getElementById("ai-progress-fill");
       if (fill) fill.style.width = `${pct}%`;
@@ -1416,13 +1508,14 @@
       const rawName = (prof.name || (nameInp ? nameInp.value : "")).trim();
       const rawSchool = (prof.school || (schoolInp ? schoolInp.value : "")).trim();
       const rawClass = (prof.kelas || (classInp ? classInp.value : "")).trim();
+      const rawSession = (prof.sesi || "Posttest").trim();
 
       if (!rawName || !rawSchool || !rawClass) {
         showToast("⚠️ Identitas siswa belum lengkap. Silakan masuk melalui halaman awal.");
         return;
       }
 
-      const name = `[${level}] ${rawName} — ${rawSchool} — Kelas ${rawClass}`;
+      const name = `[${level}] ${rawName} — ${rawSchool} — Kelas ${rawClass} (${rawSession})`;
 
       const saveBtn = document.getElementById("btn-save-record");
       saveBtn.disabled = true;
@@ -1446,6 +1539,7 @@
               studentName: rawName,
               studentSchool: rawSchool,
               studentClass: rawClass,
+              studentSession: rawSession,
               name,
               score: state.quizScore,
               total,
@@ -1576,6 +1670,7 @@
     const qNama = (params.get("nama") || "").trim();
     const qSekolah = (params.get("sekolah") || "").trim();
     const qKelas = (params.get("kelas") || "").trim();
+    const qSesi = (params.get("sesi") || "Posttest").trim();
     const qGuru = params.get("guru") === "1";
 
     if (qNama && qSekolah && qKelas) {
@@ -1583,6 +1678,7 @@
         name: qNama,
         school: qSekolah,
         kelas: qKelas,
+        sesi: qSesi,
         level: state.level,
         levelLabel: state.level === "smp" ? "SMP/MTs" : "SD/MI",
         isTeacher: qGuru
@@ -1601,6 +1697,7 @@
           name: String(saved.name).trim(),
           school: String(saved.school).trim(),
           kelas: String(saved.kelas).trim(),
+          sesi: String(saved.sesi || "Posttest").trim(),
           level: state.level,
           levelLabel: state.level === "smp" ? "SMP/MTs" : "SD/MI",
           isTeacher: Boolean(saved.isTeacher)
@@ -1640,6 +1737,12 @@
       classInp.value = prof.kelas;
       classInp.readOnly = true;
       classInp.disabled = true;
+    }
+
+    const lockedHdr = document.querySelector(".student-locked-header");
+    if (lockedHdr && !prof.isTeacher) {
+      const sesiTag = escapeHtml(prof.sesi || "Posttest");
+      lockedHdr.innerHTML = `<span>🔒 <strong>Identitas Siswa Terkunci</strong> • Sesi: <strong>${sesiTag}</strong> (diambil otomatis dari halaman awal).</span>`;
     }
 
     // Jika masuk dalam Mode Guru: sembunyikan tab & halaman Cek Pemahaman sepenuhnya, dan tampilkan menu "🚪 Keluar"
@@ -1827,6 +1930,81 @@
 
     const close = () => modal.remove();
     document.getElementById("btn-close-guide").addEventListener("click", close);
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) close();
+    });
+  }
+
+  function applyStageGenderFilter() {
+    const mode = state.stageFilter || "both";
+    const stageMale = document.getElementById("cartoon-stage-male");
+    const stageFemale = document.getElementById("cartoon-stage-female");
+    const maleCard = stageMale && stageMale.closest(".stage-pane, .stage-col, .dual-stage-pane") || (stageMale && stageMale.parentElement);
+    const femaleCard = stageFemale && stageFemale.closest(".stage-pane, .stage-col, .dual-stage-pane") || (stageFemale && stageFemale.parentElement);
+    const dualGrid = stageMale && stageMale.closest(".dual-stage-grid");
+
+    if (maleCard) maleCard.style.display = mode === "female" ? "none" : "";
+    if (femaleCard) femaleCard.style.display = mode === "male" ? "none" : "";
+    if (dualGrid) dualGrid.classList.toggle("single-gender-mode", mode !== "both");
+
+    const filterBar = document.getElementById("stage-gender-filter");
+    if (filterBar) {
+      filterBar.querySelectorAll(".sgf-btn").forEach((b) => {
+        b.classList.toggle("active", b.dataset.sgf === mode);
+      });
+    }
+  }
+
+  function openPsychomotorRubricModal() {
+    let modal = document.getElementById("rubric-modal-backdrop");
+    if (modal) modal.remove();
+
+    modal = document.createElement("div");
+    modal.id = "rubric-modal-backdrop";
+    modal.className = "guide-modal-backdrop";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.innerHTML = `
+      <div class="guide-modal-card rubric-modal-card">
+        <div class="guide-modal-head">
+          <h3>📋 Lembar Rubrik Observasi Praktik Wudhu (Psikomotorik)</h3>
+          <div style="display:flex;gap:8px;">
+            <button type="button" class="btn btn-emerald btn-sm" id="btn-print-rubric">🖨️ Cetak / PDF</button>
+            <button type="button" class="btn btn-outline btn-sm" id="btn-close-rubric">✕ Tutup</button>
+          </div>
+        </div>
+        <div class="guide-modal-body">
+          <p style="font-size:13px;color:#475569;margin:0 0 12px;">
+            Digunakan guru PAI untuk menilai <strong>ranah psikomotorik &amp; afektif (praktik nyata di tempat wudhu)</strong> sebagai pelengkap hasil <em>Cek Pemahaman</em> kognitif di Google Sheets. Skala: <strong>4 = Sangat Baik</strong>, <strong>3 = Baik</strong>, <strong>2 = Cukup</strong>, <strong>1 = Perlu Bimbingan</strong>.
+          </p>
+          <table class="rubric-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Aspek Praktik &amp; Adab Wudhu (Mazhab Syafi'i)</th>
+                <th>Indikator Ketercapaian</th>
+                <th>Skor (1–4)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td><strong>Niat &amp; Basmalah</strong></td><td>Membaca Basmalah &amp; menghadirkan niat saat air pertama menyentuh wajah.</td><td>___</td></tr>
+              <tr><td>2</td><td><strong>Batas Wajib Wajah</strong></td><td>Meratakan air dari batas tumbuh rambut hingga dagu, dan antar kedua telinga.</td><td>___</td></tr>
+              <tr><td>3</td><td><strong>Kedua Tangan hingga Siku</strong></td><td>Membasuh tangan kanan lalu kiri melewati kedua siku dan menyela jari.</td><td>___</td></tr>
+              <tr><td>4</td><td><strong>Mengusap Kepala &amp; Telinga</strong></td><td>Mengusap sebagian kulit/rambut di batas kepala (termasuk adab siswi berhijab).</td><td>___</td></tr>
+              <tr><td>5</td><td><strong>Kedua Kaki hingga Mata Kaki</strong></td><td>Membasuh kaki kanan lalu kiri melewati mata kaki, tumit, dan sela jari kaki.</td><td>___</td></tr>
+              <tr><td>6</td><td><strong>Tertib &amp; Thuma'ninah</strong></td><td>Berurutan sesuai rukun, tenang (tidak tergesa-gesa), dan masing-masing 3× basuhan.</td><td>___</td></tr>
+              <tr><td>7</td><td><strong>Adab Hemat Air (Anti-Israf)</strong></td><td>Membuka keran kecil / menjaga air bak 2 Qullah agar tidak musta'mal.</td><td>___</td></tr>
+              <tr><td>8</td><td><strong>Doa Setelah Wudhu</strong></td><td>Menghadap kiblat di tempat suci dan membaca doa syahadat setelah wudhu.</td><td>___</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    const close = () => modal.remove();
+    document.getElementById("btn-close-rubric").addEventListener("click", close);
+    document.getElementById("btn-print-rubric").addEventListener("click", () => window.print());
     modal.addEventListener("click", (e) => {
       if (e.target === modal) close();
     });

@@ -689,13 +689,22 @@ window.AudioEngine = (function () {
   let rangeStartSec = 0;
   let rangeRaf = null;
   let progressListeners = [];
+  let loadingListeners = [];
 
   function onProgressChange(fn) {
     progressListeners.push(fn);
   }
 
+  function onLoadingChange(fn) {
+    loadingListeners.push(fn);
+  }
+
   function notifyProgress(pct) {
     progressListeners.forEach((fn) => fn(pct));
+  }
+
+  function notifyLoading(loading) {
+    loadingListeners.forEach((fn) => fn(loading));
   }
 
   function stopMp3Range() {
@@ -726,6 +735,7 @@ window.AudioEngine = (function () {
 
     const triggerFallback = () => {
       if (mySession !== speakSessionId) return;
+      notifyLoading(false);
       masterVoiceAudio = null;
       if (fallbackText) {
         speakText(fallbackText);
@@ -741,6 +751,7 @@ window.AudioEngine = (function () {
 
     const beginPlay = () => {
       if (mySession !== speakSessionId) return;
+      notifyLoading(false);
       try {
         masterVoiceAudio.currentTime = rangeStartSec;
       } catch (e) {}
@@ -784,6 +795,7 @@ window.AudioEngine = (function () {
     if (masterVoiceAudio.readyState >= 1) {
       beginPlay();
     } else {
+      notifyLoading(true);
       masterVoiceAudio.onloadedmetadata = () => {
         masterVoiceAudio.onloadedmetadata = null;
         beginPlay();
@@ -879,6 +891,7 @@ window.AudioEngine = (function () {
     stopVoice,
     isSpeaking: () => isSpeaking,
     onSpeakingChange,
-    onProgressChange
+    onProgressChange,
+    onLoadingChange
   };
 })();
