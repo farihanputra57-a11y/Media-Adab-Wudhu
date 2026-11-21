@@ -163,13 +163,23 @@ window.WudhuAnimator = (function () {
         break;
 
       case "head":
-        armsSvg = `
-          <!-- Hands raised wiping front/top of head -->
-          <g class="anim-rub-h">
-            <path d="M${cx - 46} 214 Q${cx - 80} 140 ${cx - 28} 82" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
-            <path d="M${cx + 46} 214 Q${cx + 80} 140 ${cx + 28} 82" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
-            <ellipse cx="${cx - 18}" cy="78" rx="18" ry="11" fill="#fbd6b9" stroke="#d9a07b" stroke-width="2"/>
-            <ellipse cx="${cx + 18}" cy="78" rx="18" ry="11" fill="#fbd6b9" stroke="#d9a07b" stroke-width="2"/>
+        armsSvg = isFemale ? `
+          <!-- Female: Right wet hand slipping gently under front edge of hijab at forehead (front-to-back motion) -->
+          <path d="M${cx + 46} 214 Q${cx + 60} 254 ${cx + 50} 288" stroke="#fdf2f8" stroke-width="20" stroke-linecap="round" fill="none"/>
+          <circle cx="${cx + 50}" cy="294" r="11" fill="#fbd6b9" stroke="#d9a07b" stroke-width="1.8"/>
+          <g class="anim-rub-v">
+            <path d="M${cx - 46} 214 Q${cx - 82} 142 ${cx - 14} 96" stroke="#fdf2f8" stroke-width="19" stroke-linecap="round" fill="none"/>
+            <ellipse cx="${cx - 6}" cy="92" rx="17" ry="10" fill="#fbd6b9" stroke="#0284c7" stroke-width="2"/>
+            <circle cx="${cx + 4}" cy="88" r="5" fill="#38bdf8" class="anim-splash"/>
+          </g>
+        ` : `
+          <!-- Male: Both wet hands sweeping from front hairline over top of hair (front-to-back motion) -->
+          <g class="anim-rub-v">
+            <path d="M${cx - 46} 214 Q${cx - 80} 142 ${cx - 24} 88" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
+            <path d="M${cx + 46} 214 Q${cx + 80} 142 ${cx + 24} 88" stroke="#ffffff" stroke-width="19" stroke-linecap="round" fill="none"/>
+            <ellipse cx="${cx - 16}" cy="84" rx="17" ry="10" fill="#fbd6b9" stroke="#0284c7" stroke-width="2"/>
+            <ellipse cx="${cx + 16}" cy="84" rx="17" ry="10" fill="#fbd6b9" stroke="#0284c7" stroke-width="2"/>
+            <circle cx="${cx}" cy="78" r="5.5" fill="#38bdf8" class="anim-splash"/>
           </g>
         `;
         break;
@@ -368,7 +378,7 @@ window.WudhuAnimator = (function () {
     return `
       <g pointer-events="none">
         <circle cx="0" cy="0" r="17" fill="rgba(56,189,248,0.28)" stroke="${strokeColor}" stroke-width="2"/>
-        <g transform="rotate(${rot}) scale(${scale * flipX}, ${scale}) translate(0, 14)">
+        <g transform="rotate(${rot}) scale(${scale * flipX}, ${scale}) translate(0, 26)">
           ${renderRealisticHand(1, skinFill, strokeColor)}
         </g>
       </g>
@@ -769,59 +779,59 @@ window.WudhuAnimator = (function () {
             "Usap Kepala di Balik Jilbab (Putri)",
             "DETAIL RUKUN 5B • FOKUS KEPALA PUTRI",
             `
-              <circle cx="176" cy="154" r="76" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2.5"/>
-              <path d="M108 130 Q130 72 198 78 Q242 84 248 148 Q220 116 172 110 Q132 108 108 130 Z" fill="#1e293b"/>
-              <path d="M134 84 Q196 54 258 108 Q274 180 250 236 L196 236 Q226 176 218 118 Q186 92 134 84 Z" fill="#0f6b56" stroke="#094a3b" stroke-width="2.5"/>
-              <path d="M132 148 Q140 153 148 148" fill="none" stroke="#1e293b" stroke-width="2.6" stroke-linecap="round"/>
-              <circle cx="148" cy="94" r="24" fill="rgba(2,132,199,0.22)" stroke="#0284c7" stroke-width="2.8" stroke-dasharray="5 3" class="anim-splash"/>
+              <circle cx="176" cy="150" r="74" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2.5"/>
+              <path d="M110 126 Q132 66 200 72 Q246 78 248 142 Q222 112 174 104 Q134 102 110 126 Z" fill="#1e293b"/>
+              <path d="M138 80 Q198 50 258 106 Q274 178 250 236 L196 236 Q226 176 218 116 Q186 90 138 80 Z" fill="#0f6b56" stroke="#094a3b" stroke-width="2.5"/>
+              <path d="M132 144 Q140 149 148 144" fill="none" stroke="#1e293b" stroke-width="2.6" stroke-linecap="round"/>
+              <circle cx="154" cy="84" r="24" fill="rgba(2,132,199,0.22)" stroke="#0284c7" stroke-width="2.8" stroke-dasharray="5 3" class="anim-splash"/>
 
-              <!-- Sequential Path 1 (Tepi Jilbab) -> 2 (Masuk Balik Jilbab) -> 3 (Usap Rambut Batas Kepala) -->
-              <path d="M124 110 L148 94 L182 88" fill="none" stroke="#0284c7" stroke-width="3.2" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
-              ${renderStepBadge(102, 114, "1", "#0f6b56")}
-              ${renderStepBadge(146, 68, "2", "#0284c7")}
-              ${renderStepBadge(196, 70, "3", "#d97706")}
+              <!-- Sequential Path 1 (Tepi Jilbab 124,110) -> 2 (Masuk Balik Jilbab 154,84) -> 3 (Usap Rambut Batas Kepala 196,74) -->
+              <path d="M124 110 Q138 92 154 84 Q174 76 196 74" fill="none" stroke="#0284c7" stroke-width="3.6" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+              ${renderStepBadge(124, 110, "1", "#0f6b56")}
+              ${renderStepBadge(154, 84, "2", "#0284c7")}
+              ${renderStepBadge(196, 74, "3", "#d97706")}
 
-              <!-- Moving Wet Hand Entering Under Hijab Edge (1 -> 2 -> 3) -->
+              <!-- Moving Wet Hand Entering Under Hijab Edge & Sweeping Up-Back Along Hairline (1 -> 2 -> 3) -->
               <g transform="translate(124, 110)" pointer-events="none">
                 <g class="anim-seg-head-f">
-                  ${renderSeqCursorHand(0.5, "#0284c7", 52)}
+                  ${renderSeqCursorHand(0.5, "#0284c7", 55)}
                 </g>
               </g>
-              ${renderWaterDrops(146, 86)}
+              ${renderWaterDrops(154, 84)}
 
               <rect x="22" y="16" width="308" height="30" rx="10" fill="#be185d"/>
               <text x="176" y="36" text-anchor="middle" font-size="11.2" font-weight="800" fill="#ffffff">WAJIB SENTUH RAMBUT/KULIT (BUKAN KAIN JILBAB)</text>
-              <text x="176" y="262" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0369a1">Urutan 1→2→3: Balik Tepi Jilbab → Rambut</text>
+              <text x="176" y="262" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0369a1">Urutan 1→2→3: Tepi Jilbab → Masuk → Usap Rambut</text>
               <text x="176" y="282" text-anchor="middle" font-size="11.5" fill="#475569">Usap rambut di batas kepala (bukan ujung panjang)</text>
             `,
-            "① Tepi jilbab → ② Masuk balik tepi → ③ Usap kulit/rambut"
+            "① Tepi depan jilbab → ② Masuk ke rambut → ③ Usap ke atas–belakang"
           );
         }
         return renderCloseUpCard(
           "Usap Sebagian Kepala (Rukun)",
           "DETAIL RUKUN 5B • FOKUS KEPALA",
           `
-            <circle cx="176" cy="154" r="76" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2.5"/>
-            <path d="M104 134 Q124 68 198 76 Q250 84 252 152 Q228 122 174 114 Q134 112 104 134 Z" fill="#1e293b"/>
-            <path d="M128 150 Q136 155 144 150" fill="none" stroke="#1e293b" stroke-width="2.6" stroke-linecap="round"/>
-            <ellipse cx="254" cy="160" rx="11" ry="18" fill="url(#skinShade)" stroke="#c4845d" stroke-width="2"/>
+            <circle cx="176" cy="150" r="74" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2.5"/>
+            <path d="M108 126 Q130 62 200 70 Q250 78 252 142 Q228 112 174 104 Q136 102 108 126 Z" fill="#1e293b"/>
+            <path d="M130 144 Q138 149 146 144" fill="none" stroke="#1e293b" stroke-width="2.6" stroke-linecap="round"/>
+            <ellipse cx="254" cy="152" rx="11" ry="18" fill="url(#skinShade)" stroke="#c4845d" stroke-width="2"/>
 
-            <!-- Sequential Arc Path 1 (Dahi) -> 2 (Ubun-ubun) -> 3 (Belakang) -->
-            <path d="M126 94 Q178 60 232 98" fill="none" stroke="#0284c7" stroke-width="4" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
-            ${renderStepBadge(104, 94, "1", "#0f6b56")}
-            ${renderStepBadge(178, 42, "2", "#0284c7")}
-            ${renderStepBadge(252, 98, "3", "#d97706")}
+            <!-- Sequential Arc Path 1 (Rambut Depan 126,94) -> 2 (Ubun-ubun 182,66) -> 3 (Belakang Kepala 238,96) -->
+            <path d="M126 94 Q182 52 238 96" fill="none" stroke="#0284c7" stroke-width="4" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+            ${renderStepBadge(126, 94, "1", "#0f6b56")}
+            ${renderStepBadge(182, 66, "2", "#0284c7")}
+            ${renderStepBadge(238, 96, "3", "#d97706")}
 
-            <!-- Moving Wet Hand Sweeping 1 -> 2 -> 3 Over Scalp -->
+            <!-- Moving Wet Hand Sweeping 1 -> 2 -> 3 Over Scalp Curve -->
             <g transform="translate(126, 94)" pointer-events="none">
               <g class="anim-seg-head-m">
-                ${renderSeqCursorHand(0.54, "#0284c7", 80)}
+                ${renderSeqCursorHand(0.54, "#0284c7", 68)}
               </g>
             </g>
-            ${renderWaterDrops(176, 68)}
+            ${renderWaterDrops(182, 68)}
 
-            <text x="176" y="262" text-anchor="middle" font-size="13" font-weight="800" fill="#0369a1">Urutan 1→2→3: Depan, Ubun-ubun &amp; Belakang</text>
-            <text x="176" y="282" text-anchor="middle" font-size="12" fill="#475569">Sunnah: Usap dari depan ke belakang lalu kembali</text>
+            <text x="176" y="262" text-anchor="middle" font-size="13" font-weight="800" fill="#0369a1">Urutan 1→2→3: Rambut Depan → Ubun-ubun → Belakang</text>
+            <text x="176" y="282" text-anchor="middle" font-size="12" fill="#475569">Usap menyusuri lengkung atas kepala dari depan ke belakang</text>
           `,
           "① Batas rambut depan → ② Ubun-ubun → ③ Belakang kepala"
         );
@@ -1186,27 +1196,27 @@ window.WudhuAnimator = (function () {
     } else if (areaKey === "kepala") {
       baseGraphic = `
         <rect x="0" y="0" width="360" height="245" rx="16" fill="url(#kinBg)"/>
-        <!-- Side Profile Child Head -->
-        <circle cx="185" cy="142" r="72" fill="url(#kinSkin)" stroke="#c4845d" stroke-width="2.5"/>
-        <path d="M116 124 Q136 62 204 70 Q254 78 256 140 Q234 110 182 102 Q144 100 116 124 Z" fill="#1e293b"/>
-        <path d="M138 140 Q146 145 154 140" fill="none" stroke="#1e293b" stroke-width="2.6" stroke-linecap="round"/>
-        <ellipse cx="260" cy="148" rx="11" ry="18" fill="url(#kinShade)" stroke="#c4845d" stroke-width="2"/>
+        <!-- Side Profile Child Head (Identical geometry & hairline arc to Animasi Segmen 5B) -->
+        <circle cx="176" cy="148" r="72" fill="url(#kinSkin)" stroke="#c4845d" stroke-width="2.5"/>
+        <path d="M108 124 Q130 60 200 68 Q250 76 252 140 Q228 110 174 102 Q136 100 108 124 Z" fill="#1e293b"/>
+        <path d="M130 142 Q138 147 146 142" fill="none" stroke="#1e293b" stroke-width="2.6" stroke-linecap="round"/>
+        <ellipse cx="254" cy="150" rx="11" ry="18" fill="url(#kinShade)" stroke="#c4845d" stroke-width="2"/>
 
-        <!-- Sweeping Guide & Sequential Trail 1 (180,74) -> 2 (180,126) -> 3 (270,142) -->
-        <path d="M124 94 Q185 44 248 98" fill="none" stroke="#0284c7" stroke-width="4" stroke-dasharray="8 5" opacity="0.45"/>
-        <path d="M180 74 Q212 96 180 126 Q230 132 270 142" fill="none" stroke="#0284c7" stroke-width="3.2" class="anim-trail" marker-end="url(#kinArrow)" pointer-events="none"/>
+        <!-- Synchronized Scalp Arc Trail: 1 (Rambut Depan 126,94) -> 2 (Ubun-ubun 182,66) -> 3 (Belakang Kepala 238,96) -->
+        <path d="M118 98 Q182 46 246 100" fill="none" stroke="#0284c7" stroke-width="5" stroke-dasharray="8 5" opacity="0.35"/>
+        <path d="M126 94 Q182 52 238 96" fill="none" stroke="#0284c7" stroke-width="3.6" class="anim-trail" marker-end="url(#kinArrow)" pointer-events="none"/>
 
-        <!-- Sequential Moving Hand Cursor 1 -> 2 -> 3 -->
-        <g transform="translate(180, 74)" pointer-events="none" opacity="0.78">
+        <!-- Sequential Moving Hand Cursor 1 (126,94) -> 2 (182,66) -> 3 (238,96) -->
+        <g transform="translate(126, 94)" pointer-events="none" opacity="0.82">
           <g class="anim-kin-kepala">
-            ${renderSeqCursorHand(0.5, "#0284c7", 70, "url(#kinSkin)")}
+            ${renderSeqCursorHand(0.52, "#0284c7", 68, "url(#kinSkin)")}
           </g>
         </g>
-        ${renderWaterDrops(185, 68)}
+        ${renderWaterDrops(182, 68)}
 
-        <rect x="74" y="14" width="212" height="26" rx="10" fill="#0284c7"/>
-        <text x="180" y="31" text-anchor="middle" font-size="11.5" font-weight="800" fill="#ffffff">Urutan 1→2→3: Kepala &amp; Telinga</text>
-        <text x="180" y="232" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">① Rambut depan → ② Arah belakang → ③ Daun telinga</text>
+        <rect x="64" y="12" width="232" height="26" rx="10" fill="#0284c7"/>
+        <text x="180" y="29" text-anchor="middle" font-size="11.5" font-weight="800" fill="#ffffff">Urutan 1→2→3: Usap Sebagian Kepala</text>
+        <text x="180" y="232" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">① Rambut depan (dahi) → ② Ubun-ubun → ③ Belakang kepala</text>
       `;
     } else if (areaKey === "kaki") {
       baseGraphic = `
@@ -1579,14 +1589,23 @@ window.WudhuAnimator = (function () {
         "Usap Kepala (Jangan Disiram!)",
         "DETAIL GAYUNG LANGKAH 5",
         `
-          <circle cx="176" cy="148" r="72" fill="#fbd6b9" stroke="#c88d67" stroke-width="2.5"/>
-          <path d="M108 128 Q128 66 196 74 Q246 82 248 146 Q226 118 174 110 Q136 108 108 128 Z" fill="#1e293b"/>
-          <path d="M118 98 Q176 42 240 100" fill="none" stroke="#0284c7" stroke-width="6" stroke-dasharray="8 5"/>
-          <ellipse cx="176" cy="64" rx="24" ry="11" fill="#fbd6b9" stroke="#0284c7" stroke-width="2.5" class="anim-rub-h"/>
-          <rect x="44" y="14" width="264" height="30" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.8"/>
-          <text x="176" y="34" text-anchor="middle" font-size="11.5" font-weight="800" fill="#166534">LETAKKAN GAYUNG — CUKUP TANGAN BASAH!</text>
-          <text x="176" y="252" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0369a1">Usap sebagian kepala &amp; kedua telinga</text>
-          <text x="176" y="272" text-anchor="middle" font-size="11.5" fill="#9d174d">Putri: masukkan tangan basah di balik tepi jilbab</text>
+          <circle cx="176" cy="150" r="74" fill="url(#skinGrad)" stroke="#c4845d" stroke-width="2.5"/>
+          <path d="M108 126 Q130 62 200 70 Q250 78 252 142 Q228 112 174 104 Q136 102 108 126 Z" fill="#1e293b"/>
+          <path d="M130 144 Q138 149 146 144" fill="none" stroke="#1e293b" stroke-width="2.6" stroke-linecap="round"/>
+          <ellipse cx="254" cy="152" rx="11" ry="18" fill="url(#skinShade)" stroke="#c4845d" stroke-width="2"/>
+          <path d="M126 94 Q182 52 238 96" fill="none" stroke="#0284c7" stroke-width="4" class="anim-trail" marker-end="url(#arrowBlue)" pointer-events="none"/>
+          ${renderStepBadge(126, 94, "1", "#0f6b56")}
+          ${renderStepBadge(182, 66, "2", "#0284c7")}
+          ${renderStepBadge(238, 96, "3", "#d97706")}
+          <g transform="translate(126, 94)" pointer-events="none">
+            <g class="anim-seg-head-m">
+              ${renderSeqCursorHand(0.54, "#0284c7", 68)}
+            </g>
+          </g>
+          <rect x="44" y="14" width="264" height="28" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="1.8"/>
+          <text x="176" y="32" text-anchor="middle" font-size="11.5" font-weight="800" fill="#166534">LETAKKAN GAYUNG — CUKUP TANGAN BASAH!</text>
+          <text x="176" y="256" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0369a1">Urutan 1→2→3: Rambut Depan → Ubun-ubun → Belakang</text>
+          <text x="176" y="276" text-anchor="middle" font-size="11.5" fill="#9d174d">Putri: masukkan tangan basah di balik tepi jilbab</text>
         `,
         "Tidak perlu menyiram 1 gayung ke kepala (hemat air & sunnah)"
       );
@@ -1747,11 +1766,22 @@ window.WudhuAnimator = (function () {
             <stop offset="0%" stop-color="#e0f2fe"/>
             <stop offset="100%" stop-color="#f0fdf4"/>
           </linearGradient>
+          <linearGradient id="skinGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fde2cc"/>
+            <stop offset="100%" stop-color="#f5c6a3"/>
+          </linearGradient>
+          <linearGradient id="skinShade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f7ceb0"/>
+            <stop offset="100%" stop-color="#e8b28d"/>
+          </linearGradient>
           <marker id="arrowGreen" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f6b56"/>
           </marker>
           <marker id="arrowAmber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+          </marker>
+          <marker id="arrowBlue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#0284c7"/>
           </marker>
         </defs>
 

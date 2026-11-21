@@ -484,12 +484,12 @@ window.WUDHU_DATA = {
       ]
     },
     kepala: {
-      title: "Batas Usap Sebagian Kepala & Telinga",
-      caption: "Temukan urutan mengusap kepala mulai dari titik rukun di depan, arah usapan ke belakang, lalu sunnah lanjutannya.",
+      title: "Batas Usap Sebagian Kepala (Rukun & Sunnah)",
+      caption: "Temukan urutan mengusap kepala mulai dari batas rambut depan (dahi), naik ke ubun-ubun, hingga ke bagian belakang kepala.",
       points: [
-        { id: "k1", x: 180, y: 74, label: "1", prompt: "Sentuh titik AWAL (rukun) tempat tangan basah mulai mengusap kepala!", title: "Urutan 1 — Ubun-ubun / Rambut Depan (Rukun)", desc: "Benar! Usapan dimulai dari bagian depan batas rambut kepala (untuk putri: di balik tepi jilbab)." },
-        { id: "k2", x: 180, y: 126, label: "2", prompt: "Ke arah mana sunnah usapan kepala dilanjutkan?", title: "Urutan 2 — Arah Usapan ke Belakang (Sunnah)", desc: "Tepat! Sunnah mengusap dari dahi ke arah belakang kepala lalu kembali ke depan." },
-        { id: "k3", x: 270, y: 142, label: "3", prompt: "Terakhir, bagian sunnah mana yang diusap setelah kepala?", title: "Urutan 3 — Daun & Lubang Telinga (Sunnah Lanjutan)", desc: "Sempurna! Dilanjutkan mengusap lekuk dalam dan belakang daun telinga dengan tenang." }
+        { id: "k1", x: 126, y: 94, label: "1", prompt: "Sentuh titik AWAL (rukun) di batas rambut depan tempat tangan basah mulai mengusap!", title: "Urutan 1 — Batas Rambut Depan / Dahi (Rukun)", desc: "Benar! Usapan dimulai dari bagian depan batas rambut kepala (untuk putri: masukkan tangan basah di balik tepi depan jilbab)." },
+        { id: "k2", x: 182, y: 66, label: "2", prompt: "Ke bagian puncak mana usapan tangan basah dilanjutkan?", title: "Urutan 2 — Ubun-ubun / Puncak Kepala", desc: "Tepat! Tangan basah diusapkan naik menyusuri rambut bagian atas (ubun-ubun) dengan tenang." },
+        { id: "k3", x: 238, y: 96, label: "3", prompt: "Terakhir, sentuh batas AKHIR arah usapan rambut di bagian belakang kepala!", title: "Urutan 3 — Rambut Bagian Belakang Kepala (Sunnah)", desc: "Sempurna! Sunnah menyempurnakan usapan kepala dari batas rambut depan hingga ke bagian belakang kepala." }
       ]
     },
     kaki: {
