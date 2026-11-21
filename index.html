@@ -797,8 +797,8 @@
             <div class="field-group">
               <label for="portal-session">3. Pilih Sesi <span class="req">*</span></label>
               <select id="portal-session" class="field-input">
-                <option value="Pretest">📝 Pretest (Tes Awal)</option>
-                <option value="Posttest" selected>🎓 Posttest (Tes Akhir)</option>
+                <option value="Pretest" selected>📝 Pretest (Tes Awal)</option>
+                <option value="Posttest">🎓 Posttest (Tes Akhir)</option>
                 <option value="Latihan">📖 Latihan Mandiri</option>
               </select>
             </div>
@@ -900,8 +900,8 @@
           ▶ Masuk ke Beranda Pembelajaran
         </button>
 
-        <p class="lock-note">
-          🔒 <strong>Data terkunci otomatis:</strong> Nama, Sekolah, Kelas, dan Tingkatan yang diisi di sini langsung tercatat untuk <em>Cek Pemahaman</em> dan tidak dapat diubah di dalam kuis.
+        <p class="lock-note" id="portal-lock-note">
+          🔒 <strong>Data terkunci otomatis:</strong> Nama, Sekolah, Kelas, dan Sesi yang diisi di sini langsung tercatat untuk <em>Cek Pemahaman</em> dan tidak dapat diubah di dalam kuis.
         </p>
       </form>
       </section>
@@ -944,6 +944,8 @@
       const urlParams = new URLSearchParams(window.location.search);
       const isFinishedExit = urlParams.get("selesai") === "1";
 
+      const lockNoteEl = document.getElementById("portal-lock-note");
+
       function setMode(teacher) {
         isTeacherMode = Boolean(teacher);
         tabStudent.classList.toggle("active", !isTeacherMode);
@@ -955,6 +957,11 @@
         enterBtn.textContent = isTeacherMode
           ? "👨‍🏫 Masuk Mode Mengajar Guru (Khusus Materi)"
           : "▶ Masuk ke Beranda Pembelajaran";
+        if (lockNoteEl) {
+          lockNoteEl.innerHTML = isTeacherMode
+            ? "👨‍🏫 <strong>Mode Mengajar Guru Aktif:</strong> Menampilkan materi lengkap, animasi proyektor, rekapan Google Sheets &amp; Rubrik Observasi Praktik (tanpa kuis siswa)."
+            : "🔒 <strong>Data terkunci otomatis:</strong> Nama, Sekolah, Kelas, dan Sesi yang diisi di sini langsung tercatat untuk <em>Cek Pemahaman</em> dan tidak dapat diubah di dalam kuis.";
+        }
         errorBox.classList.remove("show");
       }
 
@@ -972,8 +979,10 @@
         if (teacherPassInp) teacherPassInp.value = "";
         if (teacherSchoolInp) teacherSchoolInp.value = "";
         if (teacherClassInp) teacherClassInp.value = "";
+        if (sessionSel) sessionSel.value = "Pretest";
         selectedLevel = "";
         setMode(false);
+        refreshStudentRosterUI();
         pickSd.classList.remove("selected-sd");
         pickSmp.classList.remove("selected-smp");
         pickSd.setAttribute("aria-pressed", "false");
