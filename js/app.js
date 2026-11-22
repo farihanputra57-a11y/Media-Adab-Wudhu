@@ -2465,14 +2465,16 @@
       dlBtn.disabled = true;
       dlBtn.textContent = "⏳ Menyiapkan File PDF...";
 
+      window.scrollTo(0, 0);
       const cloneWrap = document.createElement("div");
       cloneWrap.className = "guide-modal-body";
       cloneWrap.style.cssText =
-        "width:680px;max-height:none;overflow:visible;background:#ffffff;color:#0f172a;padding:10px 14px;margin:0;box-sizing:border-box;font-family:inherit;";
+        "width:700px;max-width:700px;max-height:none;overflow:visible;background:#ffffff;color:#0f172a;padding:12px 16px;margin:0;box-sizing:border-box;font-family:inherit;text-align:left;";
       cloneWrap.innerHTML = sheetEl.innerHTML;
 
       const host = document.createElement("div");
-      host.style.cssText = "position:fixed;left:-99999px;top:0;width:680px;background:#ffffff;z-index:-1;";
+      host.style.cssText =
+        "position:fixed;left:0;top:0;width:700px;background:#ffffff;z-index:-9999;opacity:0;pointer-events:none;overflow:visible;";
       host.appendChild(cloneWrap);
       document.body.appendChild(host);
 
@@ -2494,9 +2496,21 @@
               scale: 2,
               useCORS: true,
               backgroundColor: "#ffffff",
+              x: 0,
+              y: 0,
               scrollX: 0,
               scrollY: 0,
-              windowWidth: 720
+              width: 700,
+              windowWidth: 700,
+              onclone: (clonedDoc) => {
+                const allFixed = clonedDoc.querySelectorAll("div");
+                allFixed.forEach((el) => {
+                  if (el.style && el.style.zIndex === "-9999") {
+                    el.style.opacity = "1";
+                    el.style.position = "static";
+                  }
+                });
+              }
             },
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
           })
