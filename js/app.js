@@ -199,23 +199,152 @@
     }
   }
 
+  const LAST_THANKYOU_KEY = "adab_wudhu_last_thankyou_v1";
+
   function performFinalExit() {
     if (isExitingToGateway) return;
     isExitingToGateway = true;
+
+    const teacherMode = isTeacherSession();
+    const prof = state.studentProfile || {};
+    const dispName = (prof.name || (teacherMode ? "Bapak/Ibu Guru" : "Siswa")).trim();
+    const dispSchool = (prof.school || "-").trim();
+    const dispClass = (prof.kelas || "-").trim();
+    const dispLevel = prof.levelLabel || (state.level === "smp" ? "SMP / MTs" : "SD / MI");
+    const dispSesi = teacherMode ? "Mode Mengajar Guru" : (prof.sesi || "Posttest").trim();
+    const dispTime = new Date().toLocaleString("id-ID");
+    const totalQ = getActiveQuiz().length || 10;
+    const hasScore = !teacherMode && typeof state.quizScore === "number";
+    const scorePct = hasScore ? Math.round((state.quizScore / totalQ) * 100) : null;
+
+    const thankYouPayload = {
+      isTeacher: teacherMode,
+      name: dispName,
+      school: dispSchool,
+      kelas: dispClass,
+      level: dispLevel,
+      sesi: dispSesi,
+      submitted: Boolean(state.quizSubmitted),
+      score: hasScore ? state.quizScore : null,
+      total: totalQ,
+      pct: scorePct,
+      time: dispTime
+    };
+
     try {
       sessionStorage.removeItem(PROFILE_KEY);
       sessionStorage.removeItem(SESSION_PROGRESS_KEY);
       sessionStorage.removeItem(SHUFFLED_QUIZ_KEY);
       localStorage.removeItem(STORAGE_KEY);
+      sessionStorage.setItem(LAST_THANKYOU_KEY, JSON.stringify(thankYouPayload));
     } catch (e) {}
+
     try {
       AUDIO.stopVoice();
       AUDIO.stopBgm();
+      AUDIO.playChime("win");
     } catch (e) {}
-    const targetHome = getGatewayUrl() + (isTeacherSession() ? "" : "?selesai=1");
-    setTimeout(() => {
+
+    const targetHome = getGatewayUrl() + "?selesai=1";
+    showThankYouExitModal(thankYouPayload, targetHome);
+  }
+
+  function showThankYouExitModal(info, targetHome) {
+    let modal = document.getElementById("thank-you-exit-modal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "thank-you-exit-modal";
+      modal.setAttribute("role", "dialog");
+      modal.setAttribute("aria-modal", "true");
+      modal.style.cssText =
+        "position:fixed;inset:0;z-index:99999;background:rgba(4,47,36,0.88);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:18px;animation:fadeUp 0.25s ease;";
+      document.body.appendChild(modal);
+    }
+
+    const isT = Boolean(info.isTeacher);
+    const isLat = !isT && String(info.sesi || "").toLowerCase().includes("latih");
+    const roleBadge = isT
+      ? "👨‍🏫 SESI MENGAJAR GURU SELESAI"
+      : info.submitted
+      ? `✅ JAWABAN ${String(info.sesi || "KUIS").toUpperCase()} TERKIRIM`
+      : `📖 SESI ${String(info.sesi || "BELAJAR").toUpperCase()} SELESAI`;
+
+    const subtitleText = isT
+      ? `Terima kasih <strong>${escapeHtml(info.name)}</strong> telah menayangkan materi &amp; membimbing pembelajaran Adab Wudhu di kelas.`
+      : info.submitted
+      ? `Terima kasih <strong>${escapeHtml(info.name)}</strong>, data dan jawaban <strong>${escapeHtml(info.sesi)}</strong> Anda telah berhasil dikirim ke rekapan Google Sheets Guru.`
+      : `Terima kasih <strong>${escapeHtml(info.name)}</strong> telah mengikuti sesi <strong>${escapeHtml(info.sesi)}</strong> Adab Wudhu dengan tertib.`;
+
+    const scoreRowHtml =
+      isLat && info.score !== null
+        ? `<div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed #cbd5e1;"><span style="color:#475569;font-weight:600;">Skor Latihan Mandiri</span><strong style="color:#0f6b56;">${info.score} / ${info.total} (${info.pct}%)</strong></div>`
+        : "";
+
+    modal.innerHTML = `
+      <div style="background:#ffffff;color:#0f172a;max-width:480px;width:100%;border-radius:24px;padding:26px 24px 22px;box-shadow:0 24px 60px rgba(0,0,0,0.38);border:2px solid #10b981;text-align:center;font-family:inherit;">
+        <div style="width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#10b981,#0f6b56);color:#ffffff;font-size:30px;display:grid;place-items:center;margin:0 auto 12px;box-shadow:0 10px 24px rgba(16,185,129,0.32);">
+          ${isT ? "👨‍🏫" : "✅"}
+        </div>
+        <div style="display:inline-block;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;padding:4px 12px;border-radius:999px;font-size:11.5px;font-weight:800;letter-spacing:0.4px;margin-bottom:8px;">
+          ${roleBadge}
+        </div>
+        <h2 style="margin:0 0 6px;font-size:21px;font-weight:800;color:#064e3b;">
+          Jazakumullahu Khairan, ${escapeHtml(info.name)}!
+        </h2>
+        <p style="margin:0 0 16px;font-size:13.5px;color:#334155;line-height:1.5;">
+          ${subtitleText}
+        </p>
+
+        <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:16px;padding:12px 16px;text-align:left;font-size:13px;margin-bottom:16px;">
+          <div style="font-size:11px;font-weight:800;color:#0f6b56;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">
+            📋 Ringkasan Data ${isT ? "Pengajar" : "Peserta"}
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed #cbd5e1;">
+            <span style="color:#475569;font-weight:600;">${isT ? "Nama Guru" : "Nama Lengkap Siswa"}</span>
+            <strong style="color:#0f172a;">${escapeHtml(info.name)}</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed #cbd5e1;">
+            <span style="color:#475569;font-weight:600;">Sekolah / Madrasah</span>
+            <strong style="color:#0f172a;">${escapeHtml(info.school)} (${escapeHtml(info.level)})</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed #cbd5e1;">
+            <span style="color:#475569;font-weight:600;">${isT ? "Kelas & Lokal Diajar" : "Kelas & Lokal"}</span>
+            <strong style="color:#0f172a;">Kelas ${escapeHtml(info.kelas)}</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:10px;padding:7px 0;${scoreRowHtml ? "border-bottom:1px dashed #cbd5e1;" : ""}">
+            <span style="color:#475569;font-weight:600;">Sesi / Mode</span>
+            <strong style="color:#0284c7;">${escapeHtml(info.sesi)}</strong>
+          </div>
+          ${scoreRowHtml}
+        </div>
+
+        <button type="button" id="btn-thankyou-home-now" style="width:100%;border:none;border-radius:13px;padding:12px 16px;background:linear-gradient(135deg,#0f6b56,#059669);color:#ffffff;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 8px 20px rgba(15,107,86,0.28);">
+          🏠 Kembali ke Halaman Awal Sekarang
+        </button>
+        <div style="margin-top:8px;font-size:11.5px;color:#64748b;font-weight:600;" id="thankyou-countdown-note">
+          Otomatis kembali ke Halaman Awal dalam 3 detik...
+        </div>
+      </div>
+    `;
+
+    const goNow = () => {
       window.location.replace(targetHome);
-    }, 950);
+    };
+    const btnNow = document.getElementById("btn-thankyou-home-now");
+    if (btnNow) btnNow.addEventListener("click", goNow);
+
+    let secLeft = 3;
+    const noteEl = document.getElementById("thankyou-countdown-note");
+    const iv = setInterval(() => {
+      secLeft--;
+      if (secLeft > 0 && noteEl) {
+        noteEl.textContent = `Otomatis kembali ke Halaman Awal dalam ${secLeft} detik...`;
+      } else {
+        clearInterval(iv);
+      }
+    }, 1000);
+
+    setTimeout(goNow, 3200);
   }
 
   function checkExitWhen100AndSubmitted() {
@@ -669,6 +798,7 @@
     } else if (doneBtn) {
       doneBtn.style.display = "";
       const isDone = state.completedSegments.has(seg.id);
+      doneBtn.classList.toggle("is-done", isDone);
       doneBtn.textContent = isDone ? "✓ Segmen Ini Sudah Ditandai Selesai" : "✓ Tandai Segmen Ini Sudah Dipahami";
     }
   }
