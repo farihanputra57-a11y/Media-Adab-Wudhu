@@ -2914,12 +2914,19 @@ button, input, select {
   }
 }
 
-/* ==================== PRINT / PDF LAYOUT (RUBRIK & REKAP) ==================== */
+/* ==================== PRINT / PDF LAYOUT (HANYA RINGKASAN FIKIH, CAPAIAN PEMBELAJARAN & RUBRIK) ==================== */
 @media print {
   .topbar,
+  .hero-card,
   .hero-cta,
+  .section-head,
+  #home-segment-grid,
+  .segment-grid,
+  .academic-profile-card,
   .splash-screen,
   .toast,
+  .no-print-in-modal,
+  #btn-download-rubric-pdf,
   #btn-print-rubric,
   #btn-close-rubric,
   #btn-refresh-live-rekap,
@@ -2927,8 +2934,16 @@ button, input, select {
   #btn-close-live-rekap {
     display: none !important;
   }
+  /* Saat mencetak dari modal Rubrik atau modal Rekap, sembunyikan seluruh konten belakang (#view-home dll) agar tidak dobel */
+  body.printing-rubric-only .app-shell,
+  body.printing-rubric-only main,
+  body.printing-rubric-only .view {
+    display: none !important;
+  }
   body {
     background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
   .guide-modal-backdrop {
     position: static !important;
