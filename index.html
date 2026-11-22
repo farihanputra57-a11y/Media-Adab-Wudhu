@@ -1803,7 +1803,6 @@
               <h3>${modData.title}</h3>
               <div class="mod-modal-actions">
                 <button type="button" class="mod-btn-act primary" id="btn-dl-mod-pdf">⬇️ Unduh PDF Modul</button>
-                <a href="${modData.githubUrl}" target="_blank" rel="noopener noreferrer" class="mod-btn-act">📖 Buka di GitHub</a>
                 <button type="button" class="mod-btn-act" id="btn-close-mod-modal">✕ Tutup</button>
               </div>
             </div>
@@ -1856,6 +1855,14 @@
       const btnModSmp = document.getElementById("btn-open-mod-smp");
       if (btnModSd) btnModSd.addEventListener("click", () => openGatewayModuleModal("sd"));
       if (btnModSmp) btnModSmp.addEventListener("click", () => openGatewayModuleModal("smp"));
+
+      // Jika pengguna mengklik link Modul SD/MI (?modul=sd) atau Modul SMP/MTs (?modul=smp) dari GitHub README atau Beranda,
+      // langsung buka Halaman Awal Web dengan jendela Modul Ajar otomatis terbuka!
+      const reqModul = (urlParams.get("modul") || "").trim().toLowerCase();
+      if (reqModul === "sd" || reqModul === "smp") {
+        revealPortalCard();
+        openGatewayModuleModal(reqModul);
+      }
     })();
   </script>
 </body>
