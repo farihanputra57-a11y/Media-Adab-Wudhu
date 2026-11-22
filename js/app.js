@@ -2464,20 +2464,43 @@
       const origText = dlBtn.textContent;
       dlBtn.disabled = true;
       dlBtn.textContent = "⏳ Menyiapkan File PDF...";
+
+      const cloneWrap = document.createElement("div");
+      cloneWrap.className = "guide-modal-body";
+      cloneWrap.style.cssText =
+        "width:680px;max-height:none;overflow:visible;background:#ffffff;color:#0f172a;padding:10px 14px;margin:0;box-sizing:border-box;font-family:inherit;";
+      cloneWrap.innerHTML = sheetEl.innerHTML;
+
+      const host = document.createElement("div");
+      host.style.cssText = "position:fixed;left:-99999px;top:0;width:680px;background:#ffffff;z-index:-1;";
+      host.appendChild(cloneWrap);
+      document.body.appendChild(host);
+
       try {
+        if (document.fonts && document.fonts.ready) {
+          await document.fonts.ready;
+        }
         const html2pdf = await loadHtml2PdfScript();
         const safeSchool = String(prof.school || (isSmp ? "SMP_MTs" : "SD_MI")).replace(/[^a-zA-Z0-9_-]/g, "_");
         const safeClass = String(prof.kelas || "Kelas").replace(/[^a-zA-Z0-9_-]/g, "_");
         const filename = `Rubrik_Observasi_Wudhu_${safeSchool}_${safeClass}.pdf`;
         await html2pdf()
           .set({
-            margin: [8, 8, 8, 8],
+            margin: [10, 10, 10, 10],
             filename,
+            pagebreak: { mode: ["css", "legacy"], avoid: ["tr", "li", "table", "h2"] },
             image: { type: "jpeg", quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+            html2canvas: {
+              scale: 2,
+              useCORS: true,
+              backgroundColor: "#ffffff",
+              scrollX: 0,
+              scrollY: 0,
+              windowWidth: 720
+            },
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
           })
-          .from(sheetEl)
+          .from(cloneWrap)
           .save();
         showToast(`✅ File ${filename} berhasil diunduh ke folder Downloads!`);
       } catch (err) {
@@ -2485,6 +2508,7 @@
         window.print();
         setTimeout(() => document.body.classList.remove("printing-rubric-only"), 500);
       } finally {
+        host.remove();
         dlBtn.disabled = false;
         dlBtn.textContent = origText;
       }
