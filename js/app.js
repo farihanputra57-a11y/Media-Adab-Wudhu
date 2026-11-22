@@ -2176,7 +2176,7 @@
       </div>
       <span class="splash-badge">${prof && prof.isTeacher ? `👨‍🏫 Mode Mengajar Guru • ${levelLabel}` : levelLabel}</span>
       <h1 class="splash-title">${prof ? `Assalamu'alaikum, ${safeName}!` : "Adab Wudhu Multi-Sensory"}</h1>
-      <p class="splash-sub">${prof ? (prof.isTeacher ? `🏫 ${safeSchool} &nbsp;•&nbsp; ${safeClass}<br/>Mode Mengajar Guru Aktif (Hanya Materi Pembelajaran, Tanpa Cek Pemahaman).` : `🏫 ${safeSchool} &nbsp;•&nbsp; Kelas ${safeClass}<br/>Identitas Anda telah terkunci otomatis untuk Cek Pemahaman.`) : "Media Pembelajaran Interaktif Tata Cara &amp; Adab Berwudhu Sesuai Mazhab Syafi'i"}`</p>
+      <p class="splash-sub">${prof ? (prof.isTeacher ? `🏫 ${safeSchool} &nbsp;•&nbsp; ${safeClass}<br/>Mode Mengajar Guru Aktif (Hanya Materi Pembelajaran, Tanpa Cek Pemahaman).` : `🏫 ${safeSchool} &nbsp;•&nbsp; Kelas ${safeClass}<br/>Identitas Anda telah terkunci otomatis untuk Cek Pemahaman.`) : "Media Pembelajaran Interaktif Tata Cara &amp; Adab Berwudhu Sesuai Mazhab Syafi'i"}</p>
       <div class="splash-bar-wrap">
         <div class="splash-bar-fill" id="splash-bar-fill" style="width:${prof ? "100%" : "0%"}"></div>
       </div>
