@@ -544,36 +544,27 @@
         </ol>
       </div>
 
-      <div class="academic-card academic-profile-card">
+      <div class="academic-card">
         <div class="academic-card-head">
-          <span class="academic-ico">🎓</span>
+          <span class="academic-ico">📚</span>
           <div>
-            <h3>Profil Pengembang &amp; Identitas Penelitian</h3>
-            <small>Produk Penelitian &amp; Pengembangan (R&amp;D) Tesis Magister PAI</small>
+            <h3>Modul Ajar &amp; Materi Pembelajaran Lengkap (SD/MI &amp; SMP/MTs)</h3>
+            <small>Dokumen Modul Fikih &amp; Adab Berwudhu Sesuai Tuntunan Mazhab Syafi'i</small>
           </div>
         </div>
-        <dl class="dev-meta-list">
-          <div class="dev-meta-row">
-            <dt>Pengembang / Peneliti</dt>
-            <dd><strong>Farihan Muhammad Putra</strong></dd>
-          </div>
-          <div class="dev-meta-row">
-            <dt>Program Studi</dt>
-            <dd>Magister Pendidikan Agama Islam (MPAI)</dd>
-          </div>
-          <div class="dev-meta-row">
-            <dt>Institusi</dt>
-            <dd>Pascasarjana Universitas Islam Riau (UIR)</dd>
-          </div>
-          <div class="dev-meta-row">
-            <dt>Pendekatan Media</dt>
-            <dd><em>Multi-Sensory Digital</em> (Visual, Auditori, Kinestetik)</dd>
-          </div>
-          <div class="dev-meta-row">
-            <dt>Kitab Rujukan Utama</dt>
-            <dd><em>Fath al-Qarib al-Mujib</em> (Syekh Ibn Qasim al-Ghazzi) &amp; <em>Ihya' 'Ulum al-Din</em> (Imam al-Ghazali) — Mazhab Syafi'i</dd>
-          </div>
-        </dl>
+        <p style="font-size:13.2px;color:#475569;margin:0 0 12px;line-height:1.5;">
+          Akses langsung dokumen <strong>Modul Ajar &amp; Materi Pembelajaran</strong> untuk jenjang <strong>SD / MI (Kelas IV–VI)</strong> maupun pendalaman fikih &amp; dalil tingkat <strong>SMP / MTs (Kelas VII)</strong>:
+        </p>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="https://github.com/farihanputra57-a11y/Media-Adab-Wudhu/blob/main/Modul_SD_MI.md" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background:#f0f9ff;color:#0369a1;border:1.5px solid #0284c7;font-weight:800;border-radius:12px;padding:11px 14px;text-decoration:none;display:flex;align-items:center;justify-content:space-between;">
+            <span>🎒 Modul Tingkat SD / MI (Kelas IV, V &amp; VI)</span>
+            <span>Buka Modul →</span>
+          </a>
+          <a href="https://github.com/farihanputra57-a11y/Media-Adab-Wudhu/blob/main/Modul_SMP_MTs.md" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background:#eef2ff;color:#4338ca;border:1.5px solid #4f46e5;font-weight:800;border-radius:12px;padding:11px 14px;text-decoration:none;display:flex;align-items:center;justify-content:space-between;">
+            <span>🎓 Modul Tingkat SMP / MTs (Kelas VII)</span>
+            <span>Buka Modul →</span>
+          </a>
+        </div>
       </div>
     `;
   }
