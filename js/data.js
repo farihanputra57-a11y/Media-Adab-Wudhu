@@ -147,10 +147,10 @@ window.WUDHU_DATA = {
         "Membasuh telapak, punggung tangan, dan menyela jari sebanyak 3 kali."
       ],
       doa: {
-        label: "Bacaan Basmalah & Niat Wudhu (Dilafalkan dalam Hati saat Membasuh Wajah)",
-        arabic: "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ — نَوَيْتُ الْوُضُوْءَ لِرَفْعِ الْحَدَثِ الْاَصْغَرِ فَرْضًا لِلّٰهِ تَعَالٰى",
-        latin: "Bismillahirrahmanirrahim. Nawaitul wudhu'a liraf'il hadatsil ashghari fardhan lillahi ta'ala.",
-        meaning: "Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang. Aku berniat wudhu untuk menghilangkan hadas kecil fardu karena Allah Ta'ala."
+        label: "Bacaan Basmalah & Doa Sunnah Awal Wudhu (Saat Membasuh Telapak Tangan)",
+        arabic: "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ — اَلْحَمْدُ لِلّٰهِ الَّذِيْ جَعَلَ الْمَاءَ طَهُوْرًا",
+        latin: "Bismillahirrahmanirrahim. Alhamdulillahilladzi ja'alal ma'a thahuran.",
+        meaning: "Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang. Segala puji bagi Allah yang telah menjadikan air itu suci dan menyucikan. (Catatan Fikih Syafi'i: Adapun Niat Fardu Wudhu wajib dihadirkan di dalam hati pada Segmen 3 tepat saat air pertama menyentuh wajah)."
       },
       substeps: [
         {
@@ -227,9 +227,14 @@ window.WUDHU_DATA = {
       adab: [
         "Batas vertikal (atas–bawah): tempat tumbuh rambut kepala hingga ujung dagu bagian bawah.",
         "Batas horizontal (kiri–kanan): dari pangkal telinga kanan hingga pangkal telinga kiri.",
-        "Sertakan niat wudhu di dalam hati tepat saat air pertama menyentuh kulit wajah."
+        "Sertakan niat fardu wudhu di dalam hati (muqaranah bil fi'li) tepat saat air pertama menyentuh kulit wajah."
       ],
-      doa: null,
+      doa: {
+        label: "Lafal Niat Fardu Wudhu (Wajib Dihadapkan di Dalam Hati Saat Air Pertama Menyentuh Wajah)",
+        arabic: "نَوَيْتُ الْوُضُوْءَ لِرَفْعِ الْحَدَثِ الْاَصْغَرِ فَرْضًا لِلّٰهِ تَعَالٰى",
+        latin: "Nawaitul wudhu'a liraf'il hadatsil ashghari fardhan lillahi ta'ala.",
+        meaning: "Aku berniat wudhu untuk menghilangkan hadas kecil, fardu karena Allah Ta'ala. (Rukun ke-1 Mazhab Syafi'i dalam Fath al-Qarib: niat wajib bersamaan dengan basuhan pertama wajah)."
+      },
       substeps: [
         {
           code: "3a",
@@ -313,7 +318,7 @@ window.WUDHU_DATA = {
       adab: [
         "Rukun Mazhab Syafi'i: mengusap sebagian kulit kepala atau rambut yang berada di dalam batas kepala.",
         "Sunnah utama: mengusap dari dahi ke belakang kepala lalu kembali ke depan (bagi yang tidak terhalang).",
-        "Lanjutkan mengusap daun telinga bagian dalam dengan jari telunjuk dan bagian belakang dengan ibu jari."
+        "Ambil air baru (ma'un jadid) untuk mengusap daun telinga bagian dalam dengan jari telunjuk dan bagian belakang dengan ibu jari (telinga adalah sunnah tersendiri, bukan bagian dari wajah maupun kepala)."
       ],
       doa: null,
       substeps: [
@@ -335,9 +340,9 @@ window.WUDHU_DATA = {
         },
         {
           code: "5c",
-          title: "Mengusap Daun & Lubang Telinga (Sunnah)",
-          desc: "Gunakan jari telunjuk untuk mengusap lekuk dalam telinga dan ibu jari untuk mengusap bagian belakang daun telinga secara bersamaan.",
-          narration: "Lanjutkan dengan sunnah mengusap kedua telinga secara bersamaan. Masukkan jari telunjuk untuk mengusap lekuk bagian dalam telinga, dan gunakan ibu jari untuk mengusap bagian belakang daun telinga dengan lembut.",
+          title: "Mengusap Daun & Lubang Telinga dengan Air Baru (Sunnah)",
+          desc: "Ambil air baru (ma'un jadid) membasahi jari, lalu gunakan jari telunjuk untuk mengusap lekuk dalam telinga dan ibu jari untuk mengusap bagian belakang daun telinga secara bersamaan (3×).",
+          narration: "Lanjutkan dengan sunnah mengusap kedua telinga secara bersamaan menggunakan air yang baru. Masukkan jari telunjuk untuk mengusap lekuk bagian dalam telinga, dan gunakan ibu jari untuk mengusap bagian belakang daun telinga dengan lembut.",
           faucet: "closed",
           pose: "ears"
         }
@@ -397,9 +402,9 @@ window.WUDHU_DATA = {
       zoomArea: null,
       waterTip: "💧 Adab Air: Pastikan keran sudah diputar tertutup rapat sebelum meninggalkan tempat wudhu. Tidak ada tetesan air yang terbuang.",
       adab: [
-        "Tertib adalah rukun wudhu: Niat + Wajah → Tangan hingga Siku → Usap Kepala → Kaki hingga Mata Kaki.",
-        "Thuma'ninah: setiap gerakan dilakukan tenang, tidak tergesa-gesa, dan tidak sambil bercanda.",
-        "Rasulullah SAW melarang berlebihan memakai air (israf) meski berada di tepi sungai yang mengalir (HR. Ibn Majah No. 425)."
+        "Tertib adalah RUKUN WAJIB ke-6: Niat + Wajah → Tangan hingga Siku → Usap Kepala → Kaki hingga Mata Kaki (tidak sah bila terbalik).",
+        "Muwalat (berkesinambungan sebelum anggota sebelumnya kering) & Tayammun (mendahulukan kanan dari kiri) hukumnya SUNNAH MU'AKKADAH bagi orang sehat (Muwalat wajib bagi daimul hadats).",
+        "Thuma'ninah & Anti-Israf: tenang, tidak bercanda, dan tidak boros air meski di tepi sungai mengalir (HR. Ibn Majah No. 425)."
       ],
       doa: null,
       substeps: [
@@ -743,11 +748,11 @@ window.WUDHU_DATA = {
         ]
       },
       7: {
-        summary: "Lakukan urutan wudhu dengan tertib (tidak dibolak-balik), tutup keran rapat, dan tetap tenang saat menuju tempat salat.",
+        summary: "Lakukan urutan wudhu dengan tertib (tidak dibolak-balik), dahulukan anggota kanan (tayammun), berkesinambungan (muwalat), dan tutup keran rapat.",
         adab: [
-          "Urutan wajib: Wajah → Tangan ke Siku → Usap Kepala → Kaki ke Mata Kaki.",
-          "Putar keran sampai benar-benar tertutup rapat agar air tidak menetes.",
-          "Berjalan tenang menuju saf salat, tidak berlari atau bercanda."
+          "Rukun Tertib (Wajib): Wajah (dengan niat) → Tangan ke Siku → Usap Kepala → Kaki ke Mata Kaki.",
+          "Sunnah Tayammun & Muwalat: dahulukan anggota kanan sebelum kiri, dan langsung lanjut tanpa jeda lama.",
+          "Putar keran sampai tertutup rapat dan berjalan tenang menuju saf salat."
         ]
       },
       8: {
@@ -809,11 +814,11 @@ window.WUDHU_DATA = {
         ]
       },
       7: {
-        summary: "Rukun ke-6 (Tertib) sekaligus internalisasi adab batin: thuma'ninah (ketenangan) dan muwalah (kesinambungan gerakan tanpa jeda lama).",
+        summary: "Rukun ke-6 (Tertib) beserta pembedaan hukum fikih Syafi'i antara Tertib (Rukun Wajib) dengan Muwalat & Tayammun (Sunnah Mu'akkadah) serta adab thuma'ninah.",
         adab: [
-          "Tertib adalah rukun: jika urutan rukun dibolak-balik (misal kaki dulu sebelum wajah), wudhu tidak sah menurut Mazhab Syafi'i.",
-          "Thuma'ninah menjaga kesempurnaan basuhan sekaligus melatih kekhusyukan hati sebelum menghadap Allah dalam salat (Ihya' 'Ulum al-Din).",
-          "Pastikan keran tertutup rapat tanpa menetes sebagai wujud tanggung jawab ekologis (anti-israf)."
+          "Tertib adalah RUKUN WAJIB: jika urutan 4 anggota rukun dibolak-balik, wudhu tidak sah menurut Mazhab Syafi'i (Fath al-Qarib).",
+          "Muwalat (tidak terjeda lama hingga anggota sebelumnya kering) hukumnya sunnah bagi orang sehat (wajib bagi shahibul 'udzur / daimul hadats), sedangkan Tayammun (mendahulukan kanan) adalah sunnah mu'akkadah.",
+          "Thuma'ninah menjaga kesempurnaan basuhan & kekhusyukan batin (Ihya' 'Ulum al-Din), disertai menutup keran rapat (anti-israf)."
         ]
       },
       8: {

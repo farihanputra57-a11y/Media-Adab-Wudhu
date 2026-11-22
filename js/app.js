@@ -397,15 +397,20 @@
               💡 Seluruh 8 segmen animasi, audio narator, panduan wudhu gayung, dan zona kinestetik siap ditayangkan di kelas.
             </div>
             <div style="display:flex;flex-wrap:wrap;gap:8px;">
-              <a href="${TEACHER_SHEETS_VIEW_URL}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="flex:1;min-width:170px;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;font-weight:800;text-align:center;text-decoration:none;border-radius:10px;padding:9px 12px;display:inline-flex;align-items:center;justify-content:center;gap:6px;">
-                📊 Buka Rekap Google Sheets
+              <button type="button" id="btn-open-live-rekap" class="btn btn-sm" style="flex:1 1 100%;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1c1917;border:1px solid #fde68a;font-weight:800;border-radius:10px;padding:10px 12px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.18);">
+                📊 Filter Rekap &amp; Analisis N-Gain (Live di Web)
+              </button>
+              <a href="${TEACHER_SHEETS_VIEW_URL}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="flex:1;min-width:155px;background:rgba(254,243,199,0.92);color:#92400e;border:1px solid #fcd34d;font-weight:800;text-align:center;text-decoration:none;border-radius:10px;padding:8px 10px;display:inline-flex;align-items:center;justify-content:center;gap:6px;">
+                📗 Buka Google Sheets (Viewer)
               </a>
-              <button type="button" id="btn-open-rubric" class="btn btn-sm" style="flex:1;min-width:170px;background:#e0f2fe;color:#0369a1;border:1px solid #7dd3fc;font-weight:800;border-radius:10px;padding:9px 12px;cursor:pointer;">
+              <button type="button" id="btn-open-rubric" class="btn btn-sm" style="flex:1;min-width:155px;background:#e0f2fe;color:#0369a1;border:1px solid #7dd3fc;font-weight:800;border-radius:10px;padding:8px 10px;cursor:pointer;">
                 📋 Rubrik Observasi Praktik
               </button>
             </div>
           </div>
         `;
+        const liveRekapBtn = document.getElementById("btn-open-live-rekap");
+        if (liveRekapBtn) liveRekapBtn.addEventListener("click", openLiveRekapModal);
         const rubBtn = document.getElementById("btn-open-rubric");
         if (rubBtn) rubBtn.addEventListener("click", openPsychomotorRubricModal);
       }
@@ -798,7 +803,6 @@
     } else if (doneBtn) {
       doneBtn.style.display = "";
       const isDone = state.completedSegments.has(seg.id);
-      doneBtn.classList.toggle("is-done", isDone);
       doneBtn.textContent = isDone ? "✓ Segmen Ini Sudah Ditandai Selesai" : "✓ Tandai Segmen Ini Sudah Dipahami";
     }
   }
@@ -1194,9 +1198,33 @@
           : `${modeTag} — SD / MI (${activeQuiz.length} Soal Acak)`;
     }
 
+    const totalQ = activeQuiz.length;
+    const unansweredNums = [];
+    activeQuiz.forEach((q, idx) => {
+      if (typeof state.quizAnswers[q.id] !== "number") {
+        unansweredNums.push(idx + 1);
+      }
+    });
+    const answeredCount = totalQ - unansweredNums.length;
+
     const container = document.getElementById("quiz-container");
+    let progBanner = document.getElementById("quiz-progress-status-bar");
+    if (!progBanner && container && container.parentElement) {
+      progBanner = document.createElement("div");
+      progBanner.id = "quiz-progress-status-bar";
+      progBanner.className = "quiz-progress-status-bar";
+      container.parentElement.insertBefore(progBanner, container);
+    }
+    if (progBanner) {
+      const isComplete = unansweredNums.length === 0;
+      progBanner.className = `quiz-progress-status-bar ${isComplete ? "complete" : "pending"}`;
+      progBanner.innerHTML = isComplete
+        ? `<div class="qps-left">✅ <strong>Terjawab Lengkap: ${answeredCount} / ${totalQ} Soal</strong></div><div class="qps-right">Silakan gulir ke bawah untuk menekan tombol <strong>📤 Kirim &amp; Kunci Hasil</strong>.</div>`
+        : `<div class="qps-left">📝 <strong>Progres Jawaban: ${answeredCount} / ${totalQ} Soal</strong></div><div class="qps-right">⚠️ Belum dijawab (${unansweredNums.length} soal): <strong>Nomor ${unansweredNums.join(", ")}</strong></div>`;
+    }
+
     container.innerHTML = activeQuiz
-      .map((q) => {
+      .map((q, idx) => {
         const picked = state.quizAnswers[q.id];
         const answered = typeof picked === "number";
         const isRight = answered && picked === q.correct;
@@ -1259,12 +1287,34 @@
   function checkQuizComplete(playSound = false) {
     const activeQuiz = getActiveQuiz();
     const total = activeQuiz.length;
-    const answeredCount = activeQuiz.filter((q) => typeof state.quizAnswers[q.id] === "number").length;
+    const unansweredNums = [];
+    activeQuiz.forEach((q, idx) => {
+      if (typeof state.quizAnswers[q.id] !== "number") unansweredNums.push(idx + 1);
+    });
+    const answeredCount = total - unansweredNums.length;
     const resCard = document.getElementById("quiz-result-card");
+
+    let missingCard = document.getElementById("quiz-missing-alert-card");
+    if (!missingCard && resCard && resCard.parentElement) {
+      missingCard = document.createElement("div");
+      missingCard.id = "quiz-missing-alert-card";
+      missingCard.className = "quiz-missing-alert-card";
+      resCard.parentElement.insertBefore(missingCard, resCard);
+    }
+
     if (answeredCount < total) {
       resCard.classList.add("hidden");
+      if (missingCard) {
+        missingCard.classList.remove("hidden");
+        missingCard.innerHTML = `
+          <div class="qma-badge">📝 Terjawab ${answeredCount} dari ${total} Soal</div>
+          <h4>⚠️ Tombol Kirim Belum Aktif — Masih Ada ${unansweredNums.length} Soal yang Terlewat!</h4>
+          <p>Silakan pilih jawaban terlebih dahulu pada: <strong>Soal Nomor ${unansweredNums.join(", ")}</strong> agar tombol <strong>📤 Kirim &amp; Kunci Hasil</strong> muncul di sini.</p>
+        `;
+      }
       return;
     }
+    if (missingCard) missingCard.classList.add("hidden");
 
     let score = 0;
     activeQuiz.forEach((q) => {
@@ -2321,6 +2371,272 @@
     const close = () => modal.remove();
     document.getElementById("btn-close-rubric").addEventListener("click", close);
     document.getElementById("btn-print-rubric").addEventListener("click", () => window.print());
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) close();
+    });
+  }
+
+  // ==================== MODAL FILTER REKAP & ANALISIS N-GAIN LIVE DI WEB (MODE GURU) ====================
+  const SHEETS_DOC_ID = "1DoK0WDUYcwFKM1Ly5ol8bTAbn3GOkwP6zWv32aM6oic";
+  const SCHOOL_TABS_META = [
+    { school: "SDN 1", tab: "Rekap SDN 1", level: "SD/MI", classes: ["Semua Kelas", "4A", "4B", "4C", "4D", "5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D"] },
+    { school: "SDN 2", tab: "Rekap SDN 2", level: "SD/MI", classes: ["Semua Kelas", "4A", "4B", "4C", "4D", "5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D"] },
+    { school: "MI 1", tab: "Rekap MI 1", level: "SD/MI", classes: ["Semua Kelas", "4A", "4B", "4C", "4D", "5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D"] },
+    { school: "MI 2", tab: "Rekap MI 2", level: "SD/MI", classes: ["Semua Kelas", "4A", "4B", "4C", "4D", "5A", "5B", "5C", "5D", "6A", "6B", "6C", "6D"] },
+    { school: "SMPN 1", tab: "Rekap SMPN 1", level: "SMP/MTs", classes: ["Semua Kelas", "7A", "7B", "7C", "7D"] },
+    { school: "SMPN 2", tab: "Rekap SMPN 2", level: "SMP/MTs", classes: ["Semua Kelas", "7A", "7B", "7C", "7D"] },
+    { school: "MTs 1", tab: "Rekap MTs 1", level: "SMP/MTs", classes: ["Semua Kelas", "7A", "7B", "7C", "7D"] },
+    { school: "MTs 2", tab: "Rekap MTs 2", level: "SMP/MTs", classes: ["Semua Kelas", "7A", "7B", "7C", "7D"] }
+  ];
+
+  async function fetchSheetTabRows(schoolName) {
+    const meta = SCHOOL_TABS_META.find((m) => m.school.toUpperCase() === String(schoolName || "").toUpperCase()) || SCHOOL_TABS_META[0];
+    const url = `https://docs.google.com/spreadsheets/d/${SHEETS_DOC_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(meta.tab)}`;
+    const res = await fetch(url, { cache: "no-store" });
+    const txt = await res.text();
+    const jsonMatch = txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]+)\);?/);
+    if (!jsonMatch) throw new Error("Format respons Google Sheets tidak dikenali.");
+    const parsed = JSON.parse(jsonMatch[1]);
+    const tableRows = (parsed && parsed.table && parsed.table.rows) || [];
+    const items = [];
+
+    tableRows.forEach((r) => {
+      const c = (r && r.c) || [];
+      const getVal = (idx) => (c[idx] && (c[idx].f !== undefined ? c[idx].f : c[idx].v)) ?? "";
+      const rawNo = Number(c[0] && c[0].v);
+      const rawLevel = String(getVal(1)).trim();
+      const rawName = String(getVal(2)).trim();
+      const rawSchool = String(getVal(3)).trim();
+      const rawKelas = String(getVal(4)).trim().toUpperCase();
+      const rawSesi = String(getVal(5)).trim() || "Posttest";
+      const rawScore = Number(c[6] && c[6].v);
+      const rawTotal = Number(c[7] && c[7].v) || 10;
+      const rawKategori = String(getVal(9)).trim();
+      const rawWaktu = String(getVal(10)).trim();
+
+      if (!rawName || rawName === "Nama Lengkap" || isNaN(rawNo) || rawNo <= 0) return;
+      const score = isNaN(rawScore) ? 0 : rawScore;
+      const pct = Math.round((score / rawTotal) * 100);
+      items.push({
+        no: rawNo,
+        level: rawLevel || meta.level,
+        name: rawName,
+        school: rawSchool || meta.school,
+        kelas: rawKelas || "-",
+        sesi: rawSesi,
+        score,
+        total: rawTotal,
+        pct,
+        kategori: rawKategori || (pct >= 80 ? "Sangat Baik" : pct >= 60 ? "Baik" : "Perlu Pendampingan"),
+        waktu: rawWaktu || "-"
+      });
+    });
+    return items;
+  }
+
+  function openLiveRekapModal() {
+    let modal = document.getElementById("live-rekap-modal-backdrop");
+    if (modal) modal.remove();
+
+    const prof = state.studentProfile || {};
+    const defaultSchool = SCHOOL_TABS_META.find((m) => m.school.toUpperCase() === String(prof.school || "").toUpperCase())
+      ? prof.school
+      : state.level === "smp"
+      ? "SMPN 1"
+      : "SDN 1";
+    const defaultClass = (prof.kelas && prof.kelas !== "-" ? String(prof.kelas).toUpperCase() : "Semua Kelas");
+
+    modal = document.createElement("div");
+    modal.id = "live-rekap-modal-backdrop";
+    modal.className = "guide-modal-backdrop";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.innerHTML = `
+      <div class="guide-modal-card rubric-modal-card live-rekap-modal-card" style="max-width:940px;">
+        <div class="guide-modal-head">
+          <div>
+            <h3>📊 Panel Filter Rekap Nilai &amp; Analisis N-Gain (Real-Time Google Sheets)</h3>
+            <small style="color:#475569;font-size:12px;">Memungkinkan Guru memfilter Kelas &amp; Sesi serta mencetak laporan meskipun Google Sheets dikunci dalam mode <strong>Pelihat (Viewer)</strong>.</small>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" class="btn btn-soft btn-sm" id="btn-refresh-live-rekap">🔄 Segarkan</button>
+            <button type="button" class="btn btn-emerald btn-sm" id="btn-print-live-rekap">🖨️ Cetak / PDF</button>
+            <button type="button" class="btn btn-outline btn-sm" id="btn-close-live-rekap">✕ Tutup</button>
+          </div>
+        </div>
+        <div class="guide-modal-body">
+          <div class="live-rekap-filters" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;background:#f0fdf9;border:1.5px solid #99f6e4;border-radius:12px;padding:12px 14px;margin-bottom:14px;">
+            <div>
+              <label style="display:block;font-size:11.5px;font-weight:800;color:#065f46;margin-bottom:4px;">🏫 Pilih Sekolah / Tab Rekap</label>
+              <select id="lr-school-sel" class="select-input select-sm">
+                ${SCHOOL_TABS_META.map((m) => `<option value="${m.school}" ${m.school === defaultSchool ? "selected" : ""}>${m.school} (${m.level})</option>`).join("")}
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:11.5px;font-weight:800;color:#065f46;margin-bottom:4px;">🏷️ Filter Kelas &amp; Lokal</label>
+              <select id="lr-class-sel" class="select-input select-sm"></select>
+            </div>
+            <div>
+              <label style="display:block;font-size:11.5px;font-weight:800;color:#065f46;margin-bottom:4px;">📝 Filter Sesi Evaluasi</label>
+              <select id="lr-sesi-sel" class="select-input select-sm">
+                <option value="Semua Sesi">Semua Sesi (Pretest + Posttest + Latihan)</option>
+                <option value="Pretest">Pretest (Kemampuan Awal)</option>
+                <option value="Posttest">Posttest (Evaluasi Akhir)</option>
+                <option value="Latihan">Latihan Mandiri</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="lr-stats-strip" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px;"></div>
+
+          <div id="lr-status-msg" style="font-size:13px;color:#0f6b56;font-weight:700;margin-bottom:8px;">⏳ Mengambil data real-time dari Google Sheets...</div>
+
+          <div class="table-wrap" style="max-height:360px;overflow-y:auto;border:1px solid #cbd5e1;border-radius:12px;">
+            <table class="rubric-table" id="lr-data-table">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Nama Lengkap Siswa</th>
+                  <th>Sekolah</th>
+                  <th>Kelas</th>
+                  <th>Sesi</th>
+                  <th>Skor</th>
+                  <th>Persentase</th>
+                  <th>Kategori</th>
+                  <th>Waktu</th>
+                </tr>
+              </thead>
+              <tbody id="lr-table-body">
+                <tr><td colspan="9" style="text-align:center;padding:18px;">Memuat data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    const schoolSel = document.getElementById("lr-school-sel");
+    const classSel = document.getElementById("lr-class-sel");
+    const sesiSel = document.getElementById("lr-sesi-sel");
+    const statsStrip = document.getElementById("lr-stats-strip");
+    const statusMsg = document.getElementById("lr-status-msg");
+    const tbody = document.getElementById("lr-table-body");
+
+    let cachedRows = [];
+
+    const populateClassOptions = (keepCurrent = false) => {
+      const meta = SCHOOL_TABS_META.find((m) => m.school === schoolSel.value) || SCHOOL_TABS_META[0];
+      const prevVal = keepCurrent ? classSel.value : defaultClass;
+      classSel.innerHTML = meta.classes
+        .map((c) => `<option value="${c}" ${c === prevVal ? "selected" : ""}>${c === "Semua Kelas" ? "Semua Kelas" : `Kelas ${c}`}</option>`)
+        .join("");
+      if (!meta.classes.includes(prevVal)) classSel.value = "Semua Kelas";
+    };
+
+    const renderFilteredTable = () => {
+      const fClass = classSel.value;
+      const fSesi = sesiSel.value;
+
+      const classRows = cachedRows.filter((r) => fClass === "Semua Kelas" || r.kelas === fClass);
+      const filtered = classRows.filter((r) => {
+        if (fSesi === "Semua Sesi") return true;
+        return r.sesi.toLowerCase().includes(fSesi.toLowerCase());
+      });
+
+      // Hitung Rata-Rata Pretest, Posttest & N-Gain pada Kelas terpilih
+      const preRows = classRows.filter((r) => r.sesi.toLowerCase().includes("pre"));
+      const postRows = classRows.filter((r) => r.sesi.toLowerCase().includes("post"));
+      const avgOf = (arr) => (arr.length ? arr.reduce((a, b) => a + b.pct, 0) / arr.length : null);
+      const preAvg = avgOf(preRows);
+      const postAvg = avgOf(postRows);
+      const curAvg = avgOf(filtered);
+
+      let nGainText = "Belum lengkap (butuh Pre & Post)";
+      let nGainCat = "";
+      if (preAvg !== null && postAvg !== null) {
+        const denom = 100 - preAvg;
+        const nGain = denom > 0 ? (postAvg - preAvg) / denom : postAvg >= 100 ? 1.0 : 0;
+        const delta = (postAvg - preAvg).toFixed(1);
+        nGainCat = nGain >= 0.7 ? "Tinggi" : nGain >= 0.3 ? "Sedang" : "Rendah";
+        nGainText = `${nGain.toFixed(2)} (${nGainCat} • Δ +${delta}%)`;
+      }
+
+      statsStrip.innerHTML = `
+        <div style="background:#f8fafc;border:1px solid #cbd5e1;border-radius:10px;padding:10px 12px;">
+          <div style="font-size:11px;color:#64748b;font-weight:700;">DATA TERFILTER</div>
+          <div style="font-size:17px;font-weight:800;color:#0f172a;">${filtered.length} Siswa</div>
+          <div style="font-size:11.5px;color:#0f6b56;font-weight:700;">Rata-rata: ${curAvg !== null ? `${curAvg.toFixed(1)}%` : "-"}</div>
+        </div>
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 12px;">
+          <div style="font-size:11px;color:#92400e;font-weight:700;">RATA-RATA PRETEST</div>
+          <div style="font-size:17px;font-weight:800;color:#92400e;">${preAvg !== null ? `${preAvg.toFixed(1)}%` : "-"}</div>
+          <div style="font-size:11.5px;color:#b45309;">${preRows.length} data masuk</div>
+        </div>
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px 12px;">
+          <div style="font-size:11px;color:#1e40af;font-weight:700;">RATA-RATA POSTTEST</div>
+          <div style="font-size:17px;font-weight:800;color:#1e40af;">${postAvg !== null ? `${postAvg.toFixed(1)}%` : "-"}</div>
+          <div style="font-size:11.5px;color:#1d4ed8;">${postRows.length} data masuk</div>
+        </div>
+        <div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:10px 12px;">
+          <div style="font-size:11px;color:#065f46;font-weight:700;">EFEKTIVITAS (N-GAIN R&amp;D)</div>
+          <div style="font-size:14.5px;font-weight:800;color:#065f46;">${nGainText}</div>
+          <div style="font-size:11px;color:#047857;">Kriteria Hake (g ≥ 0.70 = Tinggi)</div>
+        </div>
+      `;
+
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:18px;color:#64748b;">Belum ada data untuk filter <strong>${escapeHtml(schoolSel.value)}</strong> • <strong>${escapeHtml(fClass)}</strong> • <strong>${escapeHtml(fSesi)}</strong>.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered
+        .map(
+          (r, i) => `
+            <tr>
+              <td>${i + 1}</td>
+              <td><strong>${escapeHtml(r.name)}</strong></td>
+              <td>${escapeHtml(r.school)}</td>
+              <td style="text-align:center;font-weight:700;">${escapeHtml(r.kelas)}</td>
+              <td style="text-align:center;"><span style="padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:800;background:${
+                r.sesi.toLowerCase().includes("pre") ? "#fef3c7;color:#92400e" : r.sesi.toLowerCase().includes("post") ? "#dbeafe;color:#1e40af" : "#f1f5f9;color:#334155"
+              }">${escapeHtml(r.sesi)}</span></td>
+              <td style="text-align:center;font-weight:800;">${r.score} / ${r.total}</td>
+              <td style="text-align:center;font-weight:800;">${r.pct}%</td>
+              <td style="text-align:center;">${escapeHtml(r.kategori)}</td>
+              <td style="font-size:11.5px;">${escapeHtml(r.waktu)}</td>
+            </tr>
+          `
+        )
+        .join("");
+    };
+
+    const loadSchoolData = async () => {
+      statusMsg.textContent = `⏳ Mengambil data real-time tab Rekap ${schoolSel.value} dari Google Sheets...`;
+      try {
+        cachedRows = await fetchSheetTabRows(schoolSel.value);
+        statusMsg.textContent = `✅ Terhubung ke Google Sheets (Mode Aman Pelihat/Viewer) • Menampilkan tab Rekap ${schoolSel.value} (${cachedRows.length} total baris).`;
+        renderFilteredTable();
+      } catch (err) {
+        statusMsg.textContent = `⚠️ Gagal memuat langsung dari Google Sheets (${err.message}). Silakan klik tombol Buka Google Sheets.`;
+        cachedRows = [];
+        renderFilteredTable();
+      }
+    };
+
+    populateClassOptions(false);
+    loadSchoolData();
+
+    schoolSel.addEventListener("change", () => {
+      populateClassOptions(false);
+      loadSchoolData();
+    });
+    classSel.addEventListener("change", renderFilteredTable);
+    sesiSel.addEventListener("change", renderFilteredTable);
+    document.getElementById("btn-refresh-live-rekap").addEventListener("click", loadSchoolData);
+    document.getElementById("btn-print-live-rekap").addEventListener("click", () => window.print());
+    const close = () => modal.remove();
+    document.getElementById("btn-close-live-rekap").addEventListener("click", close);
     modal.addEventListener("click", (e) => {
       if (e.target === modal) close();
     });
