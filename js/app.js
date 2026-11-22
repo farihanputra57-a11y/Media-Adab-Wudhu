@@ -1343,6 +1343,13 @@
       if (actionsWrap) actionsWrap.appendChild(contBtn);
     }
 
+    // 2. Baris Identitas Siswa Terkunci (tetap terlihat di semua sesi termasuk Latihan Mandiri agar desain seragam dengan Pretest & Posttest)
+    const studentBar = document.querySelector(".quiz-student-bar");
+    if (studentBar) {
+      studentBar.classList.remove("hidden");
+      studentBar.style.display = "";
+    }
+
     if (sessionMode === "pretest") {
       badgeEl.textContent = `${total} / ${total} Soal Pretest Terjawab`;
       titleEl.textContent = "Seluruh Soal Pretest Sudah Dijawab!";
@@ -1350,9 +1357,9 @@
       contBtn.classList.add("hidden");
     } else if (sessionMode === "latihan") {
       const pctLat = Math.round((score / total) * 100);
-      badgeEl.textContent = `Skor Latihan Mandiri: ${score} / ${total} (${pctLat}%)`;
-      titleEl.textContent = pctLat >= 80 ? "Masya Allah! Latihan Sangat Baik!" : "Latihan Selesai — Terus Semangat Belajar!";
-      descEl.textContent = "Anda dapat menekan tombol di bawah untuk mencatat hasil latihan ke guru, atau klik '↻ Ulangi Kuis' untuk berlatih lagi dengan urutan soal acak baru.";
+      badgeEl.textContent = `${total} / ${total} Soal Latihan Terjawab • Skor: ${score} / ${total} (${pctLat}%)`;
+      titleEl.textContent = "Seluruh Soal Latihan Mandiri Sudah Dijawab!";
+      descEl.textContent = "Klik tombol '📤 Kirim & Kunci Hasil' di bawah untuk mengirim hasil Latihan Mandiri Anda ke rekapan Google Sheets Guru dan keluar otomatis ke Halaman Awal, atau klik '↻ Ulangi Kuis' jika ingin berlatih kembali.";
       contBtn.classList.add("hidden");
     } else if (state.quizSubmitted && !prog.is100) {
       badgeEl.textContent = `${total} / ${total} Soal Terjawab • Pemahaman Materi ${prog.pct}%`;
@@ -2321,9 +2328,48 @@
     }
   }
 
+  function loadHtml2PdfScript() {
+    if (typeof window.html2pdf === "function") return Promise.resolve(window.html2pdf);
+    return new Promise((resolve, reject) => {
+      const existing = document.getElementById("html2pdf-cdn-script");
+      if (existing) {
+        existing.addEventListener("load", () => resolve(window.html2pdf));
+        existing.addEventListener("error", () => reject(new Error("Gagal memuat pustaka PDF.")));
+        return;
+      }
+      const s = document.createElement("script");
+      s.id = "html2pdf-cdn-script";
+      s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+      s.onload = () => resolve(window.html2pdf);
+      s.onerror = () => reject(new Error("Gagal memuat pustaka PDF."));
+      document.head.appendChild(s);
+    });
+  }
+
   function openPsychomotorRubricModal() {
     let modal = document.getElementById("rubric-modal-backdrop");
     if (modal) modal.remove();
+
+    const prof = state.studentProfile || {};
+    const isSmp = state.level === "smp";
+    const levelLabel = isSmp ? "SMP / MTs" : "SD / MI";
+    const teacherName = escapeHtml(prof.name || "Guru PAI");
+    const schoolName = escapeHtml(prof.school || "-");
+    const className = escapeHtml(prof.kelas || "-");
+
+    const tpItems = isSmp
+      ? [
+          "Menganalisis dalil Al-Qur'an (QS. Al-Ma'idah: 6) serta ketentuan fikih rukun, syarat sah, dan sunnah wudhu menurut <strong>Mazhab Syafi'i</strong>.",
+          "Membedakan hukum air <em>mutlaq</em> dan air <em>musta'mal</em> serta menerapkan kaidah <strong>2 Qullah</strong> saat berwudhu menggunakan gayung/bak air.",
+          "Mengidentifikasi ketentuan fikih wudhu bagi remaja putra &amp; putri (berhijab, penghalang air di kulit/kuku, serta adab menjaga aurat).",
+          "Menerapkan adab <em>thuma'ninah</em> (3× basuhan tenang), sikap <em>anti-israf</em> (hemat air), serta mengevaluasi studi kasus fikih wudhu."
+        ]
+      : [
+          "Memahami pengertian, niat, serta urutan rukun dan sunnah berwudhu secara tertib sesuai tuntunan <strong>Mazhab Syafi'i</strong>.",
+          "Mengenali batas wajib anggota wudhu (wajah, kedua tangan hingga siku, sebagian kepala, dan kedua kaki hingga mata kaki) dengan tepat.",
+          "Mempraktikkan tata cara berwudhu menggunakan keran maupun gayung/bak air secara tenang (<em>thuma'ninah</em>) dan tidak boros air.",
+          "Membiasakan adab kesopanan, kebersihan, serta doa sebelum dan sesudah berwudhu dalam kehidupan sehari-hari."
+        ];
 
     modal = document.createElement("div");
     modal.id = "rubric-modal-backdrop";
@@ -2331,19 +2377,63 @@
     modal.setAttribute("role", "dialog");
     modal.setAttribute("aria-modal", "true");
     modal.innerHTML = `
-      <div class="guide-modal-card rubric-modal-card">
-        <div class="guide-modal-head">
-          <h3>📋 Lembar Rubrik Observasi Praktik Wudhu (Psikomotorik)</h3>
-          <div style="display:flex;gap:8px;">
-            <button type="button" class="btn btn-emerald btn-sm" id="btn-print-rubric">🖨️ Cetak / PDF</button>
+      <div class="guide-modal-card rubric-modal-card" style="max-width:860px;">
+        <div class="guide-modal-head no-print-in-modal">
+          <h3>📋 Lembar Rubrik Observasi Praktik Wudhu (${levelLabel})</h3>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" class="btn btn-emerald btn-sm" id="btn-download-rubric-pdf">⬇️ Unduh PDF (Langsung ke Downloads)</button>
+            <button type="button" class="btn btn-soft btn-sm" id="btn-print-rubric">🖨️ Cetak Printer</button>
             <button type="button" class="btn btn-outline btn-sm" id="btn-close-rubric">✕ Tutup</button>
           </div>
         </div>
-        <div class="guide-modal-body">
-          <p style="font-size:13px;color:#475569;margin:0 0 12px;">
-            Digunakan guru PAI untuk menilai <strong>ranah psikomotorik &amp; afektif (praktik nyata di tempat wudhu)</strong> sebagai pelengkap hasil <em>Cek Pemahaman</em> kognitif di Google Sheets. Skala: <strong>4 = Sangat Baik</strong>, <strong>3 = Baik</strong>, <strong>2 = Cukup</strong>, <strong>1 = Perlu Bimbingan</strong>.
+        <div class="guide-modal-body" id="rubric-pdf-sheet" style="background:#ffffff;color:#0f172a;padding:12px 14px;">
+          <div style="border-bottom:2px solid #065f46;padding-bottom:10px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+            <div>
+              <div style="font-size:11px;font-weight:800;color:#0f6b56;letter-spacing:0.5px;text-transform:uppercase;">MEDIA PEMBELAJARAN ADAB WUDHU MULTI-SENSORY • MAZHAB SYAFI'I</div>
+              <h2 style="margin:3px 0 4px;font-size:17px;color:#064e3b;">Lembar Rubrik Observasi Praktik, Ringkasan Fikih &amp; Capaian Pembelajaran</h2>
+              <div style="font-size:12px;color:#334155;">Guru Pengajar: <strong>${teacherName}</strong> &nbsp;•&nbsp; Sekolah: <strong>${schoolName} (${levelLabel})</strong> &nbsp;•&nbsp; Kelas: <strong>${className}</strong></div>
+            </div>
+          </div>
+
+          <!-- 1. RINGKASAN SYARAT SAH & HAL YANG MEMBATALKAN WUDHU -->
+          <div style="border:1px solid #a7f3d0;background:#f0fdf9;border-radius:10px;padding:10px 12px;margin-bottom:10px;">
+            <div style="font-size:12.5px;font-weight:800;color:#065f46;margin-bottom:6px;">📖 1. Ringkasan Syarat Sah &amp; Hal yang Membatalkan Wudhu (Mazhab Syafi'i — Fath al-Qarib)</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:11.5px;line-height:1.45;">
+              <div style="background:#ffffff;border:1px solid #a7f3d0;border-radius:8px;padding:8px 10px;">
+                <strong style="color:#065f46;display:block;margin-bottom:4px;">✅ Syarat Sah Wudhu:</strong>
+                <ul style="margin:0;padding-left:16px;">
+                  <li>Islam &amp; Tamyiz (dapat membedakan baik dan buruk).</li>
+                  <li>Suci dari haid &amp; nifas (khusus siswi perempuan).</li>
+                  <li>Memakai air suci menyucikan (<em>air mutlaq</em>), bukan <em>musta'mal</em>.</li>
+                  <li>Tidak ada penghalang air ke kulit/kuku (cat, kuteks, lem).</li>
+                </ul>
+              </div>
+              <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:8px 10px;">
+                <strong style="color:#92400e;display:block;margin-bottom:4px;">⚠️ Hal yang Membatalkan Wudhu (Nawaqidh):</strong>
+                <ul style="margin:0;padding-left:16px;">
+                  <li>Keluar sesuatu dari qubul atau dubur.</li>
+                  <li>Hilang akal / tidur dengan posisi duduk tidak mantap.</li>
+                  <li>Bersentuhan kulit laki-laki &amp; perempuan dewasa bukan mahram.</li>
+                  <li>Menyentuh kemaluan manusia dengan telapak tangan dalam.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. CAPAIAN & TUJUAN PEMBELAJARAN -->
+          <div style="border:1px solid #cbd5e1;background:#f8fafc;border-radius:10px;padding:10px 12px;margin-bottom:12px;">
+            <div style="font-size:12.5px;font-weight:800;color:#065f46;margin-bottom:5px;">🎯 2. Capaian &amp; Tujuan Pembelajaran (${levelLabel} — Kurikulum Merdeka PAI)</div>
+            <ol style="margin:0;padding-left:18px;font-size:11.5px;line-height:1.48;color:#1e293b;">
+              ${tpItems.map((t) => `<li style="margin-bottom:3px;">${t}</li>`).join("")}
+            </ol>
+          </div>
+
+          <!-- 3. TABEL LEMBAR RUBRIK OBSERVASI PRAKTIK WUDHU -->
+          <div style="font-size:12.5px;font-weight:800;color:#065f46;margin-bottom:4px;">📋 3. Tabel Rubrik Observasi Praktik Wudhu (Psikomotorik &amp; Afektif)</div>
+          <p style="font-size:11.5px;color:#475569;margin:0 0 8px;">
+            Skala Penilaian: <strong>4 = Sangat Baik</strong> &nbsp;|&nbsp; <strong>3 = Baik</strong> &nbsp;|&nbsp; <strong>2 = Cukup</strong> &nbsp;|&nbsp; <strong>1 = Perlu Bimbingan</strong>.
           </p>
-          <table class="rubric-table">
+          <table class="rubric-table" style="font-size:11.8px;">
             <thead>
               <tr>
                 <th>No</th>
@@ -2356,7 +2446,7 @@
               <tr><td>1</td><td><strong>Niat &amp; Basmalah</strong></td><td>Membaca Basmalah &amp; menghadirkan niat saat air pertama menyentuh wajah.</td><td>___</td></tr>
               <tr><td>2</td><td><strong>Batas Wajib Wajah</strong></td><td>Meratakan air dari batas tumbuh rambut hingga dagu, dan antar kedua telinga.</td><td>___</td></tr>
               <tr><td>3</td><td><strong>Kedua Tangan hingga Siku</strong></td><td>Membasuh tangan kanan lalu kiri melewati kedua siku dan menyela jari.</td><td>___</td></tr>
-              <tr><td>4</td><td><strong>Mengusap Kepala &amp; Telinga</strong></td><td>Mengusap sebagian kulit/rambut di batas kepala (termasuk adab siswi berhijab).</td><td>___</td></tr>
+              <tr><td>4</td><td><strong>Mengusap Kepala &amp; Telinga</strong></td><td>Mengusap sebagian kulit/rambut di batas kepala &amp; telinga dengan air baru.</td><td>___</td></tr>
               <tr><td>5</td><td><strong>Kedua Kaki hingga Mata Kaki</strong></td><td>Membasuh kaki kanan lalu kiri melewati mata kaki, tumit, dan sela jari kaki.</td><td>___</td></tr>
               <tr><td>6</td><td><strong>Tertib &amp; Thuma'ninah</strong></td><td>Berurutan sesuai rukun, tenang (tidak tergesa-gesa), dan masing-masing 3× basuhan.</td><td>___</td></tr>
               <tr><td>7</td><td><strong>Adab Hemat Air (Anti-Israf)</strong></td><td>Membuka keran kecil / menjaga air bak 2 Qullah agar tidak musta'mal.</td><td>___</td></tr>
@@ -2370,7 +2460,45 @@
 
     const close = () => modal.remove();
     document.getElementById("btn-close-rubric").addEventListener("click", close);
-    document.getElementById("btn-print-rubric").addEventListener("click", () => window.print());
+    document.getElementById("btn-print-rubric").addEventListener("click", () => {
+      document.body.classList.add("printing-rubric-only");
+      window.print();
+      setTimeout(() => document.body.classList.remove("printing-rubric-only"), 500);
+    });
+
+    const dlBtn = document.getElementById("btn-download-rubric-pdf");
+    dlBtn.addEventListener("click", async () => {
+      const sheetEl = document.getElementById("rubric-pdf-sheet");
+      if (!sheetEl) return;
+      const origText = dlBtn.textContent;
+      dlBtn.disabled = true;
+      dlBtn.textContent = "⏳ Menyiapkan File PDF...";
+      try {
+        const html2pdf = await loadHtml2PdfScript();
+        const safeSchool = String(prof.school || (isSmp ? "SMP_MTs" : "SD_MI")).replace(/[^a-zA-Z0-9_-]/g, "_");
+        const safeClass = String(prof.kelas || "Kelas").replace(/[^a-zA-Z0-9_-]/g, "_");
+        const filename = `Rubrik_Observasi_Wudhu_${safeSchool}_${safeClass}.pdf`;
+        await html2pdf()
+          .set({
+            margin: [8, 8, 8, 8],
+            filename,
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+          })
+          .from(sheetEl)
+          .save();
+        showToast(`✅ File ${filename} berhasil diunduh ke folder Downloads!`);
+      } catch (err) {
+        document.body.classList.add("printing-rubric-only");
+        window.print();
+        setTimeout(() => document.body.classList.remove("printing-rubric-only"), 500);
+      } finally {
+        dlBtn.disabled = false;
+        dlBtn.textContent = origText;
+      }
+    });
+
     modal.addEventListener("click", (e) => {
       if (e.target === modal) close();
     });
@@ -2544,12 +2672,14 @@
         return r.sesi.toLowerCase().includes(fSesi.toLowerCase());
       });
 
-      // Hitung Rata-Rata Pretest, Posttest & N-Gain pada Kelas terpilih
+      // Hitung Rata-Rata Pretest, Posttest, Latihan Mandiri & N-Gain pada Kelas terpilih
       const preRows = classRows.filter((r) => r.sesi.toLowerCase().includes("pre"));
       const postRows = classRows.filter((r) => r.sesi.toLowerCase().includes("post"));
+      const latRows = classRows.filter((r) => r.sesi.toLowerCase().includes("latih"));
       const avgOf = (arr) => (arr.length ? arr.reduce((a, b) => a + b.pct, 0) / arr.length : null);
       const preAvg = avgOf(preRows);
       const postAvg = avgOf(postRows);
+      const latAvg = avgOf(latRows);
       const curAvg = avgOf(filtered);
 
       let nGainText = "Belum lengkap (butuh Pre & Post)";
@@ -2578,6 +2708,11 @@
           <div style="font-size:17px;font-weight:800;color:#1e40af;">${postAvg !== null ? `${postAvg.toFixed(1)}%` : "-"}</div>
           <div style="font-size:11.5px;color:#1d4ed8;">${postRows.length} data masuk</div>
         </div>
+        <div style="background:#f0fdfa;border:1px solid #99f6e4;border-radius:10px;padding:10px 12px;">
+          <div style="font-size:11px;color:#0f766e;font-weight:700;">RATA-RATA LATIHAN</div>
+          <div style="font-size:17px;font-weight:800;color:#0f766e;">${latAvg !== null ? `${latAvg.toFixed(1)}%` : "-"}</div>
+          <div style="font-size:11.5px;color:#0d9488;">${latRows.length} data masuk</div>
+        </div>
         <div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:10px 12px;">
           <div style="font-size:11px;color:#065f46;font-weight:700;">EFEKTIVITAS (N-GAIN R&amp;D)</div>
           <div style="font-size:14.5px;font-weight:800;color:#065f46;">${nGainText}</div>
@@ -2599,7 +2734,7 @@
               <td>${escapeHtml(r.school)}</td>
               <td style="text-align:center;font-weight:700;">${escapeHtml(r.kelas)}</td>
               <td style="text-align:center;"><span style="padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:800;background:${
-                r.sesi.toLowerCase().includes("pre") ? "#fef3c7;color:#92400e" : r.sesi.toLowerCase().includes("post") ? "#dbeafe;color:#1e40af" : "#f1f5f9;color:#334155"
+                r.sesi.toLowerCase().includes("pre") ? "#fef3c7;color:#92400e" : r.sesi.toLowerCase().includes("post") ? "#dbeafe;color:#1e40af" : "#ccfbf1;color:#0f766e"
               }">${escapeHtml(r.sesi)}</span></td>
               <td style="text-align:center;font-weight:800;">${r.score} / ${r.total}</td>
               <td style="text-align:center;font-weight:800;">${r.pct}%</td>
@@ -2634,7 +2769,11 @@
     classSel.addEventListener("change", renderFilteredTable);
     sesiSel.addEventListener("change", renderFilteredTable);
     document.getElementById("btn-refresh-live-rekap").addEventListener("click", loadSchoolData);
-    document.getElementById("btn-print-live-rekap").addEventListener("click", () => window.print());
+    document.getElementById("btn-print-live-rekap").addEventListener("click", () => {
+      document.body.classList.add("printing-rubric-only");
+      window.print();
+      setTimeout(() => document.body.classList.remove("printing-rubric-only"), 500);
+    });
     const close = () => modal.remove();
     document.getElementById("btn-close-live-rekap").addEventListener("click", close);
     modal.addEventListener("click", (e) => {
