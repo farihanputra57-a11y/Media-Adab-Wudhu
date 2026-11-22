@@ -1094,7 +1094,25 @@
           } catch (e) {}
           resetPortalForm();
         });
-        if (doneBanner) doneBanner.classList.add("show");
+        if (doneBanner) {
+          try {
+            const rawTy = sessionStorage.getItem("adab_wudhu_last_thankyou_v1");
+            sessionStorage.removeItem("adab_wudhu_last_thankyou_v1");
+            if (rawTy) {
+              const ty = JSON.parse(rawTy);
+              const esc = (s) => String(s || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+              if (ty && ty.isTeacher) {
+                doneBanner.innerHTML = `👨‍🏫 <strong>Terima Kasih, ${esc(ty.name)}!</strong><br/>Sesi Mengajar Guru pada <strong>${esc(ty.school)} — Kelas ${esc(ty.kelas)} (${esc(ty.level)})</strong> telah selesai.`;
+              } else if (ty && ty.name) {
+                const scoreTxt = (String(ty.sesi || "").toLowerCase().includes("latih") && ty.score !== null)
+                  ? ` (Skor: <strong>${ty.score}/${ty.total} • ${ty.pct}%</strong>)`
+                  : "";
+                doneBanner.innerHTML = `✅ <strong>Terima Kasih, ${esc(ty.name)}!</strong><br/>Data sesi <strong>${esc(ty.sesi)}</strong> untuk <strong>${esc(ty.school)} — Kelas ${esc(ty.kelas)} (${esc(ty.level)})</strong>${scoreTxt} telah berhasil tercatat.`;
+              }
+            }
+          } catch (e) {}
+          doneBanner.classList.add("show");
+        }
         revealPortalCard();
       } else {
         // Animasi loading screen pembuka singkat (0.95 detik) -> langsung tampilkan form identitas kosong
