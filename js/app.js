@@ -2176,7 +2176,7 @@
       </div>
       <span class="splash-badge">${prof && prof.isTeacher ? `👨‍🏫 Mode Mengajar Guru • ${levelLabel}` : levelLabel}</span>
       <h1 class="splash-title">${prof ? `Assalamu'alaikum, ${safeName}!` : "Adab Wudhu Multi-Sensory"}</h1>
-      <p class="splash-sub">${prof ? (prof.isTeacher ? `🏫 ${safeSchool} &nbsp;•&nbsp; ${safeClass}<br/>Mode Mengajar Guru Aktif (Hanya Materi Pembelajaran, Tanpa Cek Pemahaman).` : `🏫 ${safeSchool} &nbsp;•&nbsp; Kelas ${safeClass}<br/>Identitas Anda telah terkunci otomatis untuk Cek Pemahaman.`) : "Media Pembelajaran Interaktif Tata Cara &amp; Adab Berwudhu Sesuai Mazhab Syafi'i"}</p>
+      <p class="splash-sub">${prof ? (prof.isTeacher ? `🏫 ${safeSchool} &nbsp;•&nbsp; ${safeClass}<br/>Mode Mengajar Guru Aktif (Hanya Materi Pembelajaran, Tanpa Cek Pemahaman).` : `🏫 ${safeSchool} &nbsp;•&nbsp; Kelas ${safeClass}<br/>Identitas Anda telah terkunci otomatis untuk Cek Pemahaman.`) : "Media Pembelajaran Interaktif Tata Cara &amp; Adab Berwudhu Sesuai Mazhab Syafi'i"}`</p>
       <div class="splash-bar-wrap">
         <div class="splash-bar-fill" id="splash-bar-fill" style="width:${prof ? "100%" : "0%"}"></div>
       </div>
@@ -2372,7 +2372,8 @@
         <div class="guide-modal-head no-print-in-modal">
           <h3>📋 Lembar Rubrik Observasi Praktik Wudhu (${levelLabel})</h3>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button type="button" class="btn btn-emerald btn-sm" id="btn-download-rubric-pdf">⬇️ Unduh PDF (Langsung ke Downloads)</button>
+            <button type="button" class="btn btn-emerald btn-sm" id="btn-download-rubric-pdf">⬇️ Unduh PDF</button>
+            <button type="button" class="btn btn-sm" id="btn-download-rubric-word" style="background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;font-weight:800;">📝 Unduh Word (.doc)</button>
             <button type="button" class="btn btn-soft btn-sm" id="btn-print-rubric">🖨️ Cetak Printer</button>
             <button type="button" class="btn btn-outline btn-sm" id="btn-close-rubric">✕ Tutup</button>
           </div>
@@ -2388,60 +2389,62 @@
 
           <!-- 1. RINGKASAN SYARAT SAH & HAL YANG MEMBATALKAN WUDHU -->
           <div style="border:1px solid #a7f3d0;background:#f0fdf9;border-radius:10px;padding:10px 12px;margin-bottom:10px;">
-            <div style="font-size:12.5px;font-weight:800;color:#065f46;margin-bottom:6px;">📖 1. Ringkasan Syarat Sah &amp; Hal yang Membatalkan Wudhu (Mazhab Syafi'i — Fath al-Qarib)</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:11.5px;line-height:1.45;">
-              <div style="background:#ffffff;border:1px solid #a7f3d0;border-radius:8px;padding:8px 10px;">
-                <strong style="color:#065f46;display:block;margin-bottom:4px;">✅ Syarat Sah Wudhu:</strong>
-                <ul style="margin:0;padding-left:16px;">
-                  <li>Islam &amp; Tamyiz (dapat membedakan baik dan buruk).</li>
-                  <li>Suci dari haid &amp; nifas (khusus siswi perempuan).</li>
-                  <li>Memakai air suci menyucikan (<em>air mutlaq</em>), bukan <em>musta'mal</em>.</li>
-                  <li>Tidak ada penghalang air ke kulit/kuku (cat, kuteks, lem).</li>
-                </ul>
-              </div>
-              <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:8px 10px;">
-                <strong style="color:#92400e;display:block;margin-bottom:4px;">⚠️ Hal yang Membatalkan Wudhu (Nawaqidh):</strong>
-                <ul style="margin:0;padding-left:16px;">
-                  <li>Keluar sesuatu dari qubul atau dubur.</li>
-                  <li>Hilang akal / tidur dengan posisi duduk tidak mantap.</li>
-                  <li>Bersentuhan kulit laki-laki &amp; perempuan dewasa bukan mahram.</li>
-                  <li>Menyentuh kemaluan manusia dengan telapak tangan dalam.</li>
-                </ul>
-              </div>
-            </div>
+            <div style="font-size:12.5px;font-weight:800;color:#065f46;margin-bottom:6px;">1. Ringkasan Syarat Sah &amp; Hal yang Membatalkan Wudhu (Mazhab Syafi'i — Fath al-Qarib)</div>
+            <table style="width:100%;border-collapse:collapse;border:none;font-size:11.5px;line-height:1.45;">
+              <tr>
+                <td style="width:50%;vertical-align:top;background:#ffffff;border:1px solid #a7f3d0;padding:8px 10px;">
+                  <strong style="color:#065f46;display:block;margin-bottom:4px;">Syarat Sah Wudhu:</strong>
+                  <ul style="margin:0;padding-left:16px;">
+                    <li>Islam &amp; Tamyiz (dapat membedakan baik dan buruk).</li>
+                    <li>Suci dari haid &amp; nifas (khusus siswi perempuan).</li>
+                    <li>Memakai air suci menyucikan (<em>air mutlaq</em>), bukan <em>musta'mal</em>.</li>
+                    <li>Tidak ada penghalang air ke kulit/kuku (cat, kuteks, lem).</li>
+                  </ul>
+                </td>
+                <td style="width:50%;vertical-align:top;background:#fffbeb;border:1px solid #fde68a;padding:8px 10px;">
+                  <strong style="color:#92400e;display:block;margin-bottom:4px;">Hal yang Membatalkan Wudhu (Nawaqidh):</strong>
+                  <ul style="margin:0;padding-left:16px;">
+                    <li>Keluar sesuatu dari qubul atau dubur.</li>
+                    <li>Hilang akal / tidur dengan posisi duduk tidak mantap.</li>
+                    <li>Bersentuhan kulit laki-laki &amp; perempuan dewasa bukan mahram.</li>
+                    <li>Menyentuh kemaluan manusia dengan telapak tangan dalam.</li>
+                  </ul>
+                </td>
+              </tr>
+            </table>
           </div>
 
           <!-- 2. CAPAIAN & TUJUAN PEMBELAJARAN -->
           <div style="border:1px solid #cbd5e1;background:#f8fafc;border-radius:10px;padding:10px 12px;margin-bottom:12px;">
-            <div style="font-size:12.5px;font-weight:800;color:#065f46;margin-bottom:5px;">🎯 2. Capaian &amp; Tujuan Pembelajaran (${levelLabel} — Kurikulum Merdeka PAI)</div>
+            <div style="font-size:12.5px;font-weight:800;color:#065f46;margin-bottom:5px;">2. Capaian &amp; Tujuan Pembelajaran (${levelLabel} — Kurikulum Merdeka PAI)</div>
             <ol style="margin:0;padding-left:18px;font-size:11.5px;line-height:1.48;color:#1e293b;">
               ${tpItems.map((t) => `<li style="margin-bottom:3px;">${t}</li>`).join("")}
             </ol>
           </div>
 
           <!-- 3. TABEL LEMBAR RUBRIK OBSERVASI PRAKTIK WUDHU -->
-          <div style="font-size:12.5px;font-weight:800;color:#065f46;margin-bottom:4px;">📋 3. Tabel Rubrik Observasi Praktik Wudhu (Psikomotorik &amp; Afektif)</div>
+          <div style="font-size:12.5px;font-weight:800;color:#065f46;margin-bottom:4px;">3. Tabel Rubrik Observasi Praktik Wudhu (Psikomotorik &amp; Afektif)</div>
           <p style="font-size:11.5px;color:#475569;margin:0 0 8px;">
             Skala Penilaian: <strong>4 = Sangat Baik</strong> &nbsp;|&nbsp; <strong>3 = Baik</strong> &nbsp;|&nbsp; <strong>2 = Cukup</strong> &nbsp;|&nbsp; <strong>1 = Perlu Bimbingan</strong>.
           </p>
           <table class="rubric-table" style="font-size:11.8px;">
             <thead>
               <tr>
-                <th>No</th>
-                <th>Aspek Praktik &amp; Adab Wudhu (Mazhab Syafi'i)</th>
+                <th style="width:42px;text-align:center;">No</th>
+                <th style="width:225px;">Aspek Praktik &amp; Adab Wudhu (Mazhab Syafi'i)</th>
                 <th>Indikator Ketercapaian</th>
-                <th>Skor (1–4)</th>
+                <th style="width:85px;text-align:center;">Skor (1–4)</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>1</td><td><strong>Niat &amp; Basmalah</strong></td><td>Membaca Basmalah &amp; menghadirkan niat saat air pertama menyentuh wajah.</td><td>___</td></tr>
-              <tr><td>2</td><td><strong>Batas Wajib Wajah</strong></td><td>Meratakan air dari batas tumbuh rambut hingga dagu, dan antar kedua telinga.</td><td>___</td></tr>
-              <tr><td>3</td><td><strong>Kedua Tangan hingga Siku</strong></td><td>Membasuh tangan kanan lalu kiri melewati kedua siku dan menyela jari.</td><td>___</td></tr>
-              <tr><td>4</td><td><strong>Mengusap Kepala &amp; Telinga</strong></td><td>Mengusap sebagian kulit/rambut di batas kepala &amp; telinga dengan air baru.</td><td>___</td></tr>
-              <tr><td>5</td><td><strong>Kedua Kaki hingga Mata Kaki</strong></td><td>Membasuh kaki kanan lalu kiri melewati mata kaki, tumit, dan sela jari kaki.</td><td>___</td></tr>
-              <tr><td>6</td><td><strong>Tertib &amp; Thuma'ninah</strong></td><td>Berurutan sesuai rukun, tenang (tidak tergesa-gesa), dan masing-masing 3× basuhan.</td><td>___</td></tr>
-              <tr><td>7</td><td><strong>Adab Hemat Air (Anti-Israf)</strong></td><td>Membuka keran kecil / menjaga air bak 2 Qullah agar tidak musta'mal.</td><td>___</td></tr>
-              <tr><td>8</td><td><strong>Doa Setelah Wudhu</strong></td><td>Menghadap kiblat di tempat suci dan membaca doa syahadat setelah wudhu.</td><td>___</td></tr>
+              <tr><td style="text-align:center;">1</td><td><strong>Niat &amp; Basmalah</strong></td><td>Membaca Basmalah &amp; menghadirkan niat saat air pertama menyentuh wajah.</td><td style="text-align:center;">___</td></tr>
+              <tr><td style="text-align:center;">2</td><td><strong>Batas Wajib Wajah</strong></td><td>Meratakan air dari batas tumbuh rambut hingga dagu, dan antar kedua telinga.</td><td style="text-align:center;">___</td></tr>
+              <tr><td style="text-align:center;">3</td><td><strong>Kedua Tangan hingga Siku</strong></td><td>Membasuh tangan kanan lalu kiri melewati kedua siku dan menyela jari.</td><td style="text-align:center;">___</td></tr>
+              <tr><td style="text-align:center;">4</td><td><strong>Mengusap Kepala &amp; Telinga</strong></td><td>Mengusap sebagian kulit/rambut di batas kepala &amp; telinga dengan air baru.</td><td style="text-align:center;">___</td></tr>
+              <tr><td style="text-align:center;">5</td><td><strong>Kedua Kaki hingga Mata Kaki</strong></td><td>Membasuh kaki kanan lalu kiri melewati mata kaki, tumit, dan sela jari kaki.</td><td style="text-align:center;">___</td></tr>
+              <tr><td style="text-align:center;">6</td><td><strong>Tertib &amp; Thuma'ninah</strong></td><td>Berurutan sesuai rukun, tenang (tidak tergesa-gesa), dan masing-masing 3x basuhan.</td><td style="text-align:center;">___</td></tr>
+              <tr><td style="text-align:center;">7</td><td><strong>Adab Hemat Air (Anti-Israf)</strong></td><td>Membuka keran kecil / menjaga air bak 2 Qullah agar tidak musta'mal.</td><td style="text-align:center;">___</td></tr>
+              <tr><td style="text-align:center;">8</td><td><strong>Doa Setelah Wudhu</strong></td><td>Menghadap kiblat di tempat suci dan membaca doa syahadat setelah wudhu.</td><td style="text-align:center;">___</td></tr>
             </tbody>
           </table>
         </div>
@@ -2456,6 +2459,47 @@
       window.print();
       setTimeout(() => document.body.classList.remove("printing-rubric-only"), 500);
     });
+
+    const wordRubBtn = document.getElementById("btn-download-rubric-word");
+    if (wordRubBtn) {
+      wordRubBtn.addEventListener("click", () => {
+        const sheetEl = document.getElementById("rubric-pdf-sheet");
+        if (!sheetEl) return;
+        const safeSchool = String(prof.school || (isSmp ? "SMP_MTs" : "SD_MI")).replace(/[^a-zA-Z0-9_-]/g, "_");
+        const safeClass = String(prof.kelas || "Kelas").replace(/[^a-zA-Z0-9_-]/g, "_");
+        const wordName = `Rubrik_Observasi_Wudhu_${safeSchool}_${safeClass}.doc`;
+        const docHtml = `<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+  <meta charset="utf-8" />
+  <title>Rubrik Observasi Praktik Wudhu</title>
+  <style>
+    @page WordSection1 { size: 21.0cm 29.7cm; margin: 1.5cm; }
+    div.WordSection1 { page: WordSection1; }
+    body { font-family: "Calibri", "Segoe UI", Arial, sans-serif; font-size: 11pt; color: #0f172a; line-height: 1.45; }
+    table { width: 100%; border-collapse: collapse; margin: 6pt 0 10pt 0; font-size: 10pt; }
+    th { background-color: #065f46; color: #ffffff; font-weight: bold; border: 1pt solid #94a3b8; padding: 6pt 8pt; text-align: left; }
+    td { border: 1pt solid #cbd5e1; padding: 6pt 8pt; vertical-align: top; }
+  </style>
+</head>
+<body>
+  <div class="WordSection1">${sheetEl.innerHTML}</div>
+</body>
+</html>`;
+        const blob = new Blob(["\ufeff", docHtml], { type: "application/msword;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = wordName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+        showToast(`✅ File ${wordName} berhasil diunduh ke folder Downloads!`);
+      });
+    }
 
     const dlBtn = document.getElementById("btn-download-rubric-pdf");
     dlBtn.addEventListener("click", async () => {
