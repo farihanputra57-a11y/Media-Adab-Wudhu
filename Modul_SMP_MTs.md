@@ -1,8 +1,7 @@
 # 🎓 Modul Ajar & Pendalaman Fikih Tingkat SMP / MTs (Kelas VII)
 ## Fikih Thaharah, Dalil, dan Adab Lahir-Batin Berwudhu dalam Mazhab Syafi'i
 
-[![Kembali ke Beranda GitHub](https://img.shields.io/badge/⬅️_Kembali_ke-Halaman_Utama_GitHub-334155?style=for-the-badge)](./README.md)
-[![Buka Aplikasi Web Interaktif](https://img.shields.io/badge/🌐_Buka_Aplikasi_Web-Adab_Wudhu_Multi--Sensory-0f6b56?style=for-the-badge)](https://farihanputra57-a11y.github.io/Media-Adab-Wudhu/)
+[⬅️ Kembali ke Halaman Utama GitHub](./README.md) &nbsp;|&nbsp; [🌐 Buka Aplikasi Web Adab Wudhu Multi-Sensory](https://farihanputra57-a11y.github.io/Media-Adab-Wudhu/)
 
 ---
 
@@ -13,7 +12,6 @@
 - **Kitab Rujukan Utama:**
   1. ***Fath al-Qarib al-Mujib fi Syarh Alfazh al-Taqrib*** (Syekh Muhammad bin Qasim al-Ghazzi)
   2. ***Ihya' 'Ulum al-Din — Kitab Asrar al-Thaharah*** (Imam Abu Hamid al-Ghazali)
-- **Penyusun:** **Farihan Muhammad Putra** (*Magister Pendidikan Agama Islam, Pascasarjana Universitas Islam Riau*)
 
 ---
 

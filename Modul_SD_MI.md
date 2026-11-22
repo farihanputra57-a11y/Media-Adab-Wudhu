@@ -1,8 +1,7 @@
 # 🎒 Modul Ajar & Materi Pembelajaran Tingkat SD / MI (Kelas IV, V & VI)
 ## Tata Cara & Adab Berwudhu Sesuai Tuntunan Mazhab Syafi'i
 
-[![Kembali ke Beranda GitHub](https://img.shields.io/badge/⬅️_Kembali_ke-Halaman_Utama_GitHub-334155?style=for-the-badge)](./README.md)
-[![Buka Aplikasi Web Interaktif](https://img.shields.io/badge/🌐_Buka_Aplikasi_Web-Adab_Wudhu_Multi--Sensory-0f6b56?style=for-the-badge)](https://farihanputra57-a11y.github.io/Media-Adab-Wudhu/)
+[⬅️ Kembali ke Halaman Utama GitHub](./README.md) &nbsp;|&nbsp; [🌐 Buka Aplikasi Web Adab Wudhu Multi-Sensory](https://farihanputra57-a11y.github.io/Media-Adab-Wudhu/)
 
 ---
 
@@ -11,7 +10,6 @@
 - **Jenjang / Kelas:** SD / MI — Kelas IV, V, dan VI (Fase B & Fase C Kurikulum Merdeka)
 - **Topik Utama:** Tata Cara, Batas Wajib, dan Adab Berwudhu (Mazhab Syafi'i)
 - **Pendekatan Pembelajaran:** *Multi-Sensory Digital* (Visual, Auditori, dan Kinestetik)
-- **Penyusun:** **Farihan Muhammad Putra** (*Magister Pendidikan Agama Islam, Pascasarjana Universitas Islam Riau*)
 
 ---
 

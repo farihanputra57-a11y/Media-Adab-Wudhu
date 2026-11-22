@@ -658,6 +658,178 @@
       line-height: 1.45;
     }
     .lock-note strong { color: #065f46; }
+
+    /* Kotak Akses Cepat Modul Ajar di Halaman Awal */
+    .module-quick-box {
+      margin-top: 14px;
+      padding: 12px 13px;
+      border-radius: 14px;
+      background: #f0fdf9;
+      border: 1.5px solid #a7f3d0;
+    }
+    .module-quick-title {
+      font-size: 0.77rem;
+      font-weight: 800;
+      color: #065f46;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .module-quick-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    @media (max-width: 440px) {
+      .module-quick-btns { grid-template-columns: 1fr; }
+    }
+    .btn-module-open {
+      border: 1.5px solid #0284c7;
+      background: #ffffff;
+      color: #0369a1;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-family: inherit;
+      font-size: 0.79rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.18s ease;
+    }
+    .btn-module-open:hover {
+      background: #e0f2fe;
+      transform: translateY(-1px);
+    }
+    .btn-module-open.smp {
+      border-color: #4f46e5;
+      color: #4338ca;
+    }
+    .btn-module-open.smp:hover {
+      background: #eef2ff;
+    }
+
+    /* Modal Modul Ajar Lengkap */
+    .mod-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: rgba(4, 47, 36, 0.78);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .mod-modal-card {
+      width: 100%;
+      max-width: 880px;
+      max-height: 88vh;
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 20px;
+      border: 2px solid #10b981;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .mod-modal-head {
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #064e3b, #0f766e);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .mod-modal-head h3 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 800;
+    }
+    .mod-modal-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .mod-btn-act {
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      border-radius: 9px;
+      padding: 6px 11px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .mod-btn-act.primary {
+      background: #fbbf24;
+      color: #1c1917;
+      border-color: #fde68a;
+    }
+    .mod-modal-body {
+      padding: 18px 22px;
+      overflow-y: auto;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: #1e293b;
+    }
+    .mod-modal-body h2 {
+      margin: 16px 0 8px;
+      font-size: 1.04rem;
+      color: #065f46;
+      border-bottom: 1.5px solid #a7f3d0;
+      padding-bottom: 5px;
+    }
+    .mod-modal-body h2:first-child { margin-top: 0; }
+    .mod-modal-body h4 {
+      margin: 12px 0 4px;
+      font-size: 0.92rem;
+      color: #0f766e;
+    }
+    .mod-modal-body ul, .mod-modal-body ol {
+      margin: 4px 0 10px;
+      padding-left: 20px;
+    }
+    .mod-modal-body li { margin-bottom: 4px; }
+    .mod-modal-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 12px;
+      font-size: 0.82rem;
+    }
+    .mod-modal-body th, .mod-modal-body td {
+      border: 1px solid #cbd5e1;
+      padding: 7px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .mod-modal-body th {
+      background: #065f46;
+      color: #ffffff;
+    }
+    .mod-arab-box {
+      background: #f0fdf9;
+      border-left: 4px solid #059669;
+      padding: 9px 12px;
+      border-radius: 8px;
+      margin: 6px 0 10px;
+    }
+    .mod-arab-txt {
+      font-family: "Amiri", serif;
+      font-size: 1.25rem;
+      color: #064e3b;
+      direction: rtl;
+      margin-bottom: 3px;
+    }
   </style>
 </head>
 <body>
@@ -903,6 +1075,20 @@
         <p class="lock-note" id="portal-lock-note">
           🔒 <strong>Data terkunci otomatis:</strong> Nama, Sekolah, Kelas, dan Sesi yang diisi di sini langsung tercatat untuk <em>Cek Pemahaman</em> dan tidak dapat diubah di dalam kuis.
         </p>
+
+        <div class="module-quick-box" aria-label="Buka Modul Ajar & Materi Pembelajaran">
+          <div class="module-quick-title">
+            <span>📚 Baca &amp; Unduh Modul Ajar Lengkap (Mazhab Syafi'i)</span>
+          </div>
+          <div class="module-quick-btns">
+            <button type="button" class="btn-module-open sd" id="btn-open-mod-sd">
+              🎒 Modul Tingkat SD / MI
+            </button>
+            <button type="button" class="btn-module-open smp" id="btn-open-mod-smp">
+              🎓 Modul Tingkat SMP / MTs
+            </button>
+          </div>
+        </div>
       </form>
       </section>
     </div>
@@ -1458,6 +1644,218 @@
         resetPortalForm();
         window.location.replace(targetUrl);
       });
+
+      // ==================== MODAL MODUL AJAR LENGKAP (SD/MI & SMP/MTs) DI HALAMAN AWAL ====================
+      function loadHtml2PdfGateway() {
+        if (typeof window.html2pdf === "function") return Promise.resolve(window.html2pdf);
+        return new Promise((resolve, reject) => {
+          const existing = document.getElementById("html2pdf-gateway-script");
+          if (existing) {
+            existing.addEventListener("load", () => resolve(window.html2pdf));
+            existing.addEventListener("error", () => reject(new Error("Gagal memuat PDF")));
+            return;
+          }
+          const s = document.createElement("script");
+          s.id = "html2pdf-gateway-script";
+          s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+          s.onload = () => resolve(window.html2pdf);
+          s.onerror = () => reject(new Error("Gagal memuat PDF"));
+          document.head.appendChild(s);
+        });
+      }
+
+      const MODULE_HTML_CONTENT = {
+        sd: {
+          title: "🎒 Modul Ajar & Materi Pembelajaran Tingkat SD / MI (Kelas IV, V & VI)",
+          filename: "Modul_Ajar_Adab_Wudhu_SD_MI.pdf",
+          githubUrl: "https://github.com/farihanputra57-a11y/Media-Adab-Wudhu/blob/main/Modul_SD_MI.md",
+          html: `
+            <h2>📋 A. Identitas Modul &amp; Tujuan Pembelajaran (SD / MI)</h2>
+            <ul>
+              <li><strong>Mata Pelajaran:</strong> Pendidikan Agama Islam dan Budi Pekerti (PAI) / Fikih</li>
+              <li><strong>Jenjang / Kelas:</strong> SD / MI — Kelas IV, V, dan VI (Fase B &amp; C Kurikulum Merdeka)</li>
+              <li><strong>Topik Utama:</strong> Tata Cara, Batas Wajib, dan Adab Berwudhu Sesuai Tuntunan Mazhab Syafi'i</li>
+              <li><strong>Tujuan Pembelajaran:</strong> (1) Memahami doa awal, lafal niat, serta urutan 6 rukun dan sunnah wudhu secara tertib; (2) Mengenali batas wajib wajah, kedua tangan hingga siku, sebagian kepala, dan kedua kaki hingga mata kaki; (3) Mempraktikkan wudhu dengan keran maupun gayung secara tenang (<em>thuma'ninah</em> 3×) dan hemat air; (4) Membiasakan adab kebersihan dan doa sesudah wudhu.</li>
+            </ul>
+
+            <h2>🕌 B. Syarat Sah, 6 Rukun Wajib &amp; Pembatal Wudhu</h2>
+            <table>
+              <thead>
+                <tr><th>No</th><th>6 Rukun Wajib Wudhu (Mazhab Syafi'i)</th><th>Penjelasan Mudah untuk Siswa SD / MI</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td><strong>Niat di Dalam Hati</strong></td><td>Berniat wudhu karena Allah SWT di dalam hati <strong>tepat saat air pertama kali menyentuh kulit wajah</strong>.</td></tr>
+                <tr><td>2</td><td><strong>Membasuh Seluruh Wajah</strong></td><td>Dari <strong>batas tumbuh rambut di dahi</strong> sampai <strong>bawah dagu</strong>, dan dari <strong>pangkal telinga kanan</strong> ke <strong>pangkal telinga kiri</strong>.</td></tr>
+                <tr><td>3</td><td><strong>Membasuh Kedua Tangan hingga Siku</strong></td><td>Membasuh tangan kanan lalu tangan kiri dari <strong>ujung jari</strong> sampai <strong>melewati tulang siku</strong> (lipatan belakang siku wajib basah).</td></tr>
+                <tr><td>4</td><td><strong>Mengusap Sebagian Kepala</strong></td><td>Mengusap sebagian rambut atau kulit yang berada di batas kepala dengan tangan yang basah.</td></tr>
+                <tr><td>5</td><td><strong>Membasuh Kedua Kaki hingga Mata Kaki</strong></td><td>Membasuh kaki kanan lalu kaki kiri dari ujung jari kaki, tumit belakang, hingga <strong>melewati dua tonjolan mata kaki</strong>.</td></tr>
+                <tr><td>6</td><td><strong>Tertib (Berurutan)</strong></td><td>Dilakukan berurutan dari nomor 1 sampai 5, <strong>tidak boleh dibolak-balik</strong>.</td></tr>
+              </tbody>
+            </table>
+            <ul>
+              <li><strong>Syarat Sah Wudhu:</strong> Beragama Islam, <em>mumayyiz</em>, memakai air suci menyucikan (<em>air mutlaq</em>), tidak ada penghalang air di kulit/kuku (cat, lem, kuteks), dan suci dari haid/nifas.</li>
+              <li><strong>Hal yang Membatalkan Wudhu:</strong> (1) Keluar sesuatu dari qubul/dubur (buang air kecil/besar, kentut); (2) Tidur nyenyak dengan posisi duduk tidak tetap; (3) Bersentuhan kulit laki-laki &amp; perempuan dewasa bukan mahram; (4) Menyentuh kemaluan dengan telapak tangan bagian dalam.</li>
+            </ul>
+
+            <h2>💧 C. Panduan Lengkap 8 Segmen Tata Cara &amp; Adab Berwudhu</h2>
+            <h4>1. Segmen 1 — Doa Awal, Basmalah &amp; Membasuh Telapak Tangan (Sunnah Pembuka)</h4>
+            <p>Buka keran aliran kecil-sedang, ucapkan Basmalah &amp; doa awal wudhu, lalu basuh kedua telapak tangan, punggung tangan, dan sela-sela jari sebanyak 3 kali.</p>
+            <div class="mod-arab-box">
+              <div class="mod-arab-txt">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ — اَلْحَمْدُ لِلّٰهِ الَّذِيْ جَعَلَ الْمَاءَ طَهُوْرًا</div>
+              <div><em>Bismillahirrahmanirrahim. Alhamdulillahilladzi ja'alal ma'a thahuran.</em></div>
+              <div>Artinya: "Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang. Segala puji bagi Allah yang telah menjadikan air itu suci dan menyucikan."</div>
+            </div>
+
+            <h4>2. Segmen 2 — Berkumur &amp; Membersihkan Hidung / Istinsyaq (Sunnah Mu'akkadah)</h4>
+            <p>Ambil air dengan telapak tangan kanan untuk berkumur (3×) dan menghirup air pelan ke ujung hidung lalu mengeluarkannya dengan jari tangan kiri (3×).</p>
+
+            <h4>3. Segmen 3 — Membasuh Seluruh Wajah &amp; Menghadirkan Niat (Rukun Wajib 1 &amp; 2)</h4>
+            <div class="mod-arab-box">
+              <div class="mod-arab-txt">نَوَيْتُ الْوُضُوْءَ لِرَفْعِ الْحَدَثِ الْاَصْغَرِ فَرْضًا لِلّٰهِ تَعَالٰى</div>
+              <div><em>Nawaitul wudhu'a liraf'il hadatsil ashghari fardhan lillahi ta'ala.</em></div>
+              <div>Artinya: "Aku berniat wudhu untuk menghilangkan hadas kecil, fardu karena Allah Ta'ala."</div>
+            </div>
+            <p><strong>Urutan Batas Wajib Wajah (1 → 2 → 3 → 4):</strong> ① Batas tumbuh rambut dahi → ② Bawah ujung dagu → ③ Pangkal telinga kanan → ④ Pangkal telinga kiri (3× lembut). <em>Khusus siswi berhijab: longgarkan sedikit tepi jilbab/ciput di dahi dan pipi.</em></p>
+
+            <h4>4. Segmen 4 — Membasuh Kedua Tangan hingga Melewati Siku (Rukun Wajib 3)</h4>
+            <p>Gulung lengan baju di atas siku &amp; lepas jam/gelang ketat. Dahulukan tangan kanan (3×) lalu tangan kiri (3×) mengikuti urutan: <strong>① Ujung jari &amp; sela jari → ② Pergelangan &amp; lengan bawah → ③ Melewati tulang siku (2–3 cm di atas siku &amp; lipatan belakang siku)</strong>.</p>
+
+            <h4>5. Segmen 5 — Mengusap Sebagian Kepala (Rukun Wajib 4) &amp; Kedua Telinga (Sunnah)</h4>
+            <p><strong>💧 Adab Hemat Air:</strong> Basahi tangan lalu <strong>KECILKAN atau TUTUP keran terlebih dahulu!</strong> Usap kepala dari <strong>① Batas rambut depan/dahi (Rukun) → ② Ubun-ubun → ③ Bagian belakang kepala (Sunnah)</strong>. <em>Khusus siswi berhijab: masukkan tangan basah sedikit di balik tepi depan jilbab menyentuh rambut/kulit kepala asli (tidak sah jika hanya mengusap luar kain jilbab).</em> Setelah itu, ambil air baru untuk mengusap bagian dalam (dengan telunjuk) dan belakang daun telinga (dengan ibu jari) sebanyak 3×.</p>
+
+            <h4>6. Segmen 6 — Membasuh Kedua Kaki hingga Melewati Mata Kaki (Rukun Wajib 5)</h4>
+            <p>Wajib melepas kaus kaki terlebih dahulu. Basuh kaki kanan (3×) lalu kaki kiri (3×) mengikuti urutan: <strong>① Jari-jari &amp; sela kaki (dengan jari kelingking) → ② Bagian belakang tumit → ③ Melewati kedua tonjolan mata kaki</strong>.</p>
+
+            <h4>7. Segmen 7 — Tertib (Rukun Wajib 6), Tayammun, Muwalat &amp; Thuma'ninah</h4>
+            <p>Pastikan urutan rukun tidak terbalik (<strong>Tertib</strong>), mendahulukan anggota kanan (<strong>Tayammun</strong>), berkesinambungan (<strong>Muwalat</strong>), tenang (<strong>Thuma'ninah</strong>), dan <strong>menutup keran air hingga rapat</strong>.</p>
+
+            <h4>8. Segmen 8 — Doa Setelah Wudhu (Sunnah Penutup)</h4>
+            <p><strong>Urutan Adab (1 → 2 → 3):</strong> ① Berdiri menghadap kiblat di tempat kering → ② Angkat kedua telapak tangan → ③ Baca doa setelah wudhu dengan khusyuk:</p>
+            <div class="mod-arab-box">
+              <div class="mod-arab-txt">أَشْهَدُ أَنْ لَا إِلٰهَ إِلَّا اللّٰهُ وَحْدَهُ لَا شَرِيْكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُوْلُهُ. اَللّٰهُمَّ اجْعَلْنِيْ مِنَ التَّوَّابِيْنَ وَاجْعَلْنِيْ مِنَ الْمُتَطَهِّرِيْنَ</div>
+              <div><em>Asyhadu alla ilaha illallahu wahdahu la syarika lah, wa asyhadu anna Muhammadan 'abduhu wa rasuluh. Allahummaj'alni minat-tawwabina waj'alni minal-mutathahhirin.</em></div>
+            </div>
+
+            <h2>🪣 D. Panduan Wudhu Gayung (Bak Air Kecil &lt; 2 Qullah)</h2>
+            <p>Agar air di ember/bak kecil tidak berubah menjadi air <em>musta'mal</em>: <strong>① Ciduk air dengan gayung</strong> (jangan mencelupkan tangan langsung ke bak setelah berniat) → <strong>② Angkat gayung keluar bibir bak</strong> → <strong>③ Tuang &amp; basuh anggota wudhu di luar bibir bak</strong>.</p>
+          `
+        },
+        smp: {
+          title: "🎓 Modul Ajar & Pendalaman Fikih Tingkat SMP / MTs (Kelas VII)",
+          filename: "Modul_Ajar_Adab_Wudhu_SMP_MTs.pdf",
+          githubUrl: "https://github.com/farihanputra57-a11y/Media-Adab-Wudhu/blob/main/Modul_SMP_MTs.md",
+          html: `
+            <h2>📋 A. Identitas Modul &amp; Capaian Pembelajaran (SMP / MTs)</h2>
+            <ul>
+              <li><strong>Mata Pelajaran:</strong> Pendidikan Agama Islam dan Budi Pekerti (PAI) / Fikih Ibadah — Kelas VII (Fase D)</li>
+              <li><strong>Kitab Rujukan Utama:</strong> <em>Fath al-Qarib al-Mujib</em> (Syekh Muhammad bin Qasim al-Ghazzi) &amp; <em>Ihya' 'Ulum al-Din</em> (Imam Abu Hamid al-Ghazali) — Mazhab Syafi'i</li>
+              <li><strong>Capaian Pembelajaran:</strong> (1) Menganalisis dalil QS. Al-Ma'idah [5]: 6 dan ketentuan rukun, syarat sah, serta sunnah wudhu; (2) Membedakan hukum air <em>mutlaq</em> dan <em>musta'mal</em> beserta kaidah <strong>2 Qullah (&plusmn;216 liter)</strong>; (3) Mengidentifikasi fikih wudhu remaja putra &amp; putri (hijab, penghalang kulit/kuku, kaus kaki vs <em>khuff</em>); (4) Mengamalkan adab <em>thuma'ninah</em>, <em>tayammun</em>, <em>muwalat</em>, dan <em>anti-israf</em>.</li>
+            </ul>
+
+            <h2>📖 B. Landasan Dalil Naqli &amp; Kaidah Air 2 Qullah</h2>
+            <div class="mod-arab-box">
+              <div class="mod-arab-txt">يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا قُمْتُمْ إِلَى الصَّلَاةِ فَاغْسِلُوا وُجُوهَكُمْ وَأَيْدِيَكُمْ إِلَى الْمَرَافِقِ وَامْسَحُوا بِرُءُوسِكُمْ وَأَرْجُلَكُمْ إِلَى الْكَعْبَيْنِ</div>
+              <div><strong>QS. Al-Ma'idah [5]: 6</strong> — Menetapkan 4 anggota fisik rukun wudhu (wajah, kedua tangan beserta siku/<em>mirfaqain</em>, sebagian kepala/<em>bi ru'usikum</em>, dan kedua kaki beserta mata kaki/<em>ka'bain</em>) secara berurutan (<em>Tertib</em>), ditambah rukun <em>Niat</em> berdasarkan hadis <em>Innamal a'malu bin-niyyat</em>.</div>
+            </div>
+            <ul>
+              <li><strong>Kaidah Air 2 Qullah (&plusmn;216 Liter):</strong> Jika berwudhu dari bak kecil (&lt; 2 Qullah), mencelupkan tangan langsung ke dalam bak setelah niat basuhan wajib tanpa niat menciduk (<em>ighraf</em>) atau membiarkan tetesan basuhan jatuh kembali ke bak akan mengubah air bak menjadi <strong>Air Musta'mal</strong> (suci tetapi tidak menyucikan). Solusi: <strong>① Ciduk Gayung → ② Angkat Keluar → ③ Tuang di Luar Bibir Bak</strong>.</li>
+            </ul>
+
+            <h2>🔬 C. Pendalaman 8 Segmen Fikih &amp; Adab Batin (Mazhab Syafi'i)</h2>
+            <ul>
+              <li><strong>Segmen 1 (Tasmiyah &amp; Doa Awal):</strong> Membaca Basmalah &amp; <em>Alhamdulillahilladzi ja'alal ma'a thahuran</em> saat membasuh telapak tangan &amp; menyela jari (<em>takhlil</em>) 3×, sambil memastikan kulit/kuku bebas penghalang air (<em>mani'</em> seperti kuteks atau kosmetik <em>waterproof</em>).</li>
+              <li><strong>Segmen 2 (Madhmadhah &amp; Istinsyaq):</strong> Berkumur dan menghirup air ke hidung dengan tangan kanan lalu mengeluarkan dengan tangan kiri (<em>istintsar</em>) 3×.</li>
+              <li><strong>Segmen 3 (Membasuh Wajah &amp; Muqaranah Niat — Rukun 1 &amp; 2):</strong> Menghadirkan niat fardu (<em>Nawaitul wudhu'a liraf'il hadatsil ashghari fardhan lillahi ta'ala</em>) di hati <strong>tepat bersamaan (<em>muqaranah bil fi'li</em>) dengan basuhan pertama wajah</strong>. Batas vertikal: <em>manabit sya'r al-ra's</em> (garis rambut dahi) hingga bawah dagu (①→②); horizontal: pangkal telinga kanan ke kiri (③→④).</li>
+              <li><strong>Segmen 4 (Kedua Tangan hingga Siku / Mirfaqain — Rukun 3):</strong> Membasuh dari ujung jari (①), lengan bawah (②), hingga melewati tulang siku (③) disertai sunnah <em>ghurrah wa tahjil</em>.</li>
+              <li><strong>Segmen 5 (Mengusap Sebagian Kepala — Rukun 4 &amp; Telinga dengan Air Baru):</strong> Kecilkan/tutup keran dahulu (larangan <em>israf</em>: HR. Ibn Majah No. 425). Kadar Rukun (①): mengusap sebagian rambut/kulit di dalam batas kepala (bagi siswi berhijab: tidak sah hanya mengusap kain luar jilbab atau ujung rambut di bawah bahu; wajib memasukkan tangan basah di balik tepi depan jilbab). Kadar Sunnah (②–③): meratakan ke ubun-ubun hingga belakang kepala, lalu <strong>mengambil air baru (<em>ma'un jadid</em>)</strong> untuk mengusap kedua telinga.</li>
+              <li><strong>Segmen 6 (Kedua Kaki hingga Mata Kaki / Ka'bain — Rukun 5):</strong> Kaus kaki kain biasa tidak memenuhi syarat <em>khuff</em> sehingga wajib dilepas. Basuh jari &amp; sela kaki dengan kelingking kiri (①), gosok tumit belakang (②), hingga melewati kedua mata kaki (③).</li>
+            </ul>
+
+            <h2>⚖️ D. Komparasi Hukum Tertib vs Muwalat &amp; Tayammun (Segmen 7 &amp; 8)</h2>
+            <table>
+              <thead>
+                <tr><th>Istilah Fikih</th><th>Status Hukum (Mazhab Syafi'i)</th><th>Penjelasan &amp; Implikasi Hukum</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Tertib</strong> (<em>Al-Tartib</em>)</td><td><strong>RUKUN WAJIB</strong></td><td>Urutan 4 anggota rukun (Wajah → Tangan → Kepala → Kaki) wajib berurutan; tidak sah bila terbalik.</td></tr>
+                <tr><td><strong>Muwalat</strong> (<em>Al-Muwalat</em>)</td><td><strong>SUNNAH MU'AKKADAH</strong></td><td>Berkesinambungan sebelum anggota sebelumnya kering (sunnah bagi orang sehat, wajib bagi <em>daimul hadats</em>).</td></tr>
+                <tr><td><strong>Tayammun</strong> (<em>Al-Tayammun</em>)</td><td><strong>SUNNAH MU'AKKADAH</strong></td><td>Mendahulukan anggota kanan sebelum anggota kiri pada basuhan tangan dan kaki.</td></tr>
+                <tr><td><strong>Doa Penutup Wudhu</strong></td><td><strong>SUNNAH PENUTUP</strong></td><td>Menghadap kiblat (①), mengangkat tangan (②), membaca syahadat &amp; doa taubat/kesucian (③ — HR. Muslim No. 234).</td></tr>
+              </tbody>
+            </table>
+          `
+        }
+      };
+
+      function openGatewayModuleModal(levelKey) {
+        const modData = MODULE_HTML_CONTENT[levelKey] || MODULE_HTML_CONTENT.sd;
+        let modal = document.getElementById("gateway-module-modal");
+        if (modal) modal.remove();
+
+        modal = document.createElement("div");
+        modal.id = "gateway-module-modal";
+        modal.className = "mod-modal-backdrop";
+        modal.setAttribute("role", "dialog");
+        modal.setAttribute("aria-modal", "true");
+        modal.innerHTML = `
+          <div class="mod-modal-card">
+            <div class="mod-modal-head">
+              <h3>${modData.title}</h3>
+              <div class="mod-modal-actions">
+                <button type="button" class="mod-btn-act primary" id="btn-dl-mod-pdf">⬇️ Unduh PDF Modul</button>
+                <a href="${modData.githubUrl}" target="_blank" rel="noopener noreferrer" class="mod-btn-act">📖 Buka di GitHub</a>
+                <button type="button" class="mod-btn-act" id="btn-close-mod-modal">✕ Tutup</button>
+              </div>
+            </div>
+            <div class="mod-modal-body" id="gateway-mod-pdf-sheet" style="background:#ffffff;">
+              <div style="border-bottom:2px solid #065f46;padding-bottom:8px;margin-bottom:12px;">
+                <div style="font-size:11px;font-weight:800;color:#0f6b56;letter-spacing:0.4px;">MODUL AJAR &amp; MATERI PEMBELAJARAN • ADAB WUDHU MULTI-SENSORY (MAZHAB SYAFI'I)</div>
+                <h1 style="margin:3px 0 0;font-size:1.15rem;color:#064e3b;">${modData.title}</h1>
+              </div>
+              ${modData.html}
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+
+        const close = () => modal.remove();
+        document.getElementById("btn-close-mod-modal").addEventListener("click", close);
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) close();
+        });
+
+        const dlBtn = document.getElementById("btn-dl-mod-pdf");
+        dlBtn.addEventListener("click", async () => {
+          const sheetEl = document.getElementById("gateway-mod-pdf-sheet");
+          if (!sheetEl) return;
+          const orig = dlBtn.textContent;
+          dlBtn.disabled = true;
+          dlBtn.textContent = "⏳ Menyiapkan PDF...";
+          try {
+            const html2pdf = await loadHtml2PdfGateway();
+            await html2pdf()
+              .set({
+                margin: [8, 8, 8, 8],
+                filename: modData.filename,
+                image: { type: "jpeg", quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+                jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+              })
+              .from(sheetEl)
+              .save();
+          } catch (err) {
+            window.print();
+          } finally {
+            dlBtn.disabled = false;
+            dlBtn.textContent = orig;
+          }
+        });
+      }
+
+      const btnModSd = document.getElementById("btn-open-mod-sd");
+      const btnModSmp = document.getElementById("btn-open-mod-smp");
+      if (btnModSd) btnModSd.addEventListener("click", () => openGatewayModuleModal("sd"));
+      if (btnModSmp) btnModSmp.addEventListener("click", () => openGatewayModuleModal("smp"));
     })();
   </script>
 </body>

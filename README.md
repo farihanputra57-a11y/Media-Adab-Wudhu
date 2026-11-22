@@ -1,14 +1,5 @@
-<div align="center">
-
 # 💧 Adab Wudhu Multi-Sensory (Mazhab Syafi'i)
 ### Media Pembelajaran Interaktif Berbasis *Multi-Sensory Digital* (Visual, Auditori & Kinestetik) untuk Meningkatkan Pemahaman dan Praktik Adab Wudhu Siswa Tingkat SD/MI & SMP/MTs
-
-[![Akses Media Pembelajaran](https://img.shields.io/badge/🌐_Buka_Media_Pembelajaran-Klik_di_Sini-0f6b56?style=for-the-badge)](https://farihanputra57-a11y.github.io/Media-Adab-Wudhu/)
-[![Mazhab Fikih](https://img.shields.io/badge/Fikih-Mazhab_Syafi'i-0284c7?style=for-the-badge)](#landasan-fikih--adab)
-[![Jenjang Pendidikan](https://img.shields.io/badge/Jenjang-SD%2FMI_%26_SMP%2FMTs-4f46e5?style=for-the-badge)](#fitur-unggulan-media)
-[![Institusi](https://img.shields.io/badge/Pascasarjana_MPAI-Universitas_Islam_Riau-d97706?style=for-the-badge)](#profil-pengembang)
-
-</div>
 
 ---
 
@@ -50,14 +41,3 @@ Aplikasi web interaktif serta dokumen **Modul Ajar & Materi Pembelajaran** untuk
 - **🌐 Tautan Utama Aplikasi Web (Gerbang Siswa & Guru):** [https://farihanputra57-a11y.github.io/Media-Adab-Wudhu/](https://farihanputra57-a11y.github.io/Media-Adab-Wudhu/)
 - **🎒 Modul Tingkat SD / MI (Kelas IV–VI):** [Buka Modul Ajar & Materi SD / MI (Modul_SD_MI.md)](./Modul_SD_MI.md) — *Materi dasar ramah anak, 6 rukun & syarat sah wudhu, panduan 8 segmen, wudhu gayung, dan latihan soal SD/MI.*
 - **🎓 Modul Tingkat SMP / MTs (Kelas VII):** [Buka Modul Ajar & Pendalaman Fikih SMP / MTs (Modul_SMP_MTs.md)](./Modul_SMP_MTs.md) — *Pendalaman dalil QS. Al-Ma'idah: 6, kaidah air 2 Qullah & musta'mal, fikih muslimah berhijab, tabel komparasi Tertib vs Muwalat/Tayammun, serta studi kasus fikih SMP/MTs.*
-
----
-
-## 🎓 Profil Pengembang
-
-Media pembelajaran digital ini dikembangkan sebagai produk inovasi akademik dalam rangka penelitian tesis magister:
-
-- **Pengembang / Peneliti:** **Farihan Muhammad Putra**
-- **Program Studi:** Magister Pendidikan Agama Islam (MPAI)
-- **Institusi:** Pascasarjana Universitas Islam Riau (UIR), Pekanbaru
-- **Pendekatan Pengembangan:** *Multi-Sensory Digital Learning* (Visual, Auditori, Kinestetik) berbasis Fikih Mazhab Syafi'i
