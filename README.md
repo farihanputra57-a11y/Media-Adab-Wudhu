@@ -43,13 +43,13 @@ Seluruh materi, batas wajib anggota wudhu, dan indikator penilaian di dalam medi
 
 ---
 
-## 🚀 Akses Langsung Aplikasi Web
+## 🚀 Akses Langsung Aplikasi Web & Modul Ajar (SD/MI & SMP/MTs)
 
-Media ini dapat diakses secara langsung melalui peramban (*browser*) di ponsel pintar, tablet, laptop, maupun proyektor kelas tanpa instalasi tambahan:
+Aplikasi web interaktif serta dokumen **Modul Ajar & Materi Pembelajaran** untuk masing-masing jenjang pendidikan dapat dibuka langsung melalui tautan di bawah ini:
 
-- **🌐 Tautan Utama (Gerbang Siswa & Guru):** [https://farihanputra57-a11y.github.io/Media-Adab-Wudhu/](https://farihanputra57-a11y.github.io/Media-Adab-Wudhu/)
-- **🎒 Modul Tingkat SD / MI (Kelas IV–VI):** [https://farihanputra57-a11y.github.io/Media-Adab-Wudhu/sd/](https://farihanputra57-a11y.github.io/Media-Adab-Wudhu/sd/)
-- **🎓 Modul Tingkat SMP / MTs (Kelas VII):** [https://farihanputra57-a11y.github.io/Media-Adab-Wudhu/smp/](https://farihanputra57-a11y.github.io/Media-Adab-Wudhu/smp/)
+- **🌐 Tautan Utama Aplikasi Web (Gerbang Siswa & Guru):** [https://farihanputra57-a11y.github.io/Media-Adab-Wudhu/](https://farihanputra57-a11y.github.io/Media-Adab-Wudhu/)
+- **🎒 Modul Tingkat SD / MI (Kelas IV–VI):** [Buka Modul Ajar & Materi SD / MI (Modul_SD_MI.md)](./Modul_SD_MI.md) — *Materi dasar ramah anak, 6 rukun & syarat sah wudhu, panduan 8 segmen, wudhu gayung, dan latihan soal SD/MI.*
+- **🎓 Modul Tingkat SMP / MTs (Kelas VII):** [Buka Modul Ajar & Pendalaman Fikih SMP / MTs (Modul_SMP_MTs.md)](./Modul_SMP_MTs.md) — *Pendalaman dalil QS. Al-Ma'idah: 6, kaidah air 2 Qullah & musta'mal, fikih muslimah berhijab, tabel komparasi Tertib vs Muwalat/Tayammun, serta studi kasus fikih SMP/MTs.*
 
 ---
 
