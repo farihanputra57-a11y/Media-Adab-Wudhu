@@ -937,6 +937,24 @@
       const pickSd = document.getElementById("pick-sd");
       const pickSmp = document.getElementById("pick-smp");
       const errorBox = document.getElementById("portal-error");
+      const sessionSel = document.getElementById("portal-session");
+      const rosterGroup = document.getElementById("roster-select-group");
+      const rosterSelect = document.getElementById("portal-name-select");
+      const nameManualGroup = document.getElementById("name-manual-group");
+      const teacherLokalInp = document.getElementById("portal-teacher-lokal");
+
+      const AUTHORIZED_SCHOOLS = {
+        "SDN 1": "sd",
+        "SDN 2": "sd",
+        "MI 1": "sd",
+        "MI 2": "sd",
+        "SMPN 1": "smp",
+        "SMPN 2": "smp",
+        "MTs 1": "smp",
+        "MTs 2": "smp"
+      };
+
+      const ROSTER_LOCAL_KEY = "adab_wudhu_pretest_roster_v1";
 
       let selectedLevel = "";
       let isTeacherMode = false;
@@ -1159,24 +1177,6 @@
           errorBox.classList.remove("show");
         });
       });
-
-      const AUTHORIZED_SCHOOLS = {
-        "SDN 1": "sd",
-        "SDN 2": "sd",
-        "MI 1": "sd",
-        "MI 2": "sd",
-        "SMPN 1": "smp",
-        "SMPN 2": "smp",
-        "MTs 1": "smp",
-        "MTs 2": "smp"
-      };
-
-      const ROSTER_LOCAL_KEY = "adab_wudhu_pretest_roster_v1";
-      const sessionSel = document.getElementById("portal-session");
-      const rosterGroup = document.getElementById("roster-select-group");
-      const rosterSelect = document.getElementById("portal-name-select");
-      const nameManualGroup = document.getElementById("name-manual-group");
-      const teacherLokalInp = document.getElementById("portal-teacher-lokal");
 
       function populateCombinedClassOptions(schoolSelect, classSelect) {
         if (!schoolSelect || !classSelect) return;
